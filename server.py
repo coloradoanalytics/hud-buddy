@@ -48,6 +48,7 @@ def highways():
         response_object['current_aadt'] = seg['aadt']
         response_object['future_aadt'] = str(int(future_aadt))
         response_object['distance'] = seg['distance']
+        response_object['truck_percentage'] = seg['truck_percentage']
         response['segments'].append(response_object)
 
     response['combined_dnl'] = DNL.dnl_sum(segment_dnls)
