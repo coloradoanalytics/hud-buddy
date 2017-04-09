@@ -17,8 +17,9 @@ def get_highways(lat, lon, distance):
     for name in highway_names:
         segments = [h for h in highways if h['alias'] == name]
 	
-        seg = min(segments, key=lambda x: min(
-            ([haversine(lon, lat, c[0], c[1]) for c in x['the_geom']['coordinates']])))
+        seg = min(segments, key=lambda x: min(([haversine(lon, lat, c[0], c[1]) for c in x['the_geom']['coordinates']])))
+        seg_distances = [haversine(lon, lat, x[0], x[1]) for x in seg['the_geom']['coordinates']]        
+        seg_distance = min(seg_distances)
         truck_percentage = (float(seg['aadtcomb']) / float(seg['aadt'])) * 100
         closest_segment = {
             'name': seg['alias'],
@@ -29,6 +30,7 @@ def get_highways(lat, lon, distance):
             'auto_speed_adjustment_factor': DNL.auto_speed_adjustment_factor(float(seg['speedlim'])),
             'heavy_truck_speed_adjustment_factor': DNL.heavy_truck_speed_adjustment_factor(float(seg['speedlim'])),
             'truck_percentage': truck_percentage,
+            'distance':seg_distance
         }
         final_segments.append(closest_segment)
     return final_segments
