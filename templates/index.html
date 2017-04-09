@@ -25,6 +25,18 @@
 
       }
 
+      function getDescription(dnl) {
+        var desc = 'Acceptable';
+
+        if (dnl > 75) {
+          desc = 'Unacceptable';
+        } else if (dnl > 65) {
+          desc = 'Normally Unacceptable';
+        }
+
+        return desc;
+      }
+
       var map;
 
       function initMap() {
@@ -62,12 +74,17 @@
                   var windowContent = "<h4>No highways within 1000ft.</h4>"
                 } else {
 
-                  var color = getColor(Number(json.combined_dnl));
+                  var dnl = Number(json.combined_dnl);
+
+                  var color = getColor(dnl);
                   marker.setIcon('http://maps.google.com/mapfiles/ms/icons/' + color + '-dot.png')
+
+                  var desc = getDescription(dnl);
 
                   var windowContent = `
                     <div>
-                      <h3>`+json.combined_dnl+` DNL</h3>
+                      <h3>`+json.combined_dnl+` dBA</h3>
+                      <h4><em>`+desc+`</em></h4>
                   `
                   json.segments.forEach(function(element) {
                     var elemContent = `
