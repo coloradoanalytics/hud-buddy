@@ -1,9 +1,8 @@
-from flask import Flask, request, json
 import requests
 from math import radians, cos, sin, asin, sqrt, pow
 import DNL
 
-def getHighways(lat, lon, distance):
+def get_highways(lat, lon, distance):
     s = requests.session()
     
     highway_url = "https://data.colorado.gov/resource/phvc-rwei.json"
@@ -27,14 +26,14 @@ def getHighways(lat, lon, distance):
             'year': seg['aadtyr'],
             'county': seg['county'],
             'speed_limit': seg['speedlim'],
-            'auto_speed_adjustment_factor': DNL.autoSpeedAdjustmentFactor(float(seg['speedlim'])),
-            'heavy_truck_speed_adjustment_factor': DNL.heavyTruckSpeedAdjustmentFactor(float(seg['speedlim'])),
+            'auto_speed_adjustment_factor': DNL.auto_speed_adjustment_factor(float(seg['speedlim'])),
+            'heavy_truck_speed_adjustment_factor': DNL.heavy_truck_speed_adjustment_factor(float(seg['speedlim'])),
             'truck_percentage': truck_percentage,
         }
         final_segments.append(closest_segment)
     return final_segments
 
-def getPopulation():
+def get_population():
     s = requests.session()
     
     population_url = "https://data.colorado.gov/resource/tv8u-hswn.json"

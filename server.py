@@ -18,37 +18,38 @@ def highways():
     distance = request.args.get('distance', 304.8)
     
     #Get highway data for requested location
-    segments = data.getHighways(lat, lon, distance)
+    segments = data.get_highways(lat, lon, distance)
     county_names = set([s['county'] for s in segments])
 
     #Get population projections
-    current_pop, future_pop = data.getPopulation()
+    current_pop, future_pop = data.get_population()
 
     #Calculate night time adjustment
-    nighttime_adj = DNL.nightTimeAdj() 
+    nighttime_adj = DNL.night_time_adj() 
 
-    response = []
+    response = {'combined_dnl':0.0, 'segments':[]}
+    segment_dnls = []
     #For each road segment, calculate Total DNL
     for seg in segments:
         response_object = {}
-        future_aadt = DNL.futureAadt(future_pop, current_pop, seg['aadt']) 
-        medium_truck_count = DNL.mediumTruckCount(future_aadt) 
-        heavy_truck_count = DNL.heavyTruckCount(future_aadt, seg['truck_percentage']) 
-        auto_count = DNL.autoCount(future_aadt, heavy_truck_count, medium_truck_count)
-        auto_speed_adjustment_factor = DNL.autoSpeedAdjustmentFactor(float(seg['speed_limit']))
-        heavy_truck_speed_adjustment_factor = DNL.heavyTruckSpeedAdjustmentFactor(float(seg['speed_limit']))
-        effective_auto_aadt = DNL.effectiveAutoAadt(auto_count, medium_truck_count, auto_speed_adjustment_factor, nighttime_adj)
-        effective_heavy_truck_aadt = DNL.effectiveHeavyTruckAadt(heavy_truck_count, heavy_truck_speed_adjustment_factor, nighttime_adj)
-        auto_dnl = DNL.dnlAuto(effective_auto_aadt, distance)
-        heavy_truck_dnl = DNL.dnlHeavyTruck(effective_heavy_truck_aadt, distance)
-        total_dnl = DNL.dnlSum(auto_dnl, heavy_truck_dnl)
+        future_aadt = DNL.future_aadt(future_pop, current_pop, seg['aadt']) 
+        medium_truck_count = DNL.medium_truck_count(future_aadt) 
+        heavy_truck_count = DNL.heavy_truck_count(future_aadt, seg['truck_percentage']) 
+        auto_count = DNL.auto_count(future_aadt, heavy_truck_count, medium_truck_count)
+        auto_speed_adjustment_factor = DNL.auto_speed_adjustment_factor(float(seg['speed_limit']))
+        heavy_truck_speed_adjustment_factor = DNL.heavy_truck_speed_adjustment_factor(float(seg['speed_limit']))
+        effective_auto_aadt = DNL.effective_auto_aadt(auto_count, medium_truck_count, auto_speed_adjustment_factor, nighttime_adj)
+        effective_heavy_truck_aadt = DNL.effective_heavy_truck_aadt(heavy_truck_count, heavy_truck_speed_adjustment_factor, nighttime_adj)
+        auto_dnl = DNL.dnl_auto(effective_auto_aadt, distance)
+        heavy_truck_dnl = DNL.dnl_heavy_truck(effective_heavy_truck_aadt, distance)
+        segment_dnls.append(DNL.dnl_sum([auto_dnl, heavy_truck_dnl]))
         response_object['street_name'] = seg['name']
         response_object['county'] = seg['county']
         response_object['current_aadt'] = seg['aadt']
         response_object['future_aadt'] = str(int(future_aadt))
-        response_object['total_dnl'] = str(total_dnl)
-        response.append(response_object)
+        response['segments'].append(response_object)
 
+    response['combined_dnl'] = DNL.dnl_sum(segment_dnls)
     return json.jsonify(response)
 
 
