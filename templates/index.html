@@ -49,9 +49,30 @@
           colorIndex = (colorIndex + 1) % numColors;
 
           fetch(url).then(function(response) {return response.json(); }).then(function(json) {
-                infowindow.setContent(json.map(function(elem) {
-                    return elem.street_name + ": "+ elem.future_aadt
-                  }).join("<br>"));
+                if (json.length == 0) {
+                  var windowContent = "<h4>No highways within 1000ft.</h4>"
+                } else {
+
+                  var windowContent = `
+                    <div>
+                      <h3>67.3 DNL</h3>
+                  `
+                  json.forEach(function(element) {
+                    var elemContent = `
+                      Street: `+ element.street_name+`<br>
+                      Trucks: 4%<br>
+                      AADT: `+Number(element.future_aadt).toLocaleString()+`<br><br>
+                    `;
+                    windowContent = windowContent.concat(elemContent);
+                  });
+                }
+
+                infowindow.setContent(windowContent);
+
+
+                // infowindow.setContent(json.map(function(elem) {
+                //     return elem.street_name + ": "+ elem.effective_future_aadt
+                //   }).join("<br>"));
             });
         })
       }
