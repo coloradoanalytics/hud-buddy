@@ -15,7 +15,8 @@ def dnl(adt, distance, type):
 def dnl_sum(dnl_list):
     dnl_sum = 0
     for dnl in dnl_list:
-        dnl_sum += math.pow( 10, (dnl/10) )
+        if dnl > 1:
+            dnl_sum += math.pow( 10, (dnl/10) )
     return math.ceil(10 * numpy.log10( dnl_sum ))
 
 def night_time_adj():
