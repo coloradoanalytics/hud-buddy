@@ -4,27 +4,47 @@
     <title>Hudl</title>
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
-    <style>
-      #map {
-        height: 80%;
-        width: 80%;
-      }
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-    </style>
+    <link rel="stylesheet" type="text/css" href="static/css/style.css">
   </head>
   <body>
     <div id="map"></div>
     <script>
+
+      function getColor(dnl) {
+        var color = 'green';
+
+        if (dnl > 75) {
+          color = 'red';
+        } else if (dnl > 70) {
+          color = 'yellow';
+        } else if (dnl > 65) {
+          color = 'blue';
+        }
+
+        return color;
+
+      }
+
+      function getDescription(dnl) {
+        var desc = 'Acceptable';
+
+        if (dnl > 75) {
+          desc = 'Unacceptable';
+        } else if (dnl > 65) {
+          desc = 'Normally Unacceptable';
+        }
+
+        return desc;
+      }
+
       var map;
+
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 39.797, lng: -104.958},
           zoom: 12
         });
+
         map.addListener('click', function(event) {
           var lat = event.latLng.lat();
           var lng = event.latLng.lng();
@@ -33,17 +53,50 @@
           var marker = new google.maps.Marker({
             position: {lat, lng},
             map: map,
-            title: 'Location Info'
+            title: 'Location Info',
+            icon : 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
           });
 
-          fetch(url).then(function(response) {return response.json(); }).then(function(json) {
-                var infowindow = new google.maps.InfoWindow({
-                  content: json.map(function(elem) {
-                    return elem.street_name + ": "+ elem.future_aadt
-                  }).join("<br>")
-                });
+          var infowindow = new google.maps.InfoWindow({
+            content: `
+              <div class="spinner">
+                <div class="bounce1"></div>
+                <div class="bounce2"></div>
+                <div class="bounce3"></div>
+              </div>
+            `
+          });
 
-                infowindow.open(map, marker);
+          infowindow.open(map, marker);
+
+          fetch(url).then(function(response) {return response.json(); }).then(function(json) {
+                if (json.segments.length == 0) {
+                  var windowContent = "<h4>No highways within 1000ft.</h4>"
+                } else {
+
+                  var dnl = Number(json.combined_dnl);
+
+                  var color = getColor(dnl);
+                  marker.setIcon('http://maps.google.com/mapfiles/ms/icons/' + color + '-dot.png')
+
+                  var desc = getDescription(dnl);
+
+                  var windowContent = `
+                    <div>
+                      <h3>`+json.combined_dnl+` dBA</h3>
+                      <h4><em>`+desc+`</em></h4>
+                  `
+                  json.segments.forEach(function(element) {
+                    var elemContent = `
+                      Street: `+ element.street_name+`<br>
+                      Trucks: `+Number(element.truck_percentage).toFixed(2).toLocaleString()+`%<br>
+                      AADT: `+Number(element.future_aadt).toLocaleString()+`<br><br>
+                    `;
+                    windowContent = windowContent.concat(elemContent);
+                  });
+                }
+
+                infowindow.setContent(windowContent);
             });
         })
       }
