@@ -40,8 +40,8 @@ def highways():
         heavy_truck_speed_adjustment_factor = DNL.heavy_truck_speed_adjustment_factor(float(seg['speed_limit']))
         effective_auto_aadt = DNL.effective_auto_aadt(auto_count, medium_truck_count, auto_speed_adjustment_factor, nighttime_adj)
         effective_heavy_truck_aadt = DNL.effective_heavy_truck_aadt(heavy_truck_count, heavy_truck_speed_adjustment_factor, nighttime_adj)
-        auto_dnl = DNL.dnl_auto(effective_auto_aadt, distance)
-        heavy_truck_dnl = DNL.dnl_heavy_truck(effective_heavy_truck_aadt, distance)
+        auto_dnl = DNL.dnl_auto(effective_auto_aadt, seg['distance'])
+        heavy_truck_dnl = DNL.dnl_heavy_truck(effective_heavy_truck_aadt, seg['distance'])
         segment_dnls.append(DNL.dnl_sum([auto_dnl, heavy_truck_dnl]))
         response_object['street_name'] = seg['name']
         response_object['county'] = seg['county']
