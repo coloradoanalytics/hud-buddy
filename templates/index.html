@@ -89,7 +89,7 @@
                   json.segments.forEach(function(element) {
                     var elemContent = `
                       Street: `+ element.street_name+`<br>
-                      Trucks: 4%<br>
+                      Trucks: `+Number(element.truck_percentage).toFixed(2).toLocaleString()+`%<br>
                       AADT: `+Number(element.future_aadt).toLocaleString()+`<br><br>
                     `;
                     windowContent = windowContent.concat(elemContent);
