@@ -9,6 +9,22 @@
   <body>
     <div id="map"></div>
     <script>
+
+      function getColor(dnl) {
+        var color = 'green';
+
+        if (dnl > 75) {
+          color = 'red';
+        } else if (dnl > 70) {
+          color = 'yellow';
+        } else if (dnl > 65) {
+          color = 'blue';
+        }
+
+        return color;
+
+      }
+
       var map;
 
       function initMap() {
@@ -16,10 +32,6 @@
           center: {lat: 39.797, lng: -104.958},
           zoom: 12
         });
-
-        var colors = ['red', 'green', 'blue', 'yellow'];
-        var numColors = colors.length;
-        var colorIndex = 0;
 
         map.addListener('click', function(event) {
           var lat = event.latLng.lat();
@@ -30,7 +42,7 @@
             position: {lat, lng},
             map: map,
             title: 'Location Info',
-            icon : 'http://maps.google.com/mapfiles/ms/icons/' + colors[colorIndex] + '-dot.png'
+            icon : 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
           });
 
           var infowindow = new google.maps.InfoWindow({
@@ -45,22 +57,21 @@
 
           infowindow.open(map, marker);
 
-
-          colorIndex = (colorIndex + 1) % numColors;
-
           fetch(url).then(function(response) {return response.json(); }).then(function(json) {
-                if (json.length == 0) {
+                if (json.segments.length == 0) {
                   var windowContent = "<h4>No highways within 1000ft.</h4>"
                 } else {
 
+                  var color = getColor(Number(json.combined_dnl));
+                  marker.setIcon('http://maps.google.com/mapfiles/ms/icons/' + color + '-dot.png')
+
                   var windowContent = `
                     <div>
-                      <h3>67.3 DNL</h3>
+                      <h3>`+json.combined_dnl+` DNL</h3>
                   `
-                  json.forEach(function(element) {
+                  json.segments.forEach(function(element) {
                     var elemContent = `
                       Street: `+ element.street_name+`<br>
-                      DNL: `+element.total_dnl+`<br>
                       Trucks: 4%<br>
                       AADT: `+Number(element.future_aadt).toLocaleString()+`<br><br>
                     `;
@@ -69,11 +80,6 @@
                 }
 
                 infowindow.setContent(windowContent);
-
-
-                // infowindow.setContent(json.map(function(elem) {
-                //     return elem.street_name + ": "+ elem.effective_future_aadt
-                //   }).join("<br>"));
             });
         })
       }
