@@ -2,8 +2,8 @@ import requests
 from math import pow
 import DNL
 from highways import Segment, SegmentGroup, SegmentSchema
-from locations import Point
-from clients import HighwaysClient
+from locations import Point, County
+from clients import HighwaysClient, PopulationsClient
 
 
 def get_highways(lat, lon, distance):
@@ -15,16 +15,19 @@ def get_highways(lat, lon, distance):
     return segment_group.segments
 
 
-def get_population():
-    s = requests.session()
+def get_county(county_name="Denver", year="2014"):
+    c = PopulationsClient()
 
-    population_url = "https://data.colorado.gov/resource/tv8u-hswn.json"
-    population_payload = {"county": "Denver", "year": "2014"}
-    population_res = s.get(population_url, params=population_payload)
-    counties = population_res.json()
-    current_pop = sum([float(c['totalpopulation']) for c in counties])
-    population_payload = {"county": "Denver", "year": "2027"}
-    population_res = s.get(population_url, params=population_payload)
-    counties = population_res.json()
-    future_pop = sum([float(c['totalpopulation']) for c in counties])
-    return current_pop, future_pop
+    current_population_group = c.get_populations(
+        county_name=county_name, year=year)
+    current_population = current_population_group.get_total_population()
+
+    future_population_group = c.get_populations(
+        county_name=county_name, year="2027")
+    future_population = future_population_group.get_total_population()
+
+    county = County(current_population=current_population,
+                    future_population=future_population,
+                    name=county_name)
+
+    return county
