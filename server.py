@@ -1,8 +1,10 @@
 from math import radians, cos, sin, asin, sqrt, pow
 from flask import Flask, request, json, render_template
+import json as jsn
 import requests
 import data
 import DNL
+import pprint
 app = Flask(__name__)
 
 
@@ -61,6 +63,8 @@ def highways():
 
     if segment_dnls:
         response['combined_dnl'] = DNL.dnl_sum(segment_dnls)
+    with open('response.txt','w+') as outfid:
+        jsn.dump(response,outfid)
     return json.jsonify(response)
 
 
