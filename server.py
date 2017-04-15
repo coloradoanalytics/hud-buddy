@@ -1,10 +1,11 @@
-from math import radians, cos, sin, asin, sqrt, pow
 from flask import Flask, request, json, render_template
 import json as jsn
 import requests
 import data
 import DNL
 import pprint
+from highways import SegmentResponseSchema, HighwaysResponseSchema
+
 app = Flask(__name__)
 
 
@@ -22,49 +23,28 @@ def highways():
 
     # Get highway data for requested location
     segments = data.get_highways(lat, lon, distance)
-    county_names = set([s['county'] for s in segments])
+    county_names = set([s.county for s in segments])
 
     # Get population projections
-    current_pop, future_pop = data.get_population()
+    county = data.get_county()
 
-    # Calculate night time adjustment
-    nighttime_adj = DNL.night_time_adj()
+    segment_dnls = []
 
     response = {'combined_dnl': 0.0, 'segments': []}
-    segment_dnls = []
+
     # For each road segment, calculate Total DNL
     for seg in segments:
-        response_object = {}
-        future_aadt = DNL.future_aadt(future_pop, current_pop, seg['aadt'])
-        medium_truck_count = DNL.medium_truck_count(future_aadt)
-        heavy_truck_count = DNL.heavy_truck_count(
-            future_aadt, seg['truck_percentage'])
-        auto_count = DNL.auto_count(
-            future_aadt, heavy_truck_count, medium_truck_count)
-        auto_speed_adjustment_factor = DNL.auto_speed_adjustment_factor(
-            float(seg['speed_limit']))
-        heavy_truck_speed_adjustment_factor = DNL.heavy_truck_speed_adjustment_factor(
-            float(seg['speed_limit']))
-        effective_auto_aadt = DNL.effective_auto_aadt(
-            auto_count, medium_truck_count, auto_speed_adjustment_factor, nighttime_adj)
-        effective_heavy_truck_aadt = DNL.effective_heavy_truck_aadt(
-            heavy_truck_count, heavy_truck_speed_adjustment_factor, nighttime_adj)
-        auto_dnl = DNL.dnl_auto(effective_auto_aadt, seg['distance'])
-        heavy_truck_dnl = DNL.dnl_heavy_truck(
-            effective_heavy_truck_aadt, seg['distance'])
-        segment_dnls.append(DNL.dnl_sum([auto_dnl, heavy_truck_dnl]))
-        response_object['street_name'] = seg['name']
-        response_object['county'] = seg['county']
-        response_object['current_aadt'] = seg['aadt']
-        response_object['future_aadt'] = str(int(future_aadt))
-        response_object['distance'] = seg['distance']
-        response_object['truck_percentage'] = seg['truck_percentage']
+        seg.county = county
+
+        response_object = SegmentResponseSchema().dump(seg).data
         response['segments'].append(response_object)
+
+        segment_dnls.append(seg.total_dnl)
 
     if segment_dnls:
         response['combined_dnl'] = DNL.dnl_sum(segment_dnls)
-    with open('response.txt','w+') as outfid:
-        jsn.dump(response,outfid)
+    with open('response.txt', 'w+') as outfid:
+        jsn.dump(response, outfid)
     return json.jsonify(response)
 
 
