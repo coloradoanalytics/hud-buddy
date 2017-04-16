@@ -26,7 +26,7 @@ class Segment:
         self.measured_aadt = measured_aadt
         self.measured_aadt_year = measured_aadt_year
         self.truck_percentage = (measured_aadt_comb / measured_aadt) * 100
-        self.county_name = county
+        self.county_name = county_name
         self.speed_limit = speed_limit
         self.coordinates = coordinates
         self.auto_speed_adjustment_factor = auto_speed_adjustment_factor(
@@ -157,6 +157,11 @@ class SegmentSchema(Schema):
         """
         the_geom = data.pop('the_geom')
         data['coordinates'] = the_geom['coordinates']
+        return data
+
+    @pre_load
+    def clean_county_name(self, data):
+        data['county'] = data['county'].split(' Co')[0]
         return data
 
     @post_load
