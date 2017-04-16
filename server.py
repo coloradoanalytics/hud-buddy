@@ -23,28 +23,30 @@ def highways():
 
     # Get highway data for requested location
     segments = data.get_highways(lat, lon, distance)
-    county_names = set([s.county for s in segments])
-
-    # Get population projections
-    county = data.get_county()
-
-    segment_dnls = []
 
     response = {'combined_dnl': 0.0, 'segments': []}
 
-    # For each road segment, calculate Total DNL
-    for seg in segments:
-        seg.county = county
+    if segments:
+        # Get population projections
+        county = data.get_county(county_name=segments[0].county_name,
+                                 year=segments[0].measured_aadt_year)
 
-        response_object = SegmentResponseSchema().dump(seg).data
-        response['segments'].append(response_object)
+        segment_dnls = []
 
-        segment_dnls.append(seg.total_dnl)
+        for seg in segments:
+            seg.county = county
 
-    if segment_dnls:
-        response['combined_dnl'] = DNL.dnl_sum(segment_dnls)
+            response_object = SegmentResponseSchema().dump(seg).data
+            response['segments'].append(response_object)
+
+            segment_dnls.append(seg.total_dnl)
+
+        if segment_dnls:
+            response['combined_dnl'] = DNL.dnl_sum(segment_dnls)
+
     with open('response.txt', 'w+') as outfid:
         jsn.dump(response, outfid)
+
     return json.jsonify(response)
 
 
