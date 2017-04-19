@@ -1,7 +1,26 @@
 #map {
-    height: 80%;
-    width: 80%;
+    height: 600px;
+    width: 800px;
 }
+
+.labels {
+     color: black;
+     background-color: white;
+     font-family: "Lucida Grande", "Arial", sans-serif;
+     font-size: 12px;
+     font-weight: bold;
+     text-align: center;
+     width: 36px;
+     border: 2px solid black;
+     white-space: nowrap;
+}
+
+.labels.selected {
+  font-size: 14px;
+  width: 46px;
+  border: 3px solid #FFC208;
+}
+
 html, body {
     height: 100%;
     margin: 0;
@@ -48,4 +67,8 @@ html, body {
     -webkit-transform: scale(1.0);
     transform: scale(1.0);
   }
+}
+
+.nav-item img {
+  max-height: none;
 }
