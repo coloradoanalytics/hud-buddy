@@ -126,13 +126,39 @@ class SegmentGroup:
             ([self.point.distance_from(p) for p in x.coordinates])
         ))
 
+    def get_duplicate(self, segment, segments):
+        """
+        Returns True if either:
+
+            the name of any element in `segments`
+            is fully contained in the name of `segment`
+
+            or
+
+            the name of `segment` is fully contained
+            in the name of any element in `segments`
+
+        AND
+
+            The two segments have the same measured aadt
+        """
+        current_aadts = {s.name: s.measured_aadt for s in segments}
+
+        for name, aadt in current_aadts.items():
+            if segment.name in name or name in segment.name:
+                if segment.measured_aadt == aadt:
+                    return True
+        return False
+
     def get_unique_by_name(self):
         names = set(s.name for s in self.segments)
         new_segments = []
         for name in names:
             segments = [s for s in self.segments if s.name == name]
             closest_segment = self.closest(segments)
-            new_segments.append(closest_segment)
+            duplicate = self.get_duplicate(closest_segment, new_segments)
+            if not duplicate:
+                new_segments.append(closest_segment)
         self.segments = new_segments
         return new_segments
 
