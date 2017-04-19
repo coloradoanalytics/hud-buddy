@@ -2,12 +2,16 @@ var app = new Vue( {
   el: '#app',
 
   data: {
-    currentMarkerId: ''
+    currentMarkerId: '',
+    currentTab: 'map',
+    formData: {}
   },
 
   components: {
     'navbar': NavBar,
-    'maptab': MapTab
+    'maptab': MapTab,
+    'formtab': FormTab,
+    'abouttab': AboutTab
   },
 
   methods: {
@@ -15,8 +19,25 @@ var app = new Vue( {
       this.currentMarkerId = id;
     },
 
+    onSelectTab: function(tab) {
+      this.currentTab = tab;
+    },
+
     onMoveMarker: function() {
       this.currentMarkerId = '';
+    },
+
+    onSendToForm: function(data) {
+      this.formData = data;
+      this.currentTab = 'form';
+    },
+
+    onResetForm: function() {
+      this.formData = {
+        roads: [],
+        rail: [],
+        combined_dnl: 0
+      }
     }
   }
 });

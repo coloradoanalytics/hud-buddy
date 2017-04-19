@@ -72,10 +72,10 @@ var MapTab = {
               <div class="level-left"></div>
               <div class="level-right">
                 <div class="level-item">
-                  <a class="button">Remove</a>
+                  <a class="button" v-on:click="removeCurrentMarker" >Remove</a>
                 </div>
                 <div class="level-item">
-                  <a class="button is-primary">Send to Form</a>
+                  <a class="button is-primary" v-on:click="sendToForm">Send to Form</a>
                 </div>
               </div>
             </div>
@@ -109,6 +109,12 @@ var MapTab = {
       this.map.addListener('click', function(event) {
         self.createMarker(event, this);
       });
+    },
+
+    'removeCurrentMarker': function() {
+      markers[this.currentMarkerId].marker.setMap(null);
+      delete markers[this.currentMarkerId];
+      this.$emit('select-marker', '');
     },
 
     'createMarker': function(event, map) {
@@ -206,6 +212,10 @@ var MapTab = {
         marker.icon.strokeColor = pinColor;
         marker.setShape();
       }
+    },
+
+    sendToForm: function() {
+      this.$emit('send-to-form', markers[this.currentMarkerId].data);
     }
 
   },

@@ -6,13 +6,13 @@ var NavBar = {
             <a class="nav-item">
               <img src="static/images/hammeronwhite100.png">
             </a>
-            <a class="nav-item is-tab is-active">
+            <a v-bind:class="tabClass('map')" v-on:click="selectTab('map')">
               Map
             </a>
-            <a class="nav-item is-tab">
+            <a v-bind:class="tabClass('form')" v-on:click="selectTab('form')">
               Form
             </a>
-            <a class="nav-item is-tab">
+            <a v-bind:class="tabClass('about')" v-on:click="selectTab('about')">
               About
             </a>
           </div>
@@ -23,5 +23,20 @@ var NavBar = {
           </div>
         </div>
       </nav>
-  `
+  `,
+
+  methods: {
+    selectTab: function(tab) {
+      this.$emit('select-tab', tab);
+    },
+
+    tabClass: function(tab) {
+      var tc = "nav-item is-tab";
+      if (tab == this.currentTab) tc += " is-active";
+      return tc;
+    }
+  },
+
+  props: [ 'current-tab' ],
+
 }

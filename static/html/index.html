@@ -14,12 +14,32 @@
   <body>
     <div id="app" >
 
-      <navbar></navbar>
+      <navbar
+        @select-tab="onSelectTab"
+        v-bind:current-tab="currentTab"
+        >
+      </navbar>
 
       <maptab
+        v-show="currentTab == 'map'"
+        v-bind:current-marker-id="currentMarkerId"
         @select-marker="onSelectMarker"
         @move-marker="onMoveMarker"
-        :current-marker-id="currentMarkerId" ></maptab>
+        @send-to-form="onSendToForm"
+        >  
+      </maptab>
+
+      <formtab
+        v-show="currentTab == 'form'"
+        v-bind:form-data="formData"
+        @reset-form="onResetForm"
+        >
+      </formtab>
+
+      <abouttab
+        v-show="currentTab == 'about'"
+        >
+      </abouttab>
 
     </div>
   
@@ -27,6 +47,8 @@
     <script src="static/js/markerwithlabel.js"></script>
     <script type="text/javascript" src="static/js/navbar.js"></script>
     <script type="text/javascript" src="static/js/map.js"></script>
+    <script type="text/javascript" src="static/js/form.js"></script>
+    <script type="text/javascript" src="static/js/about.js"></script>
     <script type="text/javascript" src="static/js/index.js"></script>
     </body>
 </html>
