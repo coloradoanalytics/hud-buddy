@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>HUDL</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+
+    <link rel="stylesheet" href="static/css/bulma.min.css">
+    <link rel="stylesheet" type="text/css" href="static/css/style.css">
+
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  </head>
+
+  <body>
+    <div id="app" >
+
+      <navbar
+        @select-tab="onSelectTab"
+        v-bind:current-tab="currentTab"
+        >
+      </navbar>
+
+      <maptab
+        v-show="currentTab == 'map'"
+        v-bind:current-marker-id="currentMarkerId"
+        @select-marker="onSelectMarker"
+        @move-marker="onMoveMarker"
+        @send-to-form="onSendToForm"
+        >  
+      </maptab>
+
+      <formtab
+        v-show="currentTab == 'form'"
+        v-bind:form-data="formData"
+        @reset-form="onResetForm"
+        >
+      </formtab>
+
+      <abouttab
+        v-show="currentTab == 'about'"
+        >
+      </abouttab>
+
+    </div>
+  
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyB20D3rZ8LVMzQg9_3ABmZ_IlkoakQMRKo"></script>
+    <script src="static/js/markerwithlabel.js"></script>
+    <script type="text/javascript" src="static/js/navbar.js"></script>
+    <script type="text/javascript" src="static/js/map.js"></script>
+    <script type="text/javascript" src="static/js/form.js"></script>
+    <script type="text/javascript" src="static/js/about.js"></script>
+    <script type="text/javascript" src="static/js/index.js"></script>
+    </body>
+</html>
