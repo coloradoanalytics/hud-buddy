@@ -48,6 +48,8 @@ class PopulationsClient(CIMClient):
         self.year = year
 
     def get_populations(self):
+        print("start")
         payload = {"county": self.county_name, "year": self.year}
         data = self.get(payload)
         self.populations = CountyPopulationByAgeGroup(populations=data)
+        print("stop")

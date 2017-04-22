@@ -4,8 +4,7 @@ import requests
 import data
 import DNL
 import pprint
-from highways import SegmentResponseSchema, HighwaysResponseSchema, \
-    UserDefinedSegment
+from highways import SegmentResponseSchema, HighwaysResponseSchema
 from locations import Position
 from sites import Site, SiteSchema
 
@@ -46,12 +45,6 @@ def sites():
     response = SiteSchema().dump(site).data
 
     return json.jsonify(response)
-
-
-@app.route('/api/calculation', methods=['POST'])
-def calculation():
-    segment = UserDefinedSegment().load(request.get_json()).data
-    return UserDefinedSegment().dumps(segment).data
 
 
 if __name__ == "__main__":
