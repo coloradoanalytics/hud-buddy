@@ -2,15 +2,15 @@ import requests
 from math import pow
 import DNL
 from highways import Segment, SegmentGroup, SegmentSchema
-from locations import Point, County
+from locations import Position, County
 from clients import HighwaysClient, PopulationsClient
 
 
 def get_highways(lat, lon, distance):
     c = HighwaysClient()
-    point = Point(lat, lon)
+    position = Position(lat, lon)
 
-    segment_group = c.get_segments(point, distance)
+    segment_group = c.get_segments(position, distance)
 
     return segment_group.segments
 

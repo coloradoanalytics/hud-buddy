@@ -6,7 +6,7 @@ from DNL import auto_speed_adjustment_factor, \
     effective_heavy_truck_aadt, night_time_adj, dnl_auto, dnl_heavy_truck, \
     dnl_sum
 
-from locations import Point, PointSchema
+from locations import Position, PositionSchema, CountySchema
 
 
 class Segment:
@@ -18,8 +18,8 @@ class Segment:
                  measured_aadt_year,
                  county_name,
                  speed_limit,
-                 coordinates,
-                 comparison_point=None,
+                 coordinates=None,
+                 comparison_position=None,
                  county=None):
 
         self.name = name
@@ -34,23 +34,23 @@ class Segment:
         self.heavy_truck_speed_adjustment_factor = heavy_truck_speed_adjustment_factor(
             speed_limit)
 
-        if comparison_point:
-            self.set_distance_and_closest_point(comparison_point)
+        if comparison_position:
+            self.set_distance_and_closest_position(comparison_position)
 
         self.county = county
 
-    def set_distance_and_closest_point(self, point):
+    def set_distance_and_closest_position(self, position):
         closest_distance = None
-        closest_point = None
+        closest_position = None
 
         for p in self.coordinates:
-            distance = p.distance_from(point)
+            distance = p.distance_from(position)
             if not closest_distance or distance < closest_distance:
                 closest_distance = distance
-                closest_point = p
+                closest_position = p
 
         self.closest_distance = closest_distance
-        self.closest_point = closest_point
+        self.closest_position = closest_position
 
         return True
 
@@ -113,17 +113,22 @@ class Segment:
 
 
 class SegmentGroup:
+    """
+    Class for managing a list of Segment objects. Particularly
+    useful for Segments that have come from the Highways API
+    and need to be de-duped.
+    """
 
-    def __init__(self, segments, point):
+    def __init__(self, segments, position):
         self.segments = segments
-        [s.set_distance_and_closest_point(point) for s in segments]
-        self.point = point
+        [s.set_distance_and_closest_position(position) for s in segments]
+        self.position = position
 
         self.get_unique_by_name()
 
     def closest(self, segments):
         return min(segments, key=lambda x: min(
-            ([self.point.distance_from(p) for p in x.coordinates])
+            ([self.position.distance_from(p) for p in x.coordinates])
         ))
 
     def get_duplicate(self, segment, segments):
@@ -145,9 +150,8 @@ class SegmentGroup:
         current_aadts = {s.name: s.measured_aadt for s in segments}
 
         for name, aadt in current_aadts.items():
-            if segment.name in name or name in segment.name:
-                if segment.measured_aadt == aadt:
-                    return True
+            if segment.measured_aadt == aadt:
+                return True
         return False
 
     def get_unique_by_name(self):
@@ -171,8 +175,8 @@ class SegmentSchema(Schema):
     county_name = fields.Str(load_from='county')
     speed_limit = fields.Float(load_from='speedlim')
     coordinates = fields.Nested(
-        PointSchema, many=True, load_from='coordinates')
-    comparison_point = fields.Nested(PointSchema)
+        PositionSchema, many=True, load_from='coordinates')
+    comparison_position = fields.Nested(PositionSchema)
 
     @pre_load
     def move_coordinates(self, data):
@@ -201,7 +205,7 @@ class SegmentSchema(Schema):
 
 class SegmentResponseSchema(Schema):
     name = fields.Str(dump_to='street_name')
-    county = fields.Str()
+    county = fields.Nested(CountySchema)
     current_aadt = fields.Float()
     future_aadt = fields.Float()
     distance = fields.Float()
