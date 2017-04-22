@@ -2,28 +2,28 @@ from marshmallow import Schema, fields, pre_load, post_load
 from utils import haversine
 
 
-class Point:
+class Position:
 
     def __init__(self, latitude, longitude):
         self.latitude = latitude
         self.longitude = longitude
 
-    def distance_from(self, point):
+    def distance_from(self, position):
         return haversine(self.longitude, self.latitude,
-                         point.longitude, point.latitude)
+                         position.longitude, position.latitude)
 
 
-class PointSchema(Schema):
+class PositionSchema(Schema):
     latitude = fields.Float()
     longitude = fields.Float()
 
     @pre_load
-    def move_points(self, data):
+    def move_positions(self, data):
         return dict(latitude=data[1], longitude=data[0])
 
     @post_load
-    def make_point(self, data):
-        return Point(**data)
+    def make_position(self, data):
+        return Position(**data)
 
 
 class Population:
@@ -40,6 +40,12 @@ class County:
         self.current_population = current_population
         self.future_population = future_population
         self.name = name
+
+
+class CountySchema(Schema):
+    name = fields.Str()
+    current_population = fields.Number()
+    future_population = fields.Number()
 
 
 class CountyPopulationByAge:
@@ -70,5 +76,5 @@ class CountyPopulationByAgeSchema(Schema):
     year = fields.Number()
 
     @post_load
-    def make_point(self, data):
+    def make_position(self, data):
         return CountyPopulationByAge(**data)

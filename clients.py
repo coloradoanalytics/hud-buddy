@@ -29,11 +29,11 @@ class HighwaysClient(CIMClient):
     def get_payload():
         pass
 
-    def get_segments(self, point, distance):
+    def get_segments(self, position, distance):
         payload = {"$where": "within_circle(the_geom, {}, {}, {})".format(
-            point.latitude, point.longitude, distance)}
+            position.latitude, position.longitude, distance)}
         data = self.get(payload)
-        return SegmentGroup(segments=data, point=point)
+        return SegmentGroup(segments=data, position=position)
 
 
 class PopulationsClient(CIMClient):

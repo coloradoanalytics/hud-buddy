@@ -80,14 +80,14 @@ var MapTab = {
               </div>
             </div>
 
-            <div class="card" v-if="currentMarker.data.segments.length > 0">
+            <div class="card" v-if="currentMarker.data.roads.length > 0">
               <header class="card-header">
                 <p class="card-header-title">
                   Roads
                 </p>
               </header>
               <div class="card-content">
-                <road-display v-for="road in currentMarker.data.segments" v-bind:road="road" :key="road.street_name"></road-display>
+                <road-display v-for="road in currentMarker.data.roads" v-bind:road="road" :key="road.street_name"></road-display>
               </div>
             </div>
 
@@ -155,7 +155,7 @@ var MapTab = {
         self.selectMarker(this);
       });
 
-      markers[id] = {marker: marker, data: {combined_dnl: 0, segments: []}};
+      markers[id] = {marker: marker, data: {combined_dnl: 0, roads: []}};
 
       this.placeMarker(marker, lat, lng);
     },
@@ -172,7 +172,7 @@ var MapTab = {
       marker.label.setContent();
       marker.icon.strokeColor = 'white';
       marker.setShape();
-      var url = '/api/highways/?lat='+lat+'&lon='+lng;
+      var url = '/api/sites/?lat='+lat+'&lon='+lng;
       var redrawMarker = this.redrawMarker;
       var self = this;
       fetch(url).then(function(response) {return response.json(); }).then(function(json) {
@@ -198,7 +198,7 @@ var MapTab = {
     },
 
     'redrawMarker': function(marker, json) {
-      if (json.segments.length == 0) {
+      if (json.roads.length == 0) {
         marker.labelContent = "N/A";
         marker.label.setContent();
       } else {
@@ -233,7 +233,7 @@ var MapTab = {
 
       return {
         marker: {},
-        data: {combined_dnl: 0, segments: []}
+        data: {combined_dnl: 0, roads: []}
       };
     },
 
