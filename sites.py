@@ -60,8 +60,4 @@ class SiteSchema(Schema):
 
     @post_load
     def make_site(self, data):
-        """
-        Creates the Segment object from the
-        API data.
-        """
         return Site(**data)
