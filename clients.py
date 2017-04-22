@@ -42,7 +42,12 @@ class PopulationsClient(CIMClient):
     schema_class = CountyPopulationByAgeSchema
     many = True
 
-    def get_populations(self, county_name="Denver", year="2014"):
-        payload = {"county": county_name, "year": year}
+    def __init__(self, county_name, year):
+        super().__init__()
+        self.county_name = county_name
+        self.year = year
+
+    def get_populations(self):
+        payload = {"county": self.county_name, "year": self.year}
         data = self.get(payload)
-        return CountyPopulationByAgeGroup(populations=data)
+        self.populations = CountyPopulationByAgeGroup(populations=data)

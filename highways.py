@@ -203,6 +203,22 @@ class SegmentSchema(Schema):
         return Segment(**data)
 
 
+class UserDefinedSegment(Schema):
+
+    name = fields.Str()
+    measured_aadt = fields.Float()
+    measured_aadt_year = fields.Number(missing=2017)
+    measured_aadt_comb = fields.Float()
+    county_name = fields.Str()
+    speed_limit = fields.Number()
+    coordinates = coordinates = fields.Nested(PointSchema)
+
+    @post_load
+    def make_segment(self, data):
+        print(data)
+        return Segment(**data)
+
+
 class SegmentResponseSchema(Schema):
     name = fields.Str(dump_to='street_name')
     county = fields.Nested(CountySchema)

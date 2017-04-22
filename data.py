@@ -1,5 +1,8 @@
-import requests
 from math import pow
+import threading
+
+import requests
+
 import DNL
 from highways import Segment, SegmentGroup, SegmentSchema
 from locations import Position, County
@@ -16,15 +19,24 @@ def get_highways(lat, lon, distance):
 
 
 def get_county(county_name="Denver", year="2014"):
-    c = PopulationsClient()
+    current_client = PopulationsClient(county_name=county_name, year=year)
+    future_client = PopulationsClient(county_name=county_name, year="2027")
 
-    current_population_group = c.get_populations(
-        county_name=county_name, year=year)
-    current_population = current_population_group.get_total_population()
+    threads = []
+    current_pop_thread = threading.Thread(
+        target=current_client.get_populations())
+    threads.append(current_pop_thread)
+    future_pop_thread = threading.Thread(
+        target=future_client.get_populations())
+    threads.append(future_pop_thread)
 
-    future_population_group = c.get_populations(
-        county_name=county_name, year="2027")
-    future_population = future_population_group.get_total_population()
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+
+    current_population = current_client.populations.get_total_population()
+    future_population = future_client.populations.get_total_population()
 
     county = County(current_population=current_population,
                     future_population=future_population,
