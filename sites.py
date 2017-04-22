@@ -9,7 +9,7 @@ from highways import SegmentResponseSchema
 class Site:
     """
     A location on earth defined by latitude and longitude,
-    with associated information relevant to DNL calcualtions,
+    with associated information relevant to DNL calculations,
     such as highway segments, rails, and county data.
 
     The object might be populated from segments/rails/county data
