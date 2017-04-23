@@ -55,6 +55,8 @@ var MapTab = {
           </div>
             
           <div class="column">
+
+          <template v-if="markerIsSelected">
             <div class="level">
               <div class="level-left">
                 <div class="level-item">
@@ -68,7 +70,7 @@ var MapTab = {
               </div>
             </div>
 
-            <div class="level" v-if="currentMarker.data.combined_dnl > 0">
+            <div class="level" >
               <div class="level-left"></div>
               <div class="level-right">
                 <div class="level-item">
@@ -80,7 +82,7 @@ var MapTab = {
               </div>
             </div>
 
-            <div class="card" v-if="currentMarker.data.roads.length > 0">
+            <div class="card">
               <header class="card-header">
                 <p class="card-header-title">
                   Roads
@@ -90,8 +92,23 @@ var MapTab = {
                 <road-display v-for="road in currentMarker.data.roads" v-bind:road="road" :key="road.street_name"></road-display>
               </div>
             </div>
+          </template>
+
+          <template v-else>
+            <div class="level">
+              <div class="level-left">
+                <div class="level-item>">
+                  <div class="title">Select Analysis Location</div>
+                </div>
+              </div>
+              <div class="level-right">
+              </div>
+            </div>
+          </template>
 
           </div>
+
+
 
         </div>
       </div>
@@ -226,28 +243,30 @@ var MapTab = {
 
   computed: {
     currentMarker: function() {
-      //console.log('currentMarker, currentMarkerID', this.currentMarkerId)
       if (this.currentMarkerId) {
         return markers[this.currentMarkerId];
       }
 
       return {
         marker: {},
-        data: {combined_dnl: 0, roads: []}
+        data: blankData()
       };
     },
 
     dnlUnits: function() {
-      //console.log('dnlunits', this.currentMarker.data)
-      if (this.currentMarker.data.combined_dnl == 0) return "Select Analysis Location";
+      if (!this.currentMarker.data.combined_dnl) return "-- dBA";
       return this.currentMarker.data.combined_dnl.toString() + " dBA";
     },
 
     dnlCategory: function() {
-      if (this.currentMarker.data.combined_dnl == 0) return "";
+      if (!this.currentMarker.data.combined_dnl) return "Incomplete Data";
       if (this.currentMarker.data.combined_dnl > 75) return "Unacceptable";
       if (this.currentMarker.data.combined_dnl > 65) return "Normally Unacceptable";
       return "Acceptable";
+    },
+
+    markerIsSelected: function() {
+      return this.currentMarkerId != '';
     }
   },
 
@@ -257,3 +276,15 @@ var MapTab = {
     'road-display': RoadDisplay
   }
 };
+
+function blankData() {
+  return {
+    combined_dnl: null,
+    county: {name: ''},
+    growth_rate: 0.015,
+    name: '',
+    position: {latitude: null, longitude: null},
+    roads: [],
+    rails: []
+  };
+}

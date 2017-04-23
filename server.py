@@ -10,8 +10,6 @@ from sites import Site, SiteSchema
 
 # use custom Flask delimiters to prevent collision with Vue
 # https://github.com/yymm/flask-vuejs
-
-
 class CustomFlask(Flask):
     jinja_options = Flask.jinja_options.copy()
     jinja_options.update(dict(
@@ -28,7 +26,6 @@ app = CustomFlask(__name__)
 
 @app.route("/")
 def home():
-    # return render_template('index.html')
     return current_app.send_static_file('html/index.html')
 
 
