@@ -4,7 +4,8 @@ var app = new Vue( {
   data: {
     currentMarkerId: '',
     currentTab: 'map',
-    formData: {}
+    formData: {},
+    roadEditIndex: null
   },
 
   components: {
@@ -15,6 +16,28 @@ var app = new Vue( {
   },
 
   methods: {
+    onAddRoad: function() {
+      this.formData.roads.push(blankRoad());
+    },
+
+    onEditRoad: function(index) {
+      this.roadEditIndex = index;
+    },
+
+    onMoveMarker: function() {
+      this.currentMarkerId = '';
+    },
+
+    onRemoveRoad: function(index) {
+      console.log(index)
+      this.formData.roads.splice(index, 1);
+    },
+
+    onResetForm: function() {
+      this.formData = blankData();
+      this.roadEditIndex = null;
+    },
+
     onSelectMarker: function(id) {
       this.currentMarkerId = id;
     },
@@ -23,30 +46,49 @@ var app = new Vue( {
       this.currentTab = tab;
     },
 
-    onMoveMarker: function() {
-      this.currentMarkerId = '';
-    },
-
     onSendToForm: function(data) {
       this.formData = data;
+      this.roadEditIndex = null;
       this.currentTab = 'form';
-    },
-
-    onResetForm: function() {
-      this.formData = {
-        roads: [],
-        rail: [],
-        combined_dnl: 0
-      }
     }
+
   }
 });
 
 
 
+function blankRoad() {
+  return {
+    road_name: "New Road",
+    counted_adt: null,
+    counted_adt_year: null,
+    adt: null,
+    adt_year: null,
+    night_fraction_autos: 0.15,
+    night_fraction_trucks: 0.15,
+    road_distance: null,
+    stop_sign_distance: 0,
+    grade: 0.02,
+    medium_trucks: 0.02,
+    heavy_trucks: 0.02,
+    speed_autos: 55,
+    speed_trucks: 55,
+    road_dnl: null
+  }
+}
 
-
-
+function blankData() {
+  return {
+    combined_dnl: null,
+    county: {name: ''},
+    growth_rate: 0.015,
+    name: '',
+    position: {latitude: null, longitude: null},
+    roads: [],
+    rails: [],
+    airports: []
+  };
+}
 
 function newGUID() {
     var S4 = function() {

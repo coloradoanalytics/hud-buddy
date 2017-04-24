@@ -276,15 +276,3 @@ var MapTab = {
     'road-display': RoadDisplay
   }
 };
-
-function blankData() {
-  return {
-    combined_dnl: null,
-    county: {name: ''},
-    growth_rate: 0.015,
-    name: '',
-    position: {lat: null, lng: null},
-    roads: [],
-    rails: []
-  };
-}
