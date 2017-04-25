@@ -1,15 +1,17 @@
 from flask import Flask, request, json, current_app
-import json as jsn
+
 import requests
+
 import data
 import DNL
-import pprint
-from highways import SegmentResponseSchema, HighwaysResponseSchema
+from clients import HighwaysClient
 from locations import Position
-from sites import Site, SiteSchema
+from sites import Site, SiteSchema, SiteSchemaFromUser
 
 # use custom Flask delimiters to prevent collision with Vue
 # https://github.com/yymm/flask-vuejs
+
+
 class CustomFlask(Flask):
     jinja_options = Flask.jinja_options.copy()
     jinja_options.update(dict(
@@ -29,21 +31,25 @@ def home():
     return current_app.send_static_file('html/index.html')
 
 
-@app.route("/api/sites/")
+@app.route("/api/sites/", methods=['GET', 'POST'])
 def sites():
-    # Get requested lat, lon and distance from query string
-    lat = float(request.args.get('lat'))
-    lon = float(request.args.get('lon'))
-    position = Position(lat, lon)
+    if request.method == 'GET':
+        lat = float(request.args.get('lat'))
+        lng = float(request.args.get('lng'))
+        position = Position(lat, lng)
 
-    distance = request.args.get('distance', 609.6)
+        distance = request.args.get('distance', 609.6)
 
-    # Get highway data for requested location
-    segments = data.get_highways(lat, lon, distance)
+        c = HighwaysClient()
+        roads = c.get_segments(position, distance)
 
-    site = Site(position=position, roads=segments)
+        site = Site(position=position, roads=roads)
+        site.process()
+
+    elif request.method == 'POST':
+        site = SiteSchemaFromUser().load(request.get_json()).data
+
     response = SiteSchema().dump(site).data
-
     return json.jsonify(response)
 
 

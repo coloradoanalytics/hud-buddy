@@ -19,7 +19,7 @@ def dnl(adt, distance, type):
 def dnl_sum(dnl_list):
     dnl_sum = 0
     for dnl in dnl_list:
-        if dnl > 1:
+        if dnl and dnl > 1:
             dnl_sum += math.pow(10, (dnl / 10))
     return math.ceil(10 * numpy.log10(dnl_sum))
 
@@ -31,6 +31,14 @@ def night_time_adj():
 
 def future_aadt(future_pop, current_pop, aadt):
     return (future_pop / current_pop) * float(aadt)
+
+
+def future_aadt_new(aadt, growth_rate, num_years):
+    return aadt * (numpy.exp(growth_rate * num_years))
+
+
+def growth_rate(starting_pop, future_pop, num_years):
+    return numpy.log(future_pop / starting_pop) / num_years
 
 
 def heavy_truck_count(future_aadt, truck_percentage):

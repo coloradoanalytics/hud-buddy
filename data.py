@@ -3,19 +3,8 @@ import threading
 
 import requests
 
-import DNL
-from highways import Segment, SegmentGroup, SegmentSchema
-from locations import Position, County
-from clients import HighwaysClient, PopulationsClient
-
-
-def get_highways(lat, lon, distance):
-    c = HighwaysClient()
-    position = Position(lat, lon)
-
-    segment_group = c.get_segments(position, distance)
-
-    return segment_group.segments
+from locations import County
+from clients import PopulationsClient
 
 
 def get_county(county_name="Denver", year="2014"):
