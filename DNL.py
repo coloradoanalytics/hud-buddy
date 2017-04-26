@@ -3,7 +3,6 @@ import math
 
 
 def dnl_sum(dnl_list):
-    print(dnl_list)
     dnl_sum = 0
     for dnl in dnl_list:
         if dnl and dnl > 1:

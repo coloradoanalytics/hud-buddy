@@ -30,28 +30,27 @@ class Road:
         self.medium_trucks = kwargs.get('medium_trucks', 0.02)
         self.heavy_trucks = kwargs.get('heavy_trucks', 0.025)
         self.speed_autos = kwargs.get('speed_autos', 55)
-        self.speed_trucks = kwargs.get('speed_trucks', 50)
+        self.speed_trucks = kwargs.get('speed_trucks', self.speed_autos - 5)
 
         self.auto_saf = self.get_auto_saf()
         self.heavy_truck_saf = self.get_heavy_truck_saf()
         self.night_time_adj = self.get_night_time_adj()
-
         self.dnl = kwargs.get('dnl', None)
 
-    def dnl_calc(self, type):
+    def dnl_calc(self, effective_adt, type):
         type_offset = (54, 70)
         return math.ceil(
-            4.34 * numpy.log(self.adt) - 6.58 *
+            4.34 * numpy.log(effective_adt) - 6.58 *
             numpy.log(self.distance) + type_offset[type]
         )
 
     @property
     def auto_dnl(self):
-        return self.dnl_calc(0)
+        return self.dnl_calc(self.effective_auto_adt, 0)
 
     @property
     def truck_dnl(self):
-        return self.dnl_calc(1)
+        return self.dnl_calc(self.effective_heavy_truck_adt, 1)
 
     def get_night_time_adj(self):
         return float(3.813) * self.night_fraction_autos + float(.425)
@@ -91,16 +90,15 @@ class Road:
 
     @property
     def auto_count(self):
-        return self.adt - self.get_heavy_truck_count - self.medium_truck_count
+        return self.adt - self.get_heavy_truck_count() - self.get_medium_truck_count()
 
     @property
     def effective_auto_adt(self):
-        return ((self.auto_count + 10 * self.medium_truck_count) *
-                self.auto_saf * self.night_time_adj)
+        return (self.auto_count + 10 * self.get_medium_truck_count() * self.auto_saf * self.night_time_adj)
 
     @property
     def effective_heavy_truck_adt(self):
-        return (self.heavy_truck_count *
+        return (self.get_heavy_truck_count() *
                 self.heavy_truck_saf *
                 self.night_time_adj)
 
