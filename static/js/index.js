@@ -4,8 +4,7 @@ var app = new Vue( {
   data: {
     currentMarkerId: '',
     currentTab: 'map',
-    formData: {},
-    roadEditIndex: null
+    formData: {}
   },
 
   components: {
@@ -17,11 +16,15 @@ var app = new Vue( {
 
   methods: {
     onAddRoad: function() {
+      //add a new blank road to the form and invalidate combined dnl
       this.formData.roads.push(blankRoad());
+      this.formData.combined_dnl = null;
     },
 
-    onEditRoad: function(index) {
-      this.roadEditIndex = index;
+    onUpdateRoad: function(index, data) {
+      //overwrite road with data from form
+      //Vue.set is required to ensure reactivity for this operation
+      Vue.set(this.formData.roads, index, data);
     },
 
     onMoveMarker: function() {
@@ -29,8 +32,9 @@ var app = new Vue( {
     },
 
     onRemoveRoad: function(index) {
-      console.log(index)
+      //remove road from form data and invalidate combined dnl
       this.formData.roads.splice(index, 1);
+      this.formData.combined_dnl = null;
     },
 
     onResetForm: function() {
@@ -133,3 +137,7 @@ var spinnerHTML = `
           <div class="bounce3"></div>
         </div>
         `
+
+function roundToFive(x) {
+  return (x % 5) >= 2.5 ? parseInt(x / 5) * 5 + 5 : parseInt(x / 5) * 5;
+}

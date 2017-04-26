@@ -13,6 +13,7 @@ var FormTab = {
               :index="index"
               :road="road"
               @remove-road="onRemoveRoad"
+              @update-road="onUpdateRoad"
               ></road-form>
 
             <div class="level">
@@ -62,12 +63,11 @@ var FormTab = {
                 <p class="card-header-title">
                   Site
                 </p>
+                <a class="card-header-icon" >
+                  <span class="tag is-large is-primary" v-html="combinedDnl"></span>
+                </a>
               </header>
               <div class="card-content">
-                Name or ID
-                Date
-                User's Name
-                Notes
                 <p> {{formData}} </p>
               </div>
               <footer class="card-footer">
@@ -85,17 +85,25 @@ var FormTab = {
 	`,
 
   props: [
-    'form-data',
-    'road-edit-index'
+    'form-data'
     ],
 
   computed: {
-
+    combinedDnl: function() {
+    if (this.formData.combined_dnl) {
+        return "<b>" + this.formData.combined_dnl.toString() + "</b> &nbsp; dB";
+      }
+      return "--"
+    }
   },
 
   methods: {
     addRoad: function() {
       this.$emit('add-road');
+    },
+
+    onUpdateRoad: function(index, data) {
+      this.$emit('update-road', index, data);
     },
 
     onRemoveRoad: function(index) {

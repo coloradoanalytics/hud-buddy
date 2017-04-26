@@ -191,17 +191,17 @@ var MapTab = {
       var self = this;
 
       //temporarily fake response from server
-      // fetch(url).then(function(response) {return response.json(); }).then(function(json) {
-      //   markers[marker.id].data = json;
-      //   self.selectMarker(marker);
-      //   self.redrawMarker(marker, json);
-      // });
+      fetch(url).then(function(response) {return response.json(); }).then(function(json) {
+        markers[marker.id].data = json;
+        self.selectMarker(marker);
+        self.redrawMarker(marker, json);
+      });
 
       //remove these after server reponds with correct format
-      var json = fakeJson();
-      markers[marker.id].data = json;
-      self.selectMarker(marker);
-      self.redrawMarker(marker, json);
+      // var json = fakeJson();
+      // markers[marker.id].data = json;
+      // self.selectMarker(marker);
+      // self.redrawMarker(marker, json);
     },
 
     'selectMarker': function(marker) {
@@ -237,7 +237,8 @@ var MapTab = {
     },
 
     sendToForm: function() {
-      this.$emit('send-to-form', markers[this.currentMarkerId].data);
+      //send a copy of the current marker's data to the form
+      this.$emit('send-to-form', JSON.parse(JSON.stringify(markers[this.currentMarkerId].data)));
     }
 
   },
