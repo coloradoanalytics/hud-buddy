@@ -6,12 +6,11 @@ import data
 import DNL
 from clients import HighwaysClient
 from locations import Position
-from sites import Site, SiteSchema, SiteSchemaFromUser
+from sites import Site, SiteSchema
+
 
 # use custom Flask delimiters to prevent collision with Vue
 # https://github.com/yymm/flask-vuejs
-
-
 class CustomFlask(Flask):
     jinja_options = Flask.jinja_options.copy()
     jinja_options.update(dict(
@@ -47,7 +46,7 @@ def sites():
         site.process()
 
     elif request.method == 'POST':
-        site = SiteSchemaFromUser().load(request.get_json()).data
+        site = SiteSchema().load(request.get_json()).data
         site.set_growth_rates()
         site.set_adts()
         site.set_dnls()

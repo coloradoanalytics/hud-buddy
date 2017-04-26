@@ -102,15 +102,7 @@ class SiteSchema(Schema):
     county = fields.Nested(CountySchema)
     name = fields.Str()
     growth_rate = fields.Float()
-    combined_dnl = fields.Float()
-
-
-class SiteSchemaFromUser(Schema):
-    position = fields.Nested(PositionSchema)
-    roads = fields.Nested(RoadSchema, many=True)
-    county = fields.Nested(CountySchema)
-    name = fields.Str()
-    growth_rate = fields.Float()
+    combined_dnl = fields.Float(dump_only=True)
 
     @post_load
     def make_site(self, data):
