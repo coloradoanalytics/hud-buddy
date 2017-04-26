@@ -1,5 +1,5 @@
 import requests
-from highways import SegmentSchema, SegmentGroup
+from highways import RoadSchemaFromCIM
 from locations import CountyPopulationByAgeSchema, CountyPopulationByAgeGroup
 
 
@@ -15,25 +15,23 @@ class CIMClient:
     def __init__(self):
         self.url = self.base_url.format(self.resource_id)
 
-    def get(self, payload):
+    def get(self, payload, context=None):
         response = self.session.get(self.url, params=payload).json()
-        return self.schema_class(many=self.many).load(response).data
+        schema = self.schema_class(many=self.many)
+        schema.context = context
+        return schema.load(response).data
 
 
 class HighwaysClient(CIMClient):
 
     resource_id = 'phvc-rwei'
-    schema_class = SegmentSchema
+    schema_class = RoadSchemaFromCIM
     many = True
-
-    def get_payload():
-        pass
 
     def get_segments(self, position, distance):
         payload = {"$where": "within_circle(the_geom, {}, {}, {})".format(
-            position.latitude, position.longitude, distance)}
-        data = self.get(payload)
-        return SegmentGroup(segments=data, position=position)
+            position.lat, position.lng, distance)}
+        return self.get(payload)
 
 
 class PopulationsClient(CIMClient):
@@ -42,7 +40,12 @@ class PopulationsClient(CIMClient):
     schema_class = CountyPopulationByAgeSchema
     many = True
 
-    def get_populations(self, county_name="Denver", year="2014"):
-        payload = {"county": county_name, "year": year}
+    def __init__(self, county_name, year):
+        super().__init__()
+        self.county_name = county_name
+        self.year = year
+
+    def get_populations(self):
+        payload = {"county": self.county_name, "year": self.year}
         data = self.get(payload)
-        return CountyPopulationByAgeGroup(populations=data)
+        self.populations = CountyPopulationByAgeGroup(populations=data)

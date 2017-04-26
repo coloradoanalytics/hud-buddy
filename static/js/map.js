@@ -189,7 +189,7 @@ var MapTab = {
       marker.label.setContent();
       marker.icon.strokeColor = 'white';
       marker.setShape();
-      var url = '/api/sites/?lat='+lat+'&lon='+lng;
+      var url = '/api/sites/?lat='+lat+'&lng='+lng;
       var redrawMarker = this.redrawMarker;
       var self = this;
       fetch(url).then(function(response) {return response.json(); }).then(function(json) {
@@ -283,7 +283,7 @@ function blankData() {
     county: {name: ''},
     growth_rate: 0.015,
     name: '',
-    position: {latitude: null, longitude: null},
+    position: {lat: null, lng: null},
     roads: [],
     rails: []
   };
