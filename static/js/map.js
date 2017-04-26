@@ -1,21 +1,21 @@
 var markers = {};
 
-var RoadDisplay = {
+var MapRoadDisplay = {
   template: `
   <article class="media">
     <div class="media-content">
       <div class="content">
-        <strong>{{ streetName }}</strong>
+        <strong>{{ road.name }}</strong>
         <br>
         <div class="level">
           <div class="level-left">
             <div class="level-item">
-              Future AADT: {{ futureAADT }}
+              {{ road.adt_year }} ADT: {{ futureAdt }}
             </div>
           </div>
           <div class="level-right">
             <div class="level-item">
-              Trucks: {{ percentTrucks }}
+              Heavy Trucks: {{ heavyTrucks }}
             </div>
           </div>
         </div>
@@ -25,16 +25,13 @@ var RoadDisplay = {
   `,
 
   computed: {
-    streetName: function() {
-      return this.road.street_name;
+
+    futureAdt: function() {
+      return numberWithCommas(Math.round(this.road.adt));
     },
 
-    futureAADT: function() {
-      return Math.round(this.road.future_aadt);
-    },
-
-    percentTrucks: function() {
-      return (Math.round(this.road.truck_percentage * 100) / 100).toFixed(2) + "%";
+    heavyTrucks: function() {
+      return Math.round(this.road.heavy_trucks * 100).toFixed(2) + "%";
     }
   },
 
@@ -89,7 +86,7 @@ var MapTab = {
                 </p>
               </header>
               <div class="card-content">
-                <road-display v-for="road in currentMarker.data.roads" v-bind:road="road" :key="road.street_name"></road-display>
+                <map-road-display v-for="road in currentMarker.data.roads" v-bind:road="road" :key="road.street_name"></map-road-display>
               </div>
             </div>
           </template>
@@ -192,11 +189,19 @@ var MapTab = {
       var url = '/api/sites/?lat='+lat+'&lng='+lng;
       var redrawMarker = this.redrawMarker;
       var self = this;
-      fetch(url).then(function(response) {return response.json(); }).then(function(json) {
-        markers[marker.id].data = json;
-        self.selectMarker(marker);
-        self.redrawMarker(marker, json);
-      });
+
+      //temporarily fake response from server
+      // fetch(url).then(function(response) {return response.json(); }).then(function(json) {
+      //   markers[marker.id].data = json;
+      //   self.selectMarker(marker);
+      //   self.redrawMarker(marker, json);
+      // });
+
+      //remove these after server reponds with correct format
+      var json = fakeJson();
+      markers[marker.id].data = json;
+      self.selectMarker(marker);
+      self.redrawMarker(marker, json);
     },
 
     'selectMarker': function(marker) {
@@ -273,6 +278,6 @@ var MapTab = {
   props: [ 'current-marker-id' ],
 
   components: {
-    'road-display': RoadDisplay
+    'map-road-display': MapRoadDisplay
   }
 };

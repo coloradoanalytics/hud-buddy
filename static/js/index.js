@@ -55,25 +55,27 @@ var app = new Vue( {
   }
 });
 
-
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 function blankRoad() {
   return {
-    road_name: "New Road",
+    name: "New Road",
     counted_adt: null,
     counted_adt_year: null,
     adt: null,
     adt_year: null,
     night_fraction_autos: 0.15,
     night_fraction_trucks: 0.15,
-    road_distance: null,
+    distance: null,
     stop_sign_distance: 0,
     grade: 0.02,
     medium_trucks: 0.02,
     heavy_trucks: 0.02,
     speed_autos: 55,
     speed_trucks: 55,
-    road_dnl: null
+    dnl: null
   }
 }
 
