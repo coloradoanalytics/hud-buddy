@@ -35,6 +35,7 @@
       <formtab
         v-show="currentTab == 'form'"
         v-bind:form-data="formData"
+        v-bind:road-edit-index="roadEditIndex"
         @reset-form="onResetForm"
         @add-road="onAddRoad"
         @remove-road="onRemoveRoad"

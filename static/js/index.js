@@ -4,7 +4,8 @@ var app = new Vue( {
   data: {
     currentMarkerId: '',
     currentTab: 'map',
-    formData: {}
+    formData: {},
+    roadEditIndex: null
   },
 
   components: {

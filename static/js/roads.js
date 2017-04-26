@@ -2,7 +2,7 @@ var RoadCard = {
 
 	template: `
 		<div class="card">
-        
+
       <header class="card-header">
         <p class="card-header-title">
           {{road.name}}
@@ -59,6 +59,7 @@ var RoadCard = {
               <td class="has-text-centered">{{ heavyTrucksPercent }}%</td>
               <td class="has-text-centered">{{ heavyTrucksNight }}%</td>
               <td class="has-text-centered">{{ road.speed_trucks }}</td>
+
             </tr>
           </tbody>
         </table>
@@ -171,7 +172,6 @@ var RoadCard = {
 	},
 
 	props: [ "index", "road" ]
-
 }
 
 
