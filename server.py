@@ -48,7 +48,10 @@ def sites():
 
     elif request.method == 'POST':
         site = SiteSchemaFromUser().load(request.get_json()).data
-
+        site.set_growth_rates()
+        site.set_adts()
+        site.set_dnls()
+        site.combined_dnl = site.get_combined_dnl()
     response = SiteSchema().dump(site).data
     return json.jsonify(response)
 

@@ -1,10 +1,9 @@
+import math
+import numpy
+
 from marshmallow import Schema, fields, pre_load, post_load
 
-from DNL import auto_speed_adjustment_factor, \
-    heavy_truck_speed_adjustment_factor, future_aadt, medium_truck_count, \
-    heavy_truck_count, auto_count, effective_auto_aadt, \
-    effective_heavy_truck_aadt, night_time_adj, dnl_auto, dnl_heavy_truck, \
-    dnl_sum, growth_rate, future_aadt_new
+from DNL import dnl_sum
 
 from locations import Position, PositionSchema, \
     PositionSchemaFromCIM, CountySchema
@@ -33,12 +32,44 @@ class Road:
         self.speed_autos = kwargs.get('speed_autos', 55)
         self.speed_trucks = kwargs.get('speed_trucks', 50)
 
-        self.auto_speed_adjustment_factor = auto_speed_adjustment_factor(
-            self.speed_autos)
-        self.heavy_truck_speed_adjustment_factor = heavy_truck_speed_adjustment_factor(
-            self.speed_trucks)
+        self.auto_saf = self.get_auto_saf()
+        self.heavy_truck_saf = self.get_heavy_truck_saf()
+        self.night_time_adj = self.get_night_time_adj()
 
         self.dnl = kwargs.get('dnl', None)
+
+    def dnl_calc(self, type):
+        type_offset = (54, 70)
+        return math.ceil(
+            4.34 * numpy.log(self.adt) - 6.58 *
+            numpy.log(self.distance) + type_offset[type]
+        )
+
+    @property
+    def auto_dnl(self):
+        return self.dnl_calc(0)
+
+    @property
+    def truck_dnl(self):
+        return self.dnl_calc(1)
+
+    def get_night_time_adj(self):
+        return float(3.813) * self.night_fraction_autos + float(.425)
+
+    def get_heavy_truck_saf(self):
+        """
+        Heavy truck speed adjustment factor
+        """
+        if self.speed_trucks < 50:
+            return float(.81)
+        else:
+            return float(.0376) * self.speed_trucks - float(1.072)
+
+    def get_auto_saf(self):
+        """
+        Auto speed adjustment factor
+        """
+        return math.pow(float(self.speed_autos), float(2.025)) * float(.0003)
 
     def get_distance(self, position):
         closest = None
@@ -50,79 +81,40 @@ class Road:
 
     def get_adt(self):
         num_years = self.adt_year - self.counted_adt_year
-        return future_aadt_new(self.counted_adt,
-                               self.growth_rate, num_years)
+        return self.counted_adt * (numpy.exp(self.growth_rate * num_years))
 
-    def get_medium_trucks(self):
-        return medium_truck_count(self.adt)
+    def get_medium_truck_count(self):
+        return self.adt * float(self.medium_trucks)
 
-    def get_heavy_trucks(self):
-        return heavy_truck_count(self.adt)
+    def get_heavy_truck_count(self):
+        return self.adt * float(self.heavy_trucks)
 
     @property
     def auto_count(self):
-        return auto_count(
-            self.adt,
-            self.heavy_trucks,
-            self.medium_trucks
-        )
+        return self.adt - self.get_heavy_truck_count - self.medium_truck_count
 
     @property
-    def effective_auto_aadt(self):
-        return effective_auto_aadt(
-            self.auto_count,
-            self.medium_trucks,
-            self.auto_speed_adjustment_factor,
-            night_time_adj()
-        )
+    def effective_auto_adt(self):
+        return ((self.auto_count + 10 * self.medium_truck_count) *
+                self.auto_saf * self.night_time_adj)
 
     @property
-    def effective_heavy_truck_aadt(self):
-        return effective_heavy_truck_aadt(
-            self.heavy_trucks,
-            self.heavy_truck_speed_adjustment_factor,
-            night_time_adj()
-        )
-
-    @property
-    def auto_dnl(self):
-        return dnl_auto(self.effective_auto_aadt, self.distance)
-
-    @property
-    def heavy_truck_dnl(self):
-        return dnl_heavy_truck(self.effective_heavy_truck_aadt,
-                               self.distance)
+    def effective_heavy_truck_adt(self):
+        return (self.heavy_truck_count *
+                self.heavy_truck_saf *
+                self.night_time_adj)
 
     def get_dnl(self):
-        dnl = dnl_sum([self.auto_dnl, self.heavy_truck_dnl])
+        dnl = dnl_sum([self.auto_dnl, self.truck_dnl])
         return dnl
 
 
 class RoadSchema(Schema):
-    """
-    {
-      road_name: "I-70",
-      counted_adt: 14000,
-      counted_adt_year: 2015,
-      adt: 16555,
-      adt_year: 2027,
-      night_fraction_autos: 0.15,
-      night_fraction_trucks: 0.15,
-      road_distance: 235,
-      stop_sign_distance: 0,
-      grade: 0.02,
-      medium_trucks: 0.02,
-      heavy_trucks: 0.025,
-      speed_autos: 55,
-      speed_trucks: 50,
-      road_dnl: 62.5
-    }
-    """
     name = fields.Str()
     counted_adt = fields.Number()
     counted_adt_year = fields.Number()
-    adt = fields.Number()
-    adt_year = fields.Number()
+    adt = fields.Number(dump_only=True)
+    adt_year = fields.Number(dump_only=True)
     night_fraction_autos = fields.Float()
     night_fraction_trucks = fields.Float()
     distance = fields.Number()
@@ -132,7 +124,7 @@ class RoadSchema(Schema):
     heavy_trucks = fields.Float()
     speed_autos = fields.Number()
     speed_trucks = fields.Float()
-    dnl = fields.Float()
+    dnl = fields.Float(dump_only=True)
 
     @post_load
     def make_road(self, data):

@@ -77,8 +77,9 @@ class Site:
         return None
 
     def set_growth_rates(self):
-        if self.county:
+        if self.county and not self.growth_rate:
             self.growth_rate = self.county.get_growth_rate()
+        if self.growth_rate:
             for road in self.roads:
                 road.growth_rate = self.growth_rate
 
@@ -110,7 +111,6 @@ class SiteSchemaFromUser(Schema):
     county = fields.Nested(CountySchema)
     name = fields.Str()
     growth_rate = fields.Float()
-    combined_dnl = fields.Float()
 
     @post_load
     def make_site(self, data):
