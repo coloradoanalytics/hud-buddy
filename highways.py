@@ -135,6 +135,7 @@ class RoadSchemaFromCIM(Schema):
 
     counted_adt = fields.Float(load_from='aadt')
     measured_aadt_comb = fields.Float(load_from='aadtcomb')
+    heavy_trucks = fields.Float(load_from='heavy_trucks')
     counted_adt_year = fields.Number(load_from='aadtyr')
     county_name = fields.Str()
     speed_autos = fields.Float(load_from='speedlim')
@@ -148,6 +149,12 @@ class RoadSchemaFromCIM(Schema):
         """
         the_geom = data.pop('the_geom')
         data['positions'] = the_geom['coordinates']
+        return data
+
+    @pre_load
+    def get_heavy_trucks(self, data):
+        data['heavy_trucks'] = (
+            float(data['aadtcomb']) / float(data['aadt']))
         return data
 
     @pre_load
