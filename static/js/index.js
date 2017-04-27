@@ -22,12 +22,6 @@ var app = new Vue( {
       this.formData.combined_dnl = null;
     },
 
-    onUpdateRoad: function(index, data) {
-      //overwrite road with data from form
-      //Vue.set is required to ensure reactivity for this operation
-      Vue.set(this.formData.roads, index, data);
-    },
-
     onMoveMarker: function() {
       this.currentMarkerId = '';
     },
@@ -39,7 +33,7 @@ var app = new Vue( {
     },
 
     onResetForm: function() {
-      this.formData = blankData();
+      this.formData = blankSite();
       this.roadEditIndex = null;
     },
 
@@ -53,8 +47,28 @@ var app = new Vue( {
 
     onSendToForm: function(data) {
       this.formData = data;
-      this.roadEditIndex = null;
+      if (!this.formData.site_name) this.formData.site_name = "NAL";
       this.currentTab = 'form';
+    },
+
+    onUpdateForm: function(data) {
+      this.formData = data;
+    },
+
+    onUpdateRoad: function(index, data) {
+      //overwrite road with data from form
+      //Vue.set is required to ensure reactivity for this operation
+      Vue.set(this.formData.roads, index, data);
+      //assume new values invalidate dnl calculation
+      this.formData.combined_dnl = null;
+    },
+
+    onUpdateSite: function(data) {
+      for (var key in data) {
+        if (data.hasOwnProperty(key)) {
+          this.formData[key] = data[key];
+        }
+      }
     }
 
   }
@@ -67,7 +81,7 @@ function numberWithCommas(x) {
 function blankRoad() {
   var date = new Date();
   return {
-    name: "New Road",
+    name: "Road",
     counted_adt: null,
     counted_adt_year: null,
     adt: 1000,
@@ -85,13 +99,13 @@ function blankRoad() {
   }
 }
 
-function blankData() {
+function blankSite() {
   return {
+    site_name: 'NAL',
     combined_dnl: null,
     county: {name: ''},
     growth_rate: 0.015,
-    name: '',
-    position: {latitude: null, longitude: null},
+    position: {lat: null, lng: null},
     roads: [],
     rails: [],
     airports: []

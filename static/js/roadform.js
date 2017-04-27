@@ -1,180 +1,3 @@
-var RoadCard = {
-
-	template: `
-		<div class="card">
-
-      <header class="card-header">
-        <p class="card-header-title">
-          {{road.name}}
-        </p>
-        <a class="card-header-icon" >
-          <span class="tag is-medium" v-html="roadDnl"></span>
-        </a>
-        <a class="card-header-icon" v-on:click="editRoad()">
-          <span class="icon">
-            <i class="fa fa-pencil"></i>
-          </span>
-        </a>
-        <a class="card-header-icon">
-          <span class="icon" v-on:click="removeRoad()">
-            <i class="fa fa-trash"></i>
-          </span>
-        </a>
-      </header>
-
-      <div class="card-content">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Traffic</th>
-              <th style="text-align:center">ADT</th>
-              <th style="text-align:center">Percent of ADT</th>
-              <th style="text-align:center">Night Fraction</th>
-              <th style="text-align:center">Speed (mph)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Total</td>
-              <td class="has-text-centered">{{ totalAdt }}</td>
-              <td colspan="3"></td>
-            <tr>
-            <tr>
-              <td>Autos</td>
-              <td class="has-text-centered">{{ autosAdt }}</td>
-              <td class="has-text-centered">{{ autosPercent }}%</td>
-              <td class="has-text-centered">{{ autosNight }}%</td>
-              <td class="has-text-centered">{{ road.speed_autos }}</td>
-            </tr>
-            <tr>
-              <td>Medium Trucks</td>
-              <td class="has-text-centered">{{ mediumTrucksAdt }}</td>
-              <td class="has-text-centered">{{ mediumTrucksPercent }}%</td>
-              <td class="has-text-centered">{{ mediumTrucksNight }}%</td>
-              <td class="has-text-centered">{{ road.speed_autos }}</td>
-            </tr>
-            <tr>
-              <td>Heavy Trucks</td>
-              <td class="has-text-centered">{{ heavyTrucksAdt }}</td>
-              <td class="has-text-centered">{{ heavyTrucksPercent }}%</td>
-              <td class="has-text-centered">{{ heavyTrucksNight }}%</td>
-              <td class="has-text-centered">{{ road.speed_trucks }}</td>
-
-            </tr>
-          </tbody>
-        </table>
-
-        <table class="table">
-          <thead>
-            <tr>
-              <th style="text-align:center">Effective Distance (feet)</th>
-              <th style="text-align:center">Grade</th>
-              <th style="text-align:center">Distance to Stop Sign (feet)</th>
-              <th style="text-align:center">For Year</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="has-text-centered">{{ distance }}</td>
-              <td class="has-text-centered">{{ grade }}%</td>
-              <td class="has-text-centered">{{ stopSignDistance }}</td>
-              <td class="has-text-centered">{{ road.adt_year }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-	`,
-
-	computed: {
-		autosAdt: function() {
-			if (this.road.adt) {
-    		p = 1 - this.road.heavy_trucks - this.road.medium_trucks;
-      	p = Math.round(p * this.road.adt);
-      	return numberWithCommas(p);
-    	}
-    	return 0;
-    },
-
-    autosPercent: function() {
-      p = 1 - this.road.heavy_trucks - this.road.medium_trucks;
-      return (Math.round(p * 10000)/100).toFixed(2);
-    },
-
-    autosNight: function() {
-      return (this.road.night_fraction_autos * 100).toFixed(2);
-    },
-
-    distance: function() {
-      return roundToFive(this.road.distance);
-    },
-
-    grade: function() {
-      return (this.road.grade * 100).toFixed(2);
-    },
-
-    heavyTrucksAdt: function() {
-      if (this.road.adt) {
-        return numberWithCommas(Math.round(this.road.heavy_trucks * this.road.adt));
-      }
-      return 0;      
-    },
-
-    heavyTrucksNight: function() {
-      return (this.road.night_fraction_trucks * 100).toFixed(2);
-    },
-
-    heavyTrucksPercent: function() {
-      return (Math.round(this.road.heavy_trucks * 10000)/100).toFixed(2);
-    },
-
-    mediumTrucksAdt: function() {
-      if (this.road.adt) {
-        return numberWithCommas(Math.round(this.road.medium_trucks * this.road.adt));
-      }
-      return 0;  
-    },
-
-    mediumTrucksNight: function() {
-      return (this.road.night_fraction_autos * 100).toFixed(2);
-    },
-
-    mediumTrucksPercent: function() {
-      return (Math.round(this.road.medium_trucks * 10000)/100).toFixed(2);
-    },
-
-    roadDnl: function() {
-      if (this.road.dnl) {
-        return "<b>" + this.road.dnl.toString() + "</b> &nbsp; dB";
-      }
-      return "--"
-    },
-
-    stopSignDistance: function() {
-      return roundToFive(this.road.stop_sign_distance);
-    },
-
-    totalAdt: function() {
-      if (this.road.adt) return numberWithCommas(Math.round(this.road.adt));
-      return 0;
-    },
-	},
-
-	methods: {
-
-    editRoad: function(index) {
-      this.$emit('edit-road', index);
-    },
-
-    removeRoad: function() {
-      this.$emit('remove-road');
-    }
-	},
-
-	props: [ "index", "road" ]
-}
-
-
 var RoadForm = {
   template: `
 
@@ -182,7 +5,9 @@ var RoadForm = {
       <div class="card-header">
         <p class="card-header-title">Editing: {{ editValues.name }}</p>
       </div>
+
       <div class="card-content">
+      
         <div class="field is-horizontal">
           <div class="field-label is-normal">
             <label class="label">Name</label>
@@ -195,6 +20,7 @@ var RoadForm = {
             </div>
           </div>
         </div>
+
         <div class="field is-horizontal">
           <div class="field-label is-normal">
             <label class="label">Distance</label>
@@ -207,6 +33,7 @@ var RoadForm = {
             </div>
           </div>
         </div>
+
         <div class="field is-horizontal">
           <div class="field-label is-normal">
             <label class="label">Total ADT</label>
@@ -220,12 +47,61 @@ var RoadForm = {
           </div>
         </div>
 
+        <div class="field is-horizontal">
+          <div class="field-label is-normal">
+            <label class="label">Design Year</label>
+          </div>
+          <div class="field-body">
+            <div class="field is-grouped">
+              <div class="control is-expanded">
+                <input class="input" type="text" v-model="editValues.adt_year">
+              </div>
+              <div class="control">
+                <a class="button is-info" v-on:click="toggleProjection">Projection</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <template v-if="showProjection">
+
+        <div class="field is-horizontal">
+          <div class="field-label is-normal">
+            <label class="label">Counted ADT</label>
+          </div>
+          <div class="field-body">
+            <div class="field">
+              <div class="control">
+                <input class="input" type="text" v-model="editValues.counted_adt">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field is-horizontal">
+          <div class="field-label is-normal">
+            <label class="label">Traffic Count Year</label>
+          </div>
+          <div class="field-body">
+            <div class="field is-grouped">
+              <div class="control is-expanded">
+                <input class="input" type="text" v-model="editValues.counted_adt_year">
+              </div>
+              <div class="control">
+                <a class="button is-info" v-on:click="projectAdt">Calculate</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        </template>
+
         <table class="table">
           <thead>
             <tr>
               <th>Traffic</th>
               <th>ADT</th>
-              <th>Percent</th>
+              <th>Fraction</th>
               <th>Night</th>
               <th>Speed</th>
             </tr>
@@ -264,6 +140,7 @@ var RoadForm = {
               <div class="control">
                 <input class="input" type="text" v-model="editValues.stop_sign_distance">
               </div>
+              <p class="help">Use 0 if greater than 600 feet</p>
             </div>
           </div>
         </div>
@@ -277,6 +154,7 @@ var RoadForm = {
               <div class="control">
                 <input class="input" type="text" v-model="editValues.grade">
               </div>
+              <p class="help">2% default. Use 0 if less than 2%</p>
             </div>
           </div>
         </div>
@@ -292,6 +170,7 @@ var RoadForm = {
             </div>
           </div>
         </div>
+
       </div>
     </div>
 
@@ -339,6 +218,7 @@ var RoadForm = {
     cancelEdit: function() {
       this.editing = false;
     },
+
     onEditRoad: function() {
       //populate form with copy of road data and put form into edit mode
       this.editValues = JSON.parse(JSON.stringify(this.road));
@@ -346,21 +226,37 @@ var RoadForm = {
     },
 
     onRemoveRoad: function() {
+      //relay the remove-road event up
       this.$emit('remove-road', this.index);
     },
 
+    projectAdt: function() {
+      //use the growth rate and provided traffic count to project traffic for the design year
+      var numYears = this.editValues.adt_year - this.editValues.counted_adt_year;
+      var futureAdt = this.editValues.counted_adt * Math.exp(this.growthRate * numYears);
+      this.editValues.adt = Math.round(futureAdt);
+    },
+
     saveEdit: function() {
+      //invalidate road dnl calculation
+      this.editValues.dnl = null;
+      //send up new values to replace current values
       this.$emit('update-road', this.index, this.editValues);
       this.editing = false;
+    },
+
+    toggleProjection: function() {
+      this.showProjection = !this.showProjection;
     }
   },
 
-  props: [ 'index', 'road' ],
+  props: [ 'index', 'road', 'growth-rate' ],
 
   data: function() {
     return {
       editing: this.editing,
-      editValues: this.editValues
+      editValues: this.editValues,
+      showProjection: this.showProjection
     }
   },
 
@@ -370,5 +266,7 @@ var RoadForm = {
 
   editing: false,
 
-  editValues: {}
+  editValues: {},
+
+  showProjection: false
 }

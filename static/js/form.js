@@ -12,6 +12,7 @@ var FormTab = {
               :key="roadKey(index)"
               :index="index"
               :road="road"
+              :growth-rate="growthRate"
               @remove-road="onRemoveRoad"
               @update-road="onUpdateRoad"
               ></road-form>
@@ -58,24 +59,12 @@ var FormTab = {
 
           <div class="column">
             <div class="title">Summary</div>
-            <div class="card">
-              <header class="card-header">
-                <p class="card-header-title">
-                  Site
-                </p>
-                <a class="card-header-icon" >
-                  <span class="tag is-large is-primary" v-html="combinedDnl"></span>
-                </a>
-              </header>
-              <div class="card-content">
-                <p> {{formData}} </p>
-              </div>
-              <footer class="card-footer">
-                <a class="card-footer-item" v-on:click="resetForm">Reset</a>
-                <a class="card-footer-item">Generate Report</a>
-                <a class="card-footer-item is-primary" >Calculate</a>
-              </footer>
-            </div>
+
+            <site-form
+              :form-data="formData"
+              @reset-form="onResetForm"
+              @update-site="onUpdateSite"
+            ></site-form>
 
           </div>
 
@@ -89,11 +78,8 @@ var FormTab = {
     ],
 
   computed: {
-    combinedDnl: function() {
-    if (this.formData.combined_dnl) {
-        return "<b>" + this.formData.combined_dnl.toString() + "</b> &nbsp; dB";
-      }
-      return "--"
+    growthRate: function() {
+      return this.formData.growth_rate;
     }
   },
 
@@ -102,20 +88,46 @@ var FormTab = {
       this.$emit('add-road');
     },
 
+    onGetCalculation: function() {
+      fetch('/api/sites/',
+        {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          method: "POST",
+          body: JSON.stringify(this.formData)
+        })
+        .then(function(response) {
+          return response.json(); 
+        })
+        .then(function(json) {
+          this.$emit('update-form', json);
+        });
+    },
+
     onUpdateRoad: function(index, data) {
+      //relay update-road event and data
       this.$emit('update-road', index, data);
     },
 
+    onUpdateSite: function(data) {
+      this.$emit('update-site', data);
+    },
+
     onRemoveRoad: function(index) {
+      //relay remove-road event
       this.$emit('remove-road', index);
     },
 
-    roadKey: function(index) {
-      return "road-" + index.toString();
+    onResetForm: function() {
+      //relay reset-form event
+      this.$emit('reset-form');
     },
 
-    resetForm: function() {
-      this.$emit('reset-form');
+    roadKey: function(index) {
+      //create a key for use by Vue
+      return "road-" + index.toString();
     },
 
     submitRoadForm: function(event) {
@@ -125,10 +137,11 @@ var FormTab = {
   },
 
   mounted: function() {
-    this.resetForm();
+    this.onResetForm();
   },
 
   components: {
-    'road-form': RoadForm
+    'road-form': RoadForm,
+    'site-form': SiteForm
   }
 }
