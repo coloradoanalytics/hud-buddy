@@ -64,6 +64,7 @@ var FormTab = {
               :form-data="formData"
               @reset-form="onResetForm"
               @update-site="onUpdateSite"
+              @get-calculation="onGetCalculation"
             ></site-form>
 
           </div>
