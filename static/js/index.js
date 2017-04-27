@@ -65,15 +65,16 @@ function numberWithCommas(x) {
 }
 
 function blankRoad() {
+  var date = new Date();
   return {
     name: "New Road",
     counted_adt: null,
     counted_adt_year: null,
-    adt: null,
-    adt_year: null,
+    adt: 1000,
+    adt_year: date.getYear() + 1900 + 10,
     night_fraction_autos: 0.15,
     night_fraction_trucks: 0.15,
-    distance: null,
+    distance: 100,
     stop_sign_distance: 0,
     grade: 0.02,
     medium_trucks: 0.02,
