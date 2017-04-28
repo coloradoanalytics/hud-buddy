@@ -16,6 +16,13 @@ var app = new Vue( {
   },
 
   methods: {
+
+    onAddRail: function() {
+      //add a new blank rail to the form and invalidate combined dnl
+      this.formData.rails.push(blankRail());
+      this.formData.combined_dnl = null;
+    },
+
     onAddRoad: function() {
       //add a new blank road to the form and invalidate combined dnl
       this.formData.roads.push(blankRoad());
@@ -24,6 +31,12 @@ var app = new Vue( {
 
     onMoveMarker: function() {
       this.currentMarkerId = '';
+    },
+
+    onRemoveRail: function(index) {
+      //remove rail from form data and invalidate combined dnl
+      this.formData.rails.splice(index, 1);
+      this.formData.combined_dnl = null;
     },
 
     onRemoveRoad: function(index) {
@@ -53,6 +66,14 @@ var app = new Vue( {
 
     onUpdateForm: function(data) {
       this.formData = data;
+    },
+
+    onUpdateRail: function(index, data) {
+      //overwrite rail with data from form
+      //Vue.set is required to ensure reactivity for this operation
+      Vue.set(this.formData.rails, index, data);
+      //assume new values invalidate dnl calculation
+      this.formData.combined_dnl = null;
     },
 
     onUpdateRoad: function(index, data) {
@@ -95,6 +116,22 @@ function blankRoad() {
     heavy_trucks: 0.02,
     speed_autos: 55,
     speed_trucks: 55,
+    dnl: null
+  }
+}
+
+function blankRail() {
+  return {
+    name: "Rail",
+    distance: 1000,
+    speed: 45,
+    diesel: true,
+    engines_per_train: 2,
+    cars_per_train: 80,
+    ato: 8,
+    night_fraction: 0.15,
+    horns: false,
+    bolted_tracks: false,
     dnl: null
   }
 }

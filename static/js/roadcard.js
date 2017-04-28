@@ -82,6 +82,7 @@ var RoadCard = {
             </tr>
           </tbody>
         </table>
+        
       </div>
     </div>
 	`,
@@ -162,8 +163,8 @@ var RoadCard = {
 
 	methods: {
 
-    editRoad: function(index) {
-      this.$emit('edit-road', index);
+    editRoad: function() {
+      this.$emit('edit-road');
     },
 
     removeRoad: function() {

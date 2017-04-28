@@ -9,10 +9,10 @@ var FormTab = {
             <div class="title">Roads</div>
 
             <road-form v-for="(road, index) in formData.roads"
-              :key="roadKey(index)"
-              :index="index"
-              :road="road"
-              :growth-rate="growthRate"
+              v-bind:key="roadKey(index)"
+              v-bind:index="index"
+              v-bind:road="road"
+              v-bind:growth-rate="growthRate"
               @remove-road="onRemoveRoad"
               @update-road="onUpdateRoad"
               ></road-form>
@@ -27,30 +27,20 @@ var FormTab = {
             </div>
 
             <div class="title">Rail</div>
-            <div class="card">
-              <header class="card-header">
-                <p class="card-header-title">
-                  Name
-                </p>
-              </header>
-              <div class="card-content">
-                Electric or Diesel
-                Distance
-                Speed
-                Engines per Train
-                Cars per Train
-                Average Daily Operations
-                Night Fraction
-                Horns
-                Bolted/Welded Tracks
-              </div>
-            </div> 
+
+            <rail-form v-for="(rail, index) in formData.rails"
+              v-bind:key="railKey(index)"
+              v-bind:index="index"
+              v-bind:rail="rail"
+              @remove-rail="onRemoveRail"
+              @update-rail="onUpdateRail"
+            ></rail-form>
 
             <div class="level">
               <div class="level-left"></div>
               <div class="level-right">
                 <p class="level-item">
-                  <a class="button is-primary">Add Rail</a>
+                  <a class="button is-primary" v-on:click="addRail">Add Rail</a>
                 </p>
               </div>
             </div>
@@ -85,11 +75,17 @@ var FormTab = {
   },
 
   methods: {
+    
+    addRail: function() {
+      this.$emit('add-rail')
+    },
+
     addRoad: function() {
       this.$emit('add-road');
     },
 
     onGetCalculation: function() {
+      var self = this;
       fetch('/api/sites/',
         {
           headers: {
@@ -97,14 +93,19 @@ var FormTab = {
             'Content-Type': 'application/json'
           },
           method: "POST",
-          body: JSON.stringify(this.formData)
+          body: JSON.stringify(self.formData)
         })
         .then(function(response) {
           return response.json(); 
         })
         .then(function(json) {
-          this.$emit('update-form', json);
+          self.$emit('update-form', json);
         });
+    },
+
+    onUpdateRail: function(index, data) {
+      //relay update-rail event and data
+      this.$emit('update-rail', index, data);
     },
 
     onUpdateRoad: function(index, data) {
@@ -114,6 +115,11 @@ var FormTab = {
 
     onUpdateSite: function(data) {
       this.$emit('update-site', data);
+    },
+
+    onRemoveRail: function(index) {
+      //relay remove-rail event
+      this.$emit('remove-rail', index);
     },
 
     onRemoveRoad: function(index) {
@@ -126,13 +132,14 @@ var FormTab = {
       this.$emit('reset-form');
     },
 
+    railKey: function(index) {
+      //create a key for use by Vue
+      return "rail-" + index.toString();
+    },
+
     roadKey: function(index) {
       //create a key for use by Vue
       return "road-" + index.toString();
-    },
-
-    submitRoadForm: function(event) {
-      event.preventDefault();
     }
 
   },
@@ -142,6 +149,7 @@ var FormTab = {
   },
 
   components: {
+    'rail-form': RailForm,
     'road-form': RoadForm,
     'site-form': SiteForm
   }

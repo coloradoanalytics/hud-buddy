@@ -37,8 +37,11 @@
         v-bind:form-data="formData"
         v-bind:road-edit-index="roadEditIndex"
         @reset-form="onResetForm"
+        @add-rail="onAddRail"
         @add-road="onAddRoad"
+        @remove-rail="onRemoveRail"
         @remove-road="onRemoveRoad"
+        @update-rail="onUpdateRail"
         @update-road="onUpdateRoad"
         @update-form="onUpdateForm"
         @update-site="onUpdateSite"
@@ -60,6 +63,8 @@
     <script type="text/javascript" src="static/js/navbar.js"></script>
     <script type="text/javascript" src="static/js/roadcard.js"></script>
     <script type="text/javascript" src="static/js/roadform.js"></script>
+    <script type="text/javascript" src="static/js/railcard.js"></script>
+    <script type="text/javascript" src="static/js/railform.js"></script>
     <script type="text/javascript" src="static/js/sitecard.js"></script>
     <script type="text/javascript" src="static/js/siteform.js"></script>
     <script type="text/javascript" src="static/js/map.js"></script>

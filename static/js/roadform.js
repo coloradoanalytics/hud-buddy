@@ -177,8 +177,8 @@ var RoadForm = {
 
     <road-card 
       v-else
-      :index="index"
-      :road="road"
+      v-bind:index="index"
+      v-bind:road="road"
       @remove-road="onRemoveRoad"
       @edit-road="onEditRoad"
     ></road-card>
