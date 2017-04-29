@@ -24,7 +24,3 @@ class DistanceTestCase(CustomTestCase):
         distance = road.get_distance(comp)
 
         self.assertAlmostEqual(distance, expected, 2)
-
-
-if __name__ == '__main__':
-    unittest.main()

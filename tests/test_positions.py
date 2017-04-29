@@ -18,7 +18,3 @@ class DistanceFromTestCase(CustomTestCase):
 
         distance = p1.distance_from(p2)
         self.assertAlmostEqual(distance, expected, 1)
-
-
-if __name__ == '__main__':
-    unittest.main()
