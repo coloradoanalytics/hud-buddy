@@ -100,7 +100,7 @@ class SiteSchema(Schema):
     position = fields.Nested(PositionSchema)
     roads = fields.Nested(RoadSchema, many=True)
     county = fields.Nested(CountySchema)
-    name = fields.Str()
+    name = fields.Str(allow_none=True)
     growth_rate = fields.Float()
     combined_dnl = fields.Float(dump_only=True)
 
