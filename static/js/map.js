@@ -38,6 +38,20 @@ var MapRoadDisplay = {
   props: [ 'road' ]
 }
 
+var MapRailDisplay = {
+  template: `
+  <article class="media">
+    <div class="media-content">
+      <div class="content">
+        <strong>{{ rail.name }}</strong>
+      </div>
+    </div>
+  </article>
+  `,
+
+  props: [ 'rail' ]
+}
+
 //main component for map tab
 
 var MapTab = {
@@ -87,6 +101,17 @@ var MapTab = {
               </header>
               <div class="card-content">
                 <map-road-display v-for="road in currentMarker.data.roads" v-bind:road="road" :key="road.street_name"></map-road-display>
+              </div>
+            </div>
+
+            <div class="card">
+              <header class="card-header">
+                <p class="card-header-title">
+                  Railroads
+                </p>
+              </header>
+              <div class="card-content">
+                <map-rail-display v-for="rail in currentMarker.data.rails" v-bind:rail="rail" :key="rail.railroad"></map-rail-display>
               </div>
             </div>
           </template>
@@ -279,6 +304,7 @@ var MapTab = {
   props: [ 'current-marker-id' ],
 
   components: {
-    'map-road-display': MapRoadDisplay
+    'map-road-display': MapRoadDisplay,
+    'map-rail-display': MapRailDisplay
   }
 };

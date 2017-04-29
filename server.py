@@ -4,7 +4,7 @@ import requests
 
 import data
 import DNL
-from clients import HighwaysClient
+from clients import HighwaysClient, RailroadsClient
 from locations import Position
 from sites import Site, SiteSchema
 
@@ -37,12 +37,18 @@ def sites():
         lng = float(request.args.get('lng'))
         position = Position(lat, lng)
 
-        distance = request.args.get('distance', 609.6)
+        #regulation is to consider roads within 1000', but consider 2000' in case of very busy highways
+        road_distance = request.args.get('road_distance', 609.6)
 
-        c = HighwaysClient()
-        roads = c.get_segments(position, distance)
+        road_client = HighwaysClient()
+        roads = road_client.get_segments(position, road_distance)
 
-        site = Site(position=position, roads=roads)
+        rail_distance = request.args.get('rail_distance', 1828.8)
+
+        rail_client = RailroadsClient()
+        rails = rail_client.get_segments(position, rail_distance)
+
+        site = Site(position=position, roads=roads, rails=rails)
         site.process()
 
     elif request.method == 'POST':
