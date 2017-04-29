@@ -71,6 +71,11 @@ class Road:
         return math.pow(float(self.speed_autos), float(2.025)) * float(.0003)
 
     def get_distance(self, position):
+        """
+        Compares each of this roads positions
+        to the given position, and returns
+        the shortest distance.
+        """
         closest = None
         for p in self.positions:
             d = p.distance_from(position)
