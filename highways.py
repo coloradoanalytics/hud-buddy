@@ -9,7 +9,154 @@ from locations import Position, PositionSchema, \
     PositionSchemaFromCIM, CountySchema
 
 
+class VehicleType:
+    """
+    Base class for storing information about the
+    average daily traffic of a given type of vehicle.
+
+    Args:
+        adt (decimal): The total expected future daily traffic count
+        speed (int): The average speed, in mph
+        night_fraction (decimal): The percentage of traffic that occurs
+                                  at night, as a decimal
+        distance (decimal): The distance in feet to the site being analyzed
+        stop_sign_distance (decimal): The distance in feet to the stop sign
+        grade (decimal): The incline of the road, as a decimal
+    """
+
+    def __init__(self, *args, **kwargs):
+        # specific to this VehicleType
+        self.adt = kwargs.get('adt', 0)
+        self.speed = kwargs.get('speed', 50)
+        self.night_fraction = kwargs.get('night_fraction', .10)
+        self.day_fraction = 1 - self.night_fraction
+
+        # shared across the whole Site object
+        self.distance = kwargs.get('distance', None)
+        self.stop_sign_distance = kwargs.get('stop_sign_distance', None)
+
+        self.grade = kwargs.get('grade', 0)
+        self.num_gaf = math.pow(self.grade, .5)
+
+    def get_eadt(self):
+        if not self.stop_sign_distance:
+            return self.adt
+        return self.adt * (.1 + (.9 * (self.stop_sign_distance) / 600))
+
+    def get_dnl_sub(self):
+        eadt = self.get_eadt()
+        return eadt * (self.day_fraction + (10 * self.night_fraction))
+
+    def get_ae_result(self):
+        log_1 = numpy.log10(self.speed)
+        log_2 = numpy.log10(self.distance)
+        return 64.6 + 20 * log_1 - 15 * log_2
+
+    def get_log_dnl_sub(self):
+        dnl_sub = self.get_dnl_sub()
+        return numpy.log10(dnl_sub)
+
+    def get_dnl_result(self):
+        ae_result = self.get_ae_result()
+        log_dnl_sub = self.get_log_dnl_sub()
+        return ae_result + 10 * log_dnl_sub - 49.4
+
+    @property
+    def dnl(self):
+        return self.get_dnl_result()
+
+
+class Auto(VehicleType):
+    pass
+
+
+class VehicleSchema(Schema):
+    adt = fields.Number()
+    speed = fields.Number()
+    night_fraction = fields.Float()
+    distance = fields.Number()
+    stop_sign_distance = fields.Number(allow_none=True)
+    grade = fields.Number(allow_none=True)
+    dnl = fields.Float(dump_only=True)
+
+
+class AutoSchema(VehicleSchema):
+
+    @post_load
+    def make_auto(self, data):
+        return Auto(**data)
+
+
+class MediumTruck(VehicleType):
+
+    def get_eadt(self):
+        if not self.stop_sign_distance:
+            return self.adt
+        return 10 * self.adt * (0.1 + (0.9 * self.stop_sign_distance / 600))
+
+
+class MediumTruckSchema(VehicleSchema):
+
+    @post_load
+    def make_medium_truck(self, data):
+        return MediumTruck(**data)
+
+
+class HeavyTruck(VehicleType):
+
+    def get_eadt(self):
+        if not self.stop_sign_distance:
+            return self.adt
+        else:
+            if self.adt <= 1200:
+                factor = 1.8
+            elif self.adt > 1200 and self.adt <= 2400:
+                factor = 2.0
+            elif self.adt > 2400 and self.adt <= 4800:
+                factor = 2.3
+            elif self.adt > 4800 and self.adt <= 9600:
+                factor = 2.8
+            elif self.adt > 9600 and self.adt <= 19200:
+                factor = 3.8
+            else:
+                factor = 4.5
+            return self.adt * factor
+
+    def get_ae_result(self):
+        log_1 = numpy.log10(self.speed)
+        log_2 = numpy.log10(self.distance)
+        if self.speed <= 50:
+            ae_result = 114.5 - 15 * log_2
+        else:
+            ae_result = 80.5 + 20 * log_1 - 15 * log_2
+        return ae_result
+
+    def get_dnl_result(self):
+        ae_result = self.get_ae_result()
+        log_dnl_sub = self.get_log_dnl_sub()
+        if self.grade > 0:
+            dnl_result = (ae_result + 10 * log_dnl_sub - 49.4 + self.num_gaf)
+        else:
+            dnl_result = (ae_result + 10 * log_dnl_sub - 49.4)
+        return dnl_result
+
+
+class HeavyTruckSchema(VehicleSchema):
+
+    @post_load
+    def make_heavy_truck(self, data):
+        return HeavyTruck(**data)
+
+
 class Road:
+    """
+    Args:
+        name (str)
+        positions (:obj: `list` of :obj: Position)
+        distance (float)
+        county_name (str)
+        stop_sign_distance (float)
+    """
 
     def __init__(self, *args, **kwargs):
         self.name = kwargs.get('name', None)
@@ -24,51 +171,12 @@ class Road:
         self.adt = kwargs.get('adt', None)
         self.adt_year = kwargs.get('adt_year', 2027)
 
-        self.night_fraction_autos = kwargs.get('night_fraction_autos', 0.15)
-        self.night_fraction_trucks = kwargs.get('night_fraction_trucks', 0.15)
-        self.grade = kwargs.get('grade', 0.02)
-        self.medium_trucks = kwargs.get('medium_trucks', 0.02)
-        self.heavy_trucks = kwargs.get('heavy_trucks', 0.025)
-        self.speed_autos = kwargs.get('speed_autos', 55)
-        self.speed_trucks = kwargs.get('speed_trucks', self.speed_autos - 5)
+        # VehicleType objects
+        self.auto = kwargs.get('auto', None)
+        self.medium_truck = kwargs.get('medium_truck', None)
+        self.heavy_truck = kwargs.get('heavy_truck', None)
 
-        self.auto_saf = self.get_auto_saf()
-        self.heavy_truck_saf = self.get_heavy_truck_saf()
-        self.night_time_adj = self.get_night_time_adj()
         self.dnl = kwargs.get('dnl', None)
-
-    def dnl_calc(self, effective_adt, type):
-        type_offset = (54, 70)
-        return math.ceil(
-            4.34 * numpy.log(effective_adt) - 6.58 *
-            numpy.log(self.distance) + type_offset[type]
-        )
-
-    @property
-    def auto_dnl(self):
-        return self.dnl_calc(self.effective_auto_adt, 0)
-
-    @property
-    def truck_dnl(self):
-        return self.dnl_calc(self.effective_heavy_truck_adt, 1)
-
-    def get_night_time_adj(self):
-        return float(3.813) * self.night_fraction_autos + float(.425)
-
-    def get_heavy_truck_saf(self):
-        """
-        Heavy truck speed adjustment factor
-        """
-        if self.speed_trucks < 50:
-            return float(.81)
-        else:
-            return float(.0376) * self.speed_trucks - float(1.072)
-
-    def get_auto_saf(self):
-        """
-        Auto speed adjustment factor
-        """
-        return math.pow(float(self.speed_autos), float(2.025)) * float(.0003)
 
     def get_distance(self, position):
         """
@@ -87,50 +195,36 @@ class Road:
         num_years = self.adt_year - self.counted_adt_year
         return self.counted_adt * (numpy.exp(self.growth_rate * num_years))
 
-    def get_medium_truck_count(self):
-        return self.adt * float(self.medium_trucks)
-
-    def get_heavy_truck_count(self):
-        return self.adt * float(self.heavy_trucks)
-
-    @property
-    def auto_count(self):
-        return self.adt - self.get_heavy_truck_count() - self.get_medium_truck_count()
-
-    @property
-    def effective_auto_adt(self):
-        return (self.auto_count + 10 * self.get_medium_truck_count() * self.auto_saf * self.night_time_adj)
-
-    @property
-    def effective_heavy_truck_adt(self):
-        return (self.get_heavy_truck_count() *
-                self.heavy_truck_saf *
-                self.night_time_adj)
-
     def get_dnl(self):
-        dnl = dnl_sum([self.auto_dnl, self.truck_dnl])
-        return dnl
+        return dnl_sum(
+            [self.auto.dnl, self.medium_truck.dnl, self.heavy_truck.dnl])
 
 
 class RoadSchema(Schema):
     name = fields.Str()
+    distance = fields.Number()
     counted_adt = fields.Number()
     counted_adt_year = fields.Number()
     adt = fields.Number()
     adt_year = fields.Number()
-    night_fraction_autos = fields.Float()
-    night_fraction_trucks = fields.Float()
-    distance = fields.Number()
     stop_sign_distance = fields.Number()
     grade = fields.Float()
-    medium_trucks = fields.Float()
-    heavy_trucks = fields.Float()
-    speed_autos = fields.Number()
-    speed_trucks = fields.Float()
+
+    auto = fields.Nested(AutoSchema)
+    medium_truck = fields.Nested(MediumTruckSchema)
+    heavy_truck = fields.Nested(HeavyTruckSchema)
+
     dnl = fields.Float(dump_only=True)
 
     @post_load
     def make_road(self, data):
+        keys = ['auto', 'medium_truck', 'heavy_truck']
+        for k in keys:
+            obj = data.get(k)
+            if obj:
+                obj.stop_sign_distance = data.get('stop_sign_distance')
+                obj.distance = data.get('distance')
+                obj.grade = data.get('grade')
         return Road(**data)
 
 
