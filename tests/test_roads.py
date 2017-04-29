@@ -1,10 +1,10 @@
-import unittest
+from tests.common import CustomTestCase
 
 from locations import Position
 from highways import Road
 
 
-class DistanceTestCase(unittest.TestCase):
+class DistanceTestCase(CustomTestCase):
 
     def test_get_closest(self):
         """

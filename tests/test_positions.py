@@ -1,9 +1,9 @@
-import unittest
+from tests.common import CustomTestCase
 
 from locations import Position
 
 
-class DistanceFromTestCase(unittest.TestCase):
+class DistanceFromTestCase(CustomTestCase):
 
     def test_distance_from(self):
         """
