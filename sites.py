@@ -4,6 +4,7 @@ import data
 import DNL
 from locations import PositionSchema, CountySchema
 from highways import RoadSchema, RoadSchemaFromCIM
+from railroads import RailSchema, RailroadSchemaFromCIM
 
 
 class Site:
@@ -86,6 +87,8 @@ class Site:
     def set_distances(self):
         for road in self.roads:
             road.distance = road.get_distance(self.position)
+        for rail in self.rails:
+            rail.distance = rail.get_distance(self.position)
 
     def set_adts(self):
         for road in self.roads:
@@ -99,6 +102,7 @@ class Site:
 class SiteSchema(Schema):
     position = fields.Nested(PositionSchema)
     roads = fields.Nested(RoadSchema, many=True)
+    rails = fields.Nested(RailSchema, many=True)
     county = fields.Nested(CountySchema)
     name = fields.Str(allow_none=True)
     growth_rate = fields.Float()

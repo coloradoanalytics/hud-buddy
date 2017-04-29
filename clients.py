@@ -1,5 +1,6 @@
 import requests
 from highways import RoadSchemaFromCIM
+from railroads import RailroadSchemaFromCIM
 from locations import CountyPopulationByAgeSchema, CountyPopulationByAgeGroup
 
 
@@ -49,3 +50,15 @@ class PopulationsClient(CIMClient):
         payload = {"county": self.county_name, "year": self.year}
         data = self.get(payload)
         self.populations = CountyPopulationByAgeGroup(populations=data)
+
+
+class RailroadsClient(CIMClient):
+
+    resource_id = '2tib-gtif'
+    schema_class = RailroadSchemaFromCIM
+    many = True
+
+    def get_segments(self, position, distance):
+        payload = {"$where": "within_circle(the_geom, {}, {}, {})".format(
+            position.lat, position.lng, distance)}
+        return self.get(payload)
