@@ -87,12 +87,14 @@ class Site:
     def set_distances(self):
         for road in self.roads:
             road.distance = road.get_distance(self.position)
+            road.set_distances()
         for rail in self.rails:
             rail.distance = rail.get_distance(self.position)
 
     def set_adts(self):
         for road in self.roads:
             road.adt = road.get_adt()
+            road.set_adts()
 
     def set_dnls(self):
         for road in self.roads:

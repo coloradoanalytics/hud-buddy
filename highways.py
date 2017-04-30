@@ -73,7 +73,7 @@ class Auto(VehicleType):
 class VehicleSchema(Schema):
     adt = fields.Number()
     speed = fields.Number()
-    night_fraction = fields.Float()
+    night_fraction = fields.Float(default=.15)
     distance = fields.Number()
     stop_sign_distance = fields.Number(allow_none=True)
     grade = fields.Number(allow_none=True)
@@ -165,6 +165,7 @@ class Road:
         self.distance = kwargs.get('distance', None)
         self.county_name = kwargs.get('county_name', None)
         self.stop_sign_distance = kwargs.get('stop_sign_distance', 0)
+        self.grade = kwargs.get('grade', 0)
 
         self.counted_adt = kwargs.get('counted_adt', None)
         self.counted_adt_year = kwargs.get('counted_adt_year', None)
@@ -172,11 +173,28 @@ class Road:
         self.adt_year = kwargs.get('adt_year', 2027)
 
         # VehicleType objects
-        self.auto = kwargs.get('auto', None)
-        self.medium_truck = kwargs.get('medium_truck', None)
-        self.heavy_truck = kwargs.get('heavy_truck', None)
+        self.auto = kwargs.get('auto', Auto())
+        self.medium_truck = kwargs.get('medium_truck', MediumTruck())
+        self.heavy_truck = kwargs.get('heavy_truck', HeavyTruck())
 
         self.dnl = kwargs.get('dnl', None)
+
+    def set_distances(self):
+        keys = ['auto', 'medium_truck', 'heavy_truck']
+        for k in keys:
+            obj = getattr(self, k)
+            if obj:
+                obj.stop_sign_distance = self.stop_sign_distance
+                obj.distance = self.distance
+                obj.grade = self.grade
+
+    def set_adts(self):
+        if not self.medium_truck.adt:
+            self.medium_truck.adt = self.adt * .02
+        if not self.heavy_truck.adt:
+            self.heavy_truck.adt = self.adt * .025
+        if not self.auto.adt:
+            self.auto.adt = self.adt - self.medium_truck.adt - self.heavy_truck.adt
 
     def get_distance(self, position):
         """
@@ -218,14 +236,9 @@ class RoadSchema(Schema):
 
     @post_load
     def make_road(self, data):
-        keys = ['auto', 'medium_truck', 'heavy_truck']
-        for k in keys:
-            obj = data.get(k)
-            if obj:
-                obj.stop_sign_distance = data.get('stop_sign_distance')
-                obj.distance = data.get('distance')
-                obj.grade = data.get('grade')
-        return Road(**data)
+        road = Road(**data)
+        road.set_distances()
+        return road
 
 
 class RoadSchemaFromCIM(Schema):
@@ -239,6 +252,10 @@ class RoadSchemaFromCIM(Schema):
     county_name = fields.Str()
     speed_autos = fields.Float(load_from='speedlim')
 
+    auto = fields.Nested(AutoSchema)
+    medium_truck = fields.Nested(MediumTruckSchema)
+    heavy_truck = fields.Nested(HeavyTruckSchema)
+
     @pre_load
     def move_coordinates(self, data):
         """
@@ -248,12 +265,6 @@ class RoadSchemaFromCIM(Schema):
         """
         the_geom = data.pop('the_geom')
         data['positions'] = the_geom['coordinates']
-        return data
-
-    @pre_load
-    def get_heavy_trucks(self, data):
-        data['heavy_trucks'] = (
-            float(data['aadtcomb']) / float(data['aadt']))
         return data
 
     @pre_load
