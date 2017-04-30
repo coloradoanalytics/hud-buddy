@@ -37,7 +37,8 @@ def sites():
         lng = float(request.args.get('lng'))
         position = Position(lat, lng)
 
-        #regulation is to consider roads within 1000', but consider 2000' in case of very busy highways
+        # regulation is to consider roads within 1000', but consider 2000' in
+        # case of very busy highways
         road_distance = request.args.get('road_distance', 609.6)
 
         road_client = HighwaysClient()

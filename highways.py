@@ -72,11 +72,11 @@ class Auto(VehicleType):
 
 class VehicleSchema(Schema):
     adt = fields.Number()
-    speed = fields.Number()
+    speed = fields.Number(load_only=True)
     night_fraction = fields.Float(default=.15)
-    distance = fields.Number()
-    stop_sign_distance = fields.Number(allow_none=True)
-    grade = fields.Number(allow_none=True)
+    distance = fields.Number(load_only=True)
+    stop_sign_distance = fields.Number(allow_none=True, load_only=True)
+    grade = fields.Number(allow_none=True, load_only=True)
     dnl = fields.Float(dump_only=True)
 
 
@@ -168,11 +168,17 @@ class Road:
         self.grade = kwargs.get('grade', 0)
 
         self.counted_adt = kwargs.get('counted_adt', None)
+        self.counted_adt_trucks = kwargs.get('counted_adt_trucks', None)
         self.counted_adt_year = kwargs.get('counted_adt_year', None)
         self.adt = kwargs.get('adt', None)
         self.adt_year = kwargs.get('adt_year', 2027)
 
         # VehicleType objects
+        if self.counted_adt_trucks and self.counted_adt:
+            self.truck_percentage = (
+                self.counted_adt_trucks / self.counted_adt)
+        else:
+            self.truck_percentage = .025
         self.auto = kwargs.get('auto', Auto())
         self.medium_truck = kwargs.get('medium_truck', MediumTruck())
         self.heavy_truck = kwargs.get('heavy_truck', HeavyTruck())
@@ -192,7 +198,7 @@ class Road:
         if not self.medium_truck.adt:
             self.medium_truck.adt = self.adt * .02
         if not self.heavy_truck.adt:
-            self.heavy_truck.adt = self.adt * .025
+            self.heavy_truck.adt = self.adt * self.truck_percentage
         if not self.auto.adt:
             self.auto.adt = self.adt - self.medium_truck.adt - self.heavy_truck.adt
 
@@ -246,8 +252,7 @@ class RoadSchemaFromCIM(Schema):
     positions = fields.Nested(PositionSchemaFromCIM, many=True)
 
     counted_adt = fields.Float(load_from='aadt')
-    measured_aadt_comb = fields.Float(load_from='aadtcomb')
-    heavy_trucks = fields.Float(load_from='heavy_trucks')
+    counted_adt_trucks = fields.Float(load_from='aadtcomb')
     counted_adt_year = fields.Number(load_from='aadtyr')
     county_name = fields.Str()
     speed_autos = fields.Float(load_from='speedlim')
