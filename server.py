@@ -51,8 +51,6 @@ def sites():
 
     elif request.method == 'POST':
         site = SiteSchema().load(request.get_json()).data
-        for r in site.roads:
-            r.set_distances()
 
     site.process()
     response = SiteSchema().dump(site).data

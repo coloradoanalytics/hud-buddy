@@ -43,13 +43,6 @@ class Site:
             return DNL.dnl_sum([road.dnl for road in self.roads])
         return None
 
-    def set_distances(self):
-        for road in self.roads:
-            road.distance = road.get_distance(self.position)
-            road.set_distances()
-        for rail in self.rails:
-            rail.distance = rail.get_distance(self.position)
-
     def set_adts(self):
         for road in self.roads:
             road.adt = road.get_adt()
@@ -71,4 +64,7 @@ class SiteSchema(Schema):
 
     @post_load
     def make_site(self, data):
-        return Site(**data)
+        site = Site(**data)
+        for r in site.roads:
+            r.set_distances()
+        return site
