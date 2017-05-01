@@ -32,6 +32,7 @@ class HighwaysClient(CIMClient):
     schema_class = RoadSchemaFromCIM
     many = True
     roads = []
+    position = None
 
     def _get_county(self):
         """
@@ -75,7 +76,7 @@ class HighwaysClient(CIMClient):
         new_roads = []
         for name in names:
             roads = [r for r in self.roads if r.name == name]
-            closest = min(roads, key=lambda x: x.distance)
+            closest = min(roads, key=lambda x: x.get_distance(self.position))
             new_roads.append(closest)
         self.roads = new_roads
 
@@ -91,6 +92,8 @@ class HighwaysClient(CIMClient):
     def get_segments(self, position, distance):
         payload = {"$where": "within_circle(the_geom, {}, {}, {})".format(
             position.lat, position.lng, distance)}
+
+        self.position = position
 
         self.roads = self.get(payload)
 
