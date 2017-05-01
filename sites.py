@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields, pre_load, post_load
 
-import DNL
+from utils import dnl_sum
 from locations import PositionSchema, CountySchema
 from highways import RoadSchema, RoadSchemaFromCIM
 from railroads import RailSchema, RailroadSchemaFromCIM
@@ -38,7 +38,7 @@ class Site:
 
     def get_combined_dnl(self):
         if self.roads:
-            return DNL.dnl_sum([road.dnl for road in self.roads])
+            return dnl_sum([road.dnl for road in self.roads])
         return None
 
     def set_adts(self):

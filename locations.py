@@ -1,6 +1,5 @@
 from marshmallow import Schema, fields, pre_load, post_load
-from utils import haversine
-from DNL import growth_rate
+from utils import haversine, growth_rate
 
 
 class Position:
