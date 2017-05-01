@@ -29,7 +29,7 @@ class VehicleType:
         self.adt = kwargs.get('adt', None)
         self.adt_fraction = kwargs.get('adt_fraction', None)
         self.speed = kwargs.get('speed', None)
-        self.night_fraction = kwargs.get('night_fraction', .10)
+        self.night_fraction = kwargs.get('night_fraction', .15)
         self.day_fraction = 1 - self.night_fraction
 
         # shared across the whole Site object
@@ -83,7 +83,6 @@ class VehicleSchema(Schema):
     night_fraction = fields.Float(default=.15)
 
     # always calculated, output only
-    adt = fields.Number(dump_only=True)
     dnl = fields.Float(dump_only=True)
 
 
