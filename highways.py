@@ -1,10 +1,8 @@
 import math
-import numpy
 
 from marshmallow import Schema, fields, pre_load, post_load
 
-from DNL import dnl_sum
-
+from utils import dnl_sum
 from locations import Position, PositionSchema, \
     PositionSchemaFromCIM, CountySchema
 
@@ -49,13 +47,13 @@ class VehicleType:
         return eadt * (self.day_fraction + (10 * self.night_fraction))
 
     def get_ae_result(self):
-        log_1 = numpy.log10(self.speed)
-        log_2 = numpy.log10(self.distance)
+        log_1 = math.log10(self.speed)
+        log_2 = math.log10(self.distance)
         return 64.6 + 20 * log_1 - 15 * log_2
 
     def get_log_dnl_sub(self):
         dnl_sub = self.get_dnl_sub()
-        return numpy.log10(dnl_sub)
+        return math.log10(dnl_sub)
 
     def get_dnl_result(self):
         ae_result = self.get_ae_result()
@@ -129,8 +127,8 @@ class HeavyTruck(VehicleType):
             return self.adt * factor
 
     def get_ae_result(self):
-        log_1 = numpy.log10(self.speed)
-        log_2 = numpy.log10(self.distance)
+        log_1 = math.log10(self.speed)
+        log_2 = math.log10(self.distance)
         if self.speed <= 50:
             ae_result = 114.5 - 15 * log_2
         else:
@@ -222,7 +220,7 @@ class Road:
         if self.adt:
             return self.adt
         num_years = self.adt_year - self.counted_adt_year
-        return self.counted_adt * (numpy.exp(self.growth_rate * num_years))
+        return self.counted_adt * (math.exp(self.growth_rate * num_years))
 
     def get_dnl(self):
         """
@@ -292,12 +290,15 @@ class RoadSchemaFromCIM(Schema):
     @post_load
     def make_road(self, data):
         """
-        Creates the Road object from the
-        API data.
+        Creates the Road object from the API data.
         """
-        heavy_truck_fraction = data[
-            'counted_adt_heavy_trucks'] / data['counted_adt']
+        heavy_truck_fraction = (data['counted_adt_heavy_trucks'] /
+                                data['counted_adt'])
+
+        # The API does not provide a medium truck count,
+        # so we make a reasonable assumption
         medium_truck_fraction = .02
+
         auto_fraction = 1 - medium_truck_fraction - heavy_truck_fraction
 
         data['auto'] = Auto(
