@@ -2,8 +2,6 @@ from flask import Flask, request, json, current_app
 
 import requests
 
-import data
-import DNL
 from clients import HighwaysClient, RailroadsClient
 from locations import Position
 from sites import Site, SiteSchema
@@ -37,11 +35,12 @@ def sites():
         lng = float(request.args.get('lng'))
         position = Position(lat, lng)
 
-        #regulation is to consider roads within 1000', but consider 2000' in case of very busy highways
+        # regulation is to consider roads within 1000', but consider 2000' in
+        # case of very busy highways
         road_distance = request.args.get('road_distance', 609.6)
 
         road_client = HighwaysClient()
-        roads = road_client.get_segments(position, road_distance)
+        roads = road_client.get_unique_segments(position, road_distance)
 
         rail_distance = request.args.get('rail_distance', 1828.8)
 
@@ -49,14 +48,11 @@ def sites():
         rails = rail_client.get_segments(position, rail_distance)
 
         site = Site(position=position, roads=roads, rails=rails)
-        site.process()
 
     elif request.method == 'POST':
         site = SiteSchema().load(request.get_json()).data
-        site.set_growth_rates()
-        site.set_adts()
-        site.set_dnls()
-        site.combined_dnl = site.get_combined_dnl()
+
+    site.process()
     response = SiteSchema().dump(site).data
     return json.jsonify(response)
 
