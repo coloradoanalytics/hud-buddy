@@ -101,3 +101,39 @@ class HeavyTruckDNLTestCase(CustomTestCase):
             grade=2
         )
         self.assertAlmostEqual(heavy_truck.dnl, 59.3, 1)
+
+
+class CombinedDNLTestCase(CustomTestCase):
+
+    def setUp(self):
+        auto = Auto(
+            distance=100,
+            stop_sign_distance=None,
+            speed=50,
+            adt=150000,
+            night_fraction=.05
+        )
+        medium_truck = MediumTruck(
+            distance=100,
+            stop_sign_distance=None,
+            speed=45,
+            adt=100,
+            night_fraction=.05
+        )
+        heavy_truck = HeavyTruck(
+            distance=100,
+            speed=75,
+            adt=5600,
+            night_fraction=.25,
+            grade=0
+        )
+
+        self.road = Road(
+            auto=auto,
+            medium_truck=medium_truck,
+            heavy_truck=heavy_truck
+        )
+
+    def test_combined_dnl(self):
+        dnl = self.road.get_dnl()
+        self.assertAlmostEqual(dnl, 82, 1)
