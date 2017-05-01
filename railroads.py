@@ -2,6 +2,7 @@ from marshmallow import Schema, fields, pre_load, post_load
 
 from locations import Position, PositionSchema, PositionSchemaFromCIM
 
+
 class Rail:
 
     def __init__(self, *args, **kwargs):
@@ -14,7 +15,7 @@ class Rail:
         self.rr_class = kwargs.get('rr_class', '1')
         self.rrowner_1 = kwargs.get('rrowner_1', None)
         self.status = kwargs.get('status', None)
-        
+
         self.diesel = kwargs.get('diesel', True)
         self.speed = kwargs.get('speed', 30)
         self.engines_per_train = kwargs.get('engines_per_train', 2)
@@ -63,7 +64,8 @@ class RailSchema(Schema):
 
     @post_load
     def make_rail(self, data):
-        return Road(**data)
+        return Rail(**data)
+
 
 class RailroadSchemaFromCIM(Schema):
     positions = fields.Nested(PositionSchemaFromCIM, many=True)
