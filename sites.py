@@ -30,9 +30,7 @@ class Site:
 
     def process(self):
         """
-        Fill in missing data for a
-        site that was filled with
-        data from the API.
+        Calculate the missing ADT and DNL values for this site.
         """
         self.set_adts()
         self.set_dnls()

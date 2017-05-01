@@ -156,14 +156,6 @@ class HeavyTruckSchema(VehicleSchema):
 
 
 class Road:
-    """
-    Args:
-        name (str)
-        positions (:obj: `list` of :obj: Position)
-        distance (float)
-        county_name (str)
-        stop_sign_distance (float)
-    """
 
     def __init__(self, *args, **kwargs):
         self.name = kwargs.get('name', None)
@@ -181,11 +173,6 @@ class Road:
         self.adt_year = kwargs.get('adt_year', 2027)
 
         # VehicleType objects
-        if self.counted_adt_trucks and self.counted_adt:
-            self.truck_percentage = (
-                self.counted_adt_trucks / self.counted_adt)
-        else:
-            self.truck_percentage = .025
         self.auto = kwargs.get('auto', Auto())
         self.medium_truck = kwargs.get('medium_truck', MediumTruck())
         self.heavy_truck = kwargs.get('heavy_truck', HeavyTruck())
@@ -193,6 +180,11 @@ class Road:
         self.dnl = kwargs.get('dnl', None)
 
     def set_distances(self):
+        """
+        Assign the current Road's distance, stop_sign_distance
+        and grade to each of its child VehicleTypes, so they
+        can use them in their DNL calculations.
+        """
         keys = ['auto', 'medium_truck', 'heavy_truck']
         for k in keys:
             obj = getattr(self, k)
@@ -202,6 +194,9 @@ class Road:
                 obj.grade = self.grade
 
     def set_adts(self):
+        """
+        Turn the given truck fractions into ADT counts
+        """
         self.medium_truck.adt = self.adt * self.medium_truck.adt_fraction
         self.heavy_truck.adt = self.adt * self.heavy_truck.adt_fraction
         self.auto.adt = self.adt - self.medium_truck.adt - self.heavy_truck.adt
@@ -220,14 +215,21 @@ class Road:
         return closest
 
     def get_adt(self):
+        """
+        Return either the existing ADT, or calculate one based
+        on the counted adt and growth rate, in the case of a Road
+        that has come from CIM without a future ADT.
+        """
         if self.adt:
             return self.adt
-        if self.auto.adt and self.medium_truck.adt and self.heavy_truck.adt:
-            return self.auto.adt + self.medium_truck.adt + self.heavy_truck.adt
         num_years = self.adt_year - self.counted_adt_year
         return self.counted_adt * (numpy.exp(self.growth_rate * num_years))
 
     def get_dnl(self):
+        """
+        Return the total DNL for this road, which is the sum
+        of its auto, medium truck and heavy truck dnl's
+        """
         return dnl_sum(
             [self.auto.dnl, self.medium_truck.dnl, self.heavy_truck.dnl])
 
@@ -281,6 +283,10 @@ class RoadSchemaFromCIM(Schema):
 
     @pre_load
     def clean_county_name(self, data):
+        """
+        Remove 'Co' from the county name, so it matches
+        the county names in the County Populations dataset.
+        """
         data['county_name'] = data['county'].split(' Co')[0]
         return data
 
