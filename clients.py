@@ -81,6 +81,10 @@ class HighwaysClient(CIMClient):
         return None
 
     def _get_unique_by_name(self):
+        """
+        Remove all but the closest road segment
+        for a given road name
+        """
         names = set(r.name for r in self.roads)
         new_roads = []
         for name in names:
@@ -90,6 +94,10 @@ class HighwaysClient(CIMClient):
         self.roads = new_roads
 
     def _remove_duplicates(self):
+        """
+        Remove road segments with equal ADT's, as these
+        are almost certainly duplicates.
+        """
         new_roads = []
         adts = set()
         for road in self.roads:
@@ -107,9 +115,7 @@ class HighwaysClient(CIMClient):
         self.roads = self.get(payload)
 
         if self.roads:
-
             # fill in missing data that the CIM API doesn't provide
-
             county = self._get_county()
             if county:
                 growth_rate = county.get_growth_rate()

@@ -212,8 +212,6 @@ class Road:
         to the given position, and returns
         the shortest distance.
         """
-        if self.distance:
-            return self.distance
         closest = None
         for p in self.positions:
             d = p.distance_from(position)
