@@ -37,7 +37,7 @@ class Rail:
             d = p.distance_from(position)
             if not closest or d < closest:
                 closest = d
-        return closest
+        return round(closest,0)
 
 
 class RailSchema(Schema):

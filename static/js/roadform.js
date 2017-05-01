@@ -73,6 +73,7 @@ var RoadForm = {
             <div class="field">
               <div class="control">
                 <input class="input" type="text" v-model="editValues.counted_adt">
+                <p class="help">Total ADT from published traffic count</p>
               </div>
             </div>
           </div>
@@ -86,6 +87,7 @@ var RoadForm = {
             <div class="field is-grouped">
               <div class="control is-expanded">
                 <input class="input" type="text" v-model="editValues.counted_adt_year">
+                <p class="help">Year of published traffic count</p>
               </div>
               <div class="control">
                 <a class="button is-info" v-on:click="projectAdt">Calculate</a>
@@ -111,22 +113,22 @@ var RoadForm = {
               <td>Autos</td>
               <td>{{ autosAdt }}</td>
               <td>{{ autosPercent }}%</td>
-              <td><input class="input" type="text" v-model="editValues.night_fraction_autos"></td>
-              <td><input class="input" type="text" v-model="editValues.speed_autos"></td>
+              <td><input class="input" type="text" v-model="editValues.auto.night_fraction"></td>
+              <td><input class="input" type="text" v-model="editValues.auto.speed"></td>
             </tr>
             <tr>
               <td>Medium Trucks</td>
               <td>{{ mediumTrucksAdt }}</td>
-              <td><input class="input" type="text" v-model="editValues.medium_trucks"></td>
-              <td><input class="input" type="text" v-model="editValues.night_fraction_trucks"></td>
-              <td><input class="input" type="text" v-model="editValues.speed_autos"></td>
+              <td><input class="input" type="text" v-model="editValues.medium_truck.adt_fraction"></td>
+              <td><input class="input" type="text" v-model="editValues.medium_truck.night_fraction"></td>
+              <td><input class="input" type="text" v-model="editValues.medium_truck.speed"></td>
             </tr>
             <tr>
               <td>Heavy Trucks</td>
               <td>{{ heavyTrucksAdt }}</td>
-              <td><input class="input" type="text" v-model="editValues.heavy_trucks"></td>
-              <td><input class="input" type="text" v-model="editValues.night_fraction_trucks"></td>
-              <td><input class="input" type="text" v-model="editValues.speed_trucks"></td>
+              <td><input class="input" type="text" v-model="editValues.heavy_truck.adt_fraction"></td>
+              <td><input class="input" type="text" v-model="editValues.heavy_truck.night_fraction"></td>
+              <td><input class="input" type="text" v-model="editValues.heavy_truck.speed"></td>
             </tr>
           </tbody>
         </table>
@@ -140,7 +142,7 @@ var RoadForm = {
               <div class="control">
                 <input class="input" type="text" v-model="editValues.stop_sign_distance">
               </div>
-              <p class="help">Use 0 if greater than 600 feet</p>
+              <p class="help">Leave blank if no stop sign or greater than 600 feet</p>
             </div>
           </div>
         </div>
@@ -154,7 +156,7 @@ var RoadForm = {
               <div class="control">
                 <input class="input" type="text" v-model="editValues.grade">
               </div>
-              <p class="help">2% default. Use 0 if less than 2%</p>
+              <p class="help">0.02 (2%) default. Use 0 if less than 2%</p>
             </div>
           </div>
         </div>
@@ -187,7 +189,7 @@ var RoadForm = {
   computed: {
     autosAdt: function() {
       if (this.road.adt) {
-        p = 1 - this.editValues.heavy_trucks - this.editValues.medium_trucks;
+        p = 1 - this.editValues.heavy_truck.adt_fraction - this.editValues.medium_truck.adt_fraction;
         p = Math.round(p * this.editValues.adt);
         return numberWithCommas(p);
       }
@@ -195,20 +197,20 @@ var RoadForm = {
     },
 
     autosPercent: function() {
-      p = 1 - this.editValues.heavy_trucks - this.editValues.medium_trucks;
+      p = 1 - this.editValues.heavy_truck.adt_fraction - this.editValues.medium_truck.adt_fraction;
       return (Math.round(p * 10000)/100).toFixed(2);
     },
 
     heavyTrucksAdt: function() {
       if (this.editValues.adt) {
-        return numberWithCommas(Math.round(this.editValues.heavy_trucks * this.editValues.adt));
+        return numberWithCommas(Math.round(this.editValues.heavy_truck.adt_fraction * this.editValues.adt));
       }
       return 0;      
     },
 
     mediumTrucksAdt: function() {
       if (this.editValues.adt) {
-        return numberWithCommas(Math.round(this.editValues.medium_trucks * this.editValues.adt));
+        return numberWithCommas(Math.round(this.editValues.medium_truck.adt_fraction * this.editValues.adt));
       }
       return 0;      
     },

@@ -31,7 +31,7 @@ var MapRoadDisplay = {
     },
 
     heavyTrucks: function() {
-      return Math.round(this.road.heavy_trucks * 100).toFixed(2) + "%";
+      return Math.round(this.road.heavy_truck.adt_fraction * 10000)/100 + "%";
     }
   },
 
@@ -215,18 +215,12 @@ var MapTab = {
       var redrawMarker = this.redrawMarker;
       var self = this;
 
-      //temporarily fake response from server
       fetch(url).then(function(response) {return response.json(); }).then(function(json) {
         markers[marker.id].data = json;
         self.selectMarker(marker);
         self.redrawMarker(marker, json);
       });
 
-      //remove these after server reponds with correct format
-      // var json = fakeJson();
-      // markers[marker.id].data = json;
-      // self.selectMarker(marker);
-      // self.redrawMarker(marker, json);
     },
 
     'selectMarker': function(marker) {

@@ -161,7 +161,7 @@ class Road:
         self.distance = kwargs.get('distance', None)
         self.county_name = kwargs.get('county_name', None)
         self.stop_sign_distance = kwargs.get('stop_sign_distance', None)
-        self.grade = kwargs.get('grade', .02)
+        self.grade = kwargs.get('grade', 0.02)
 
         self.counted_adt = kwargs.get('counted_adt', None)
         self.counted_adt_trucks = kwargs.get('counted_adt_trucks', None)
@@ -209,7 +209,7 @@ class Road:
             d = p.distance_from(position)
             if not closest or d < closest:
                 closest = d
-        return closest
+        return round(closest,0)
 
     def get_adt(self):
         """
@@ -220,7 +220,7 @@ class Road:
         if self.adt:
             return self.adt
         num_years = self.adt_year - self.counted_adt_year
-        return self.counted_adt * (math.exp(self.growth_rate * num_years))
+        return round(self.counted_adt * (math.exp(self.growth_rate * num_years)),0)
 
     def get_dnl(self):
         """
@@ -240,7 +240,7 @@ class RoadSchema(Schema):
 
     # optional
     stop_sign_distance = fields.Number(allow_none=True)
-    grade = fields.Float(default=.02)
+    grade = fields.Float(default=0.02)
 
     # nested objects
     auto = fields.Nested(AutoSchema)
@@ -292,12 +292,11 @@ class RoadSchemaFromCIM(Schema):
         """
         Creates the Road object from the API data.
         """
-        heavy_truck_fraction = (data['counted_adt_heavy_trucks'] /
-                                data['counted_adt'])
+        heavy_truck_fraction = round(data['counted_adt_heavy_trucks'] / data['counted_adt'], 4)
 
         # The API does not provide a medium truck count,
         # so we make a reasonable assumption
-        medium_truck_fraction = .02
+        medium_truck_fraction = 0.02
 
         auto_fraction = 1 - medium_truck_fraction - heavy_truck_fraction
 

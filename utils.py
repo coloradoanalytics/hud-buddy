@@ -30,4 +30,4 @@ def dnl_sum(dnl_list):
 
 
 def growth_rate(starting_pop, future_pop, num_years):
-    return log(future_pop / starting_pop) / num_years
+    return round(log(future_pop / starting_pop) / num_years, 2)
