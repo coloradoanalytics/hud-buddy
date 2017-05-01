@@ -40,7 +40,7 @@ def sites():
         road_distance = request.args.get('road_distance', 609.6)
 
         road_client = HighwaysClient()
-        roads = road_client.get_segments(position, road_distance)
+        roads = road_client.get_unique_segments(position, road_distance)
 
         rail_distance = request.args.get('rail_distance', 1828.8)
 

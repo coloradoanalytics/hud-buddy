@@ -26,8 +26,30 @@ class CIMClient:
         return schema.load(response).data
 
 
-class HighwaysClient(CIMClient):
+class PopulationsClient(CIMClient):
 
+    resource_id = 'tv8u-hswn'
+    schema_class = CountyPopulationByAgeSchema
+    many = True
+
+    def __init__(self, county_name, year):
+        super().__init__()
+        self.county_name = county_name
+        self.year = year
+
+    def get_populations(self):
+        payload = {"county": self.county_name, "year": self.year}
+        data = self.get(payload)
+        return CountyPopulationByAgeGroup(populations=data)
+
+
+class HighwaysClient(CIMClient):
+    """
+    Provides an interface to interact with the 'Highways in Colorado'
+    dataset provided by CIM. Includes methods for de-duplicating
+    results, and a method to fetch the county population
+    data from a second CIM source.
+    """
     resource_id = 'phvc-rwei'
     schema_class = RoadSchemaFromCIM
     many = True
@@ -47,21 +69,8 @@ class HighwaysClient(CIMClient):
             future_client = PopulationsClient(
                 county_name=county_name, year="2027")
 
-            threads = []
-            current_pop_thread = threading.Thread(
-                target=current_client.get_populations())
-            threads.append(current_pop_thread)
-            future_pop_thread = threading.Thread(
-                target=future_client.get_populations())
-            threads.append(future_pop_thread)
-
-            for t in threads:
-                t.start()
-            for t in threads:
-                t.join()
-
-            current_population = current_client.populations.get_total_population()
-            future_population = future_client.populations.get_total_population()
+            current_population = current_client.get_populations().get_total_population()
+            future_population = future_client.get_populations().get_total_population()
 
             county = County(current_population=current_population,
                             future_population=future_population,
@@ -89,7 +98,7 @@ class HighwaysClient(CIMClient):
                 adts.add(road.counted_adt)
         self.roads = new_roads
 
-    def get_segments(self, position, distance):
+    def get_unique_segments(self, position, distance):
         payload = {"$where": "within_circle(the_geom, {}, {}, {})".format(
             position.lat, position.lng, distance)}
 
@@ -97,35 +106,23 @@ class HighwaysClient(CIMClient):
 
         self.roads = self.get(payload)
 
-        county = self._get_county()
-        growth_rate = county.get_growth_rate()
+        if self.roads:
 
-        for r in self.roads:
-            r.growth_rate = growth_rate
-            r.distance = r.get_distance(position)
-            r.set_distances()
+            # fill in missing data that the CIM API doesn't provide
 
-        self._get_unique_by_name()
-        self._remove_duplicates()
+            county = self._get_county()
+            if county:
+                growth_rate = county.get_growth_rate()
+
+                for r in self.roads:
+                    r.growth_rate = growth_rate
+                    r.distance = r.get_distance(position)
+                    r.set_distances()
+
+                self._get_unique_by_name()
+                self._remove_duplicates()
 
         return self.roads
-
-
-class PopulationsClient(CIMClient):
-
-    resource_id = 'tv8u-hswn'
-    schema_class = CountyPopulationByAgeSchema
-    many = True
-
-    def __init__(self, county_name, year):
-        super().__init__()
-        self.county_name = county_name
-        self.year = year
-
-    def get_populations(self):
-        payload = {"county": self.county_name, "year": self.year}
-        data = self.get(payload)
-        self.populations = CountyPopulationByAgeGroup(populations=data)
 
 
 class RailroadsClient(CIMClient):
