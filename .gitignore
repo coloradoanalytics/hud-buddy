@@ -1,3 +1,4 @@
 *.spw
+*.pyc
 __pycache__/
 response.txt

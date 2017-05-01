@@ -9,24 +9,22 @@ class RoadSchemaTestCase(CustomTestCase):
         data = {
             'name': 'test name',
             'distance': 400,
-            'counted_adt': 15000,
-            'counted_adt_year': 2014,
             'adt': 18000,
             'adt_year': 2027,
             'stop_sign_distance': 300,
             'grade': .02,
             'auto': {
-                'adt': 12000,
+                'adt_fraction': .75,
                 'speed': 55,
                 'night_fraction': .13,
             },
             'medium_truck': {
-                'adt': 2000,
+                'adt_fraction': .10,
                 'speed': 50,
                 'night_fraction': .17,
             },
             'heavy_truck': {
-                'adt': 4000,
+                'adt_fraction': .15,
                 'speed': 45,
                 'night_fraction': .10
             }

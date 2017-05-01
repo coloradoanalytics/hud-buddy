@@ -1,6 +1,5 @@
 from marshmallow import Schema, fields, pre_load, post_load
 
-import data
 import DNL
 from locations import PositionSchema, CountySchema
 from highways import RoadSchema, RoadSchemaFromCIM
@@ -35,54 +34,14 @@ class Site:
         site that was filled with
         data from the API.
         """
-        self.county = self.get_county()
-        self.get_unique_by_name()
-        self.remove_duplicates()
-        self.set_growth_rates()
-        self.set_distances()
         self.set_adts()
         self.set_dnls()
         self.combined_dnl = self.get_combined_dnl()
-
-    def get_unique_by_name(self):
-        names = set(r.name for r in self.roads)
-        new_roads = []
-        for name in names:
-            roads = [r for r in self.roads if r.name == name]
-            closest = min(roads, key=lambda x: x.get_distance(self.position))
-            new_roads.append(closest)
-        self.roads = new_roads
-
-    def remove_duplicates(self):
-        new_roads = []
-        adts = set()
-        for road in self.roads:
-            if road.counted_adt not in adts:
-                new_roads.append(road)
-                adts.add(road.counted_adt)
-        self.roads = new_roads
 
     def get_combined_dnl(self):
         if self.roads:
             return DNL.dnl_sum([road.dnl for road in self.roads])
         return None
-
-    def get_county(self):
-        """
-        Performs an API request to get the county population data
-        """
-        if self.roads:
-            county_name = self.roads[0].county_name
-            year = self.roads[0].counted_adt_year
-            return data.get_county(county_name=county_name, year=year)
-        return None
-
-    def set_growth_rates(self):
-        if self.county and not self.growth_rate:
-            self.growth_rate = self.county.get_growth_rate()
-        if self.growth_rate:
-            for road in self.roads:
-                road.growth_rate = self.growth_rate
 
     def set_distances(self):
         for road in self.roads:
@@ -105,9 +64,9 @@ class SiteSchema(Schema):
     position = fields.Nested(PositionSchema)
     roads = fields.Nested(RoadSchema, many=True)
     rails = fields.Nested(RailSchema, many=True)
-    county = fields.Nested(CountySchema)
+    county = fields.Nested(CountySchema, allow_none=True)
     name = fields.Str(allow_none=True)
-    growth_rate = fields.Float()
+    growth_rate = fields.Float(allow_none=True)
     combined_dnl = fields.Float(dump_only=True)
 
     @post_load

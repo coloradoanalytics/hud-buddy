@@ -26,8 +26,9 @@ class VehicleType:
 
     def __init__(self, *args, **kwargs):
         # specific to this VehicleType
-        self.adt = kwargs.get('adt', 0)
-        self.speed = kwargs.get('speed', 50)
+        self.adt = kwargs.get('adt', None)
+        self.adt_fraction = kwargs.get('adt_fraction', None)
+        self.speed = kwargs.get('speed', None)
         self.night_fraction = kwargs.get('night_fraction', .10)
         self.day_fraction = 1 - self.night_fraction
 
@@ -71,12 +72,18 @@ class Auto(VehicleType):
 
 
 class VehicleSchema(Schema):
-    adt = fields.Number()
-    speed = fields.Number(load_only=True)
-    night_fraction = fields.Float(default=.15)
+    # from parent road, used for input only
     distance = fields.Number(load_only=True)
     stop_sign_distance = fields.Number(allow_none=True, load_only=True)
     grade = fields.Number(allow_none=True, load_only=True)
+
+    # specific to vehicle, input and output
+    speed = fields.Number(required=True)
+    adt_fraction = fields.Float(required=True)
+    night_fraction = fields.Float(default=.15)
+
+    # always calculated, output only
+    adt = fields.Number(dump_only=True)
     dnl = fields.Float(dump_only=True)
 
 
@@ -164,8 +171,8 @@ class Road:
         self.positions = kwargs.get('positions', None)
         self.distance = kwargs.get('distance', None)
         self.county_name = kwargs.get('county_name', None)
-        self.stop_sign_distance = kwargs.get('stop_sign_distance', 0)
-        self.grade = kwargs.get('grade', 0)
+        self.stop_sign_distance = kwargs.get('stop_sign_distance', None)
+        self.grade = kwargs.get('grade', .02)
 
         self.counted_adt = kwargs.get('counted_adt', None)
         self.counted_adt_trucks = kwargs.get('counted_adt_trucks', None)
@@ -195,12 +202,9 @@ class Road:
                 obj.grade = self.grade
 
     def set_adts(self):
-        if not self.medium_truck.adt:
-            self.medium_truck.adt = self.adt * .02
-        if not self.heavy_truck.adt:
-            self.heavy_truck.adt = self.adt * self.truck_percentage
-        if not self.auto.adt:
-            self.auto.adt = self.adt - self.medium_truck.adt - self.heavy_truck.adt
+        self.medium_truck.adt = self.adt * self.medium_truck.adt_fraction
+        self.heavy_truck.adt = self.adt * self.heavy_truck.adt_fraction
+        self.auto.adt = self.adt - self.medium_truck.adt - self.heavy_truck.adt
 
     def get_distance(self, position):
         """
@@ -216,6 +220,10 @@ class Road:
         return closest
 
     def get_adt(self):
+        if self.adt:
+            return self.adt
+        if self.auto.adt and self.medium_truck.adt and self.heavy_truck.adt:
+            return self.auto.adt + self.medium_truck.adt + self.heavy_truck.adt
         num_years = self.adt_year - self.counted_adt_year
         return self.counted_adt * (numpy.exp(self.growth_rate * num_years))
 
@@ -225,26 +233,29 @@ class Road:
 
 
 class RoadSchema(Schema):
+    # required, always sent by client
     name = fields.Str()
     distance = fields.Number()
-    counted_adt = fields.Number()
-    counted_adt_year = fields.Number()
     adt = fields.Number()
     adt_year = fields.Number()
-    stop_sign_distance = fields.Number()
-    grade = fields.Float()
 
+    # optional
+    stop_sign_distance = fields.Number(allow_none=True)
+    grade = fields.Float(default=.02)
+
+    # nested objects
     auto = fields.Nested(AutoSchema)
     medium_truck = fields.Nested(MediumTruckSchema)
     heavy_truck = fields.Nested(HeavyTruckSchema)
 
+    # always calculated, output only
     dnl = fields.Float(dump_only=True)
 
     @post_load
     def make_road(self, data):
         road = Road(**data)
-        road.set_distances()
-        return road
+        road.set_adts()
+        return Road(**data)
 
 
 class RoadSchemaFromCIM(Schema):
@@ -252,14 +263,10 @@ class RoadSchemaFromCIM(Schema):
     positions = fields.Nested(PositionSchemaFromCIM, many=True)
 
     counted_adt = fields.Float(load_from='aadt')
-    counted_adt_trucks = fields.Float(load_from='aadtcomb')
+    counted_adt_heavy_trucks = fields.Float(load_from='aadtcomb')
     counted_adt_year = fields.Number(load_from='aadtyr')
     county_name = fields.Str()
     speed_autos = fields.Float(load_from='speedlim')
-
-    auto = fields.Nested(AutoSchema)
-    medium_truck = fields.Nested(MediumTruckSchema)
-    heavy_truck = fields.Nested(HeavyTruckSchema)
 
     @pre_load
     def move_coordinates(self, data):
@@ -283,4 +290,22 @@ class RoadSchemaFromCIM(Schema):
         Creates the Road object from the
         API data.
         """
+        heavy_truck_fraction = data[
+            'counted_adt_heavy_trucks'] / data['counted_adt']
+        medium_truck_fraction = .02
+        auto_fraction = 1 - medium_truck_fraction - heavy_truck_fraction
+
+        data['auto'] = Auto(
+            adt_fraction=auto_fraction,
+            speed=data['speed_autos']
+        )
+        data['medium_truck'] = MediumTruck(
+            adt_fraction=medium_truck_fraction,
+            speed=data['speed_autos'] - 5
+        )
+        data['heavy_truck'] = HeavyTruck(
+            adt_fraction=heavy_truck_fraction,
+            speed=data['speed_autos'] - 5
+        )
+
         return Road(**data)
