@@ -72,6 +72,7 @@ var SiteForm = {
 			@reset-form="onResetForm"
 			@get-calculation="onGetCalculation"
 			@edit-site="onEditSite"
+      @get-report="onGetReport"
 		></site-card>
 	`,
 
@@ -91,6 +92,10 @@ var SiteForm = {
 
     onGetCalculation: function() {
     	this.$emit('get-calculation');
+    },
+
+    onGetReport: function() {
+      this.$emit('get-report')
     },
 
 		onResetForm: function() {
