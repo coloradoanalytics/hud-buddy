@@ -1,4 +1,4 @@
-from flask import Flask, request, json, current_app
+from flask import Flask, request, json, current_app, make_response
 
 import requests
 
@@ -35,8 +35,6 @@ def sites():
         lng = float(request.args.get('lng'))
         position = Position(lat, lng)
 
-        # regulation is to consider roads within 1000', but consider 2000' in
-        # case of very busy highways
         road_distance = request.args.get('road_distance', 609.6)
 
         road_client = HighwaysClient()
@@ -59,6 +57,28 @@ def sites():
     response = SiteSchema().dump(site).data
     return json.jsonify(response)
 
+
+@app.route("/api/reports/", methods=['POST'])
+def reports():
+    #site = SiteSchema().load(request.get_json()).data
+    print(request.form['site_json'])
+
+    #turn the string in request.form['site_json'] into a site object
+
+    #generate a report file using methods on the site object
+
+    #test case is to upload a dynmically generated csv file
+
+    csv = """"REVIEW_DATE","AUTHOR","ISBN","DISCOUNTED_PRICE"
+        "1985/01/21","Douglas Adams",0345391802,5.95
+        "1990/01/12","Douglas Hofstadter",0465026567,9.95
+        "1998/07/15","Timothy ""The Parser"" Campbell",0968411304,18.99
+        "1999/12/03","Richard Friedman",0060630353,5.95
+        "2004/10/04","Randel Helms",0879755725,4.50"""
+
+    response = make_response(csv)
+    response.headers["Content-Disposition"] = "attachment; filename=test.csv"
+    return response
 
 if __name__ == "__main__":
     app.run(debug=True)
