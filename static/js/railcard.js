@@ -89,7 +89,7 @@ var RailCard = {
 		},
 
 		railDnl: function() {
-      if (this.rail.dnl) {
+      if (this.rail.dnl != null) {
         return "<b>" + this.rail.dnl.toString() + "</b> &nbsp; dB";
       }
       return "--";

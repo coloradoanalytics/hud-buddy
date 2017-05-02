@@ -26,7 +26,7 @@ def dnl_sum(dnl_list):
     for dnl in dnl_list:
         if dnl and dnl > 1:
             dnl_sum += pow(10, (dnl / 10))
-    return ceil(10 * log10(dnl_sum))
+    return round(10 * log10(dnl_sum), 1)
 
 
 def growth_rate(starting_pop, future_pop, num_years):

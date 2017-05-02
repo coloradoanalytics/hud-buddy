@@ -3,7 +3,7 @@ var SiteCard = {
 		<div class="card">
 
 			<header class="card-header">
-        <p class="card-header-title">{{ siteData.site_name }}</p>
+        <p class="card-header-title">{{ siteData.name }}</p>
         <a class="card-header-icon" v-on:click="editSite()">
           <span class="icon">
             <i class="fa fa-pencil"></i>

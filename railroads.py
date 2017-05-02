@@ -1,5 +1,8 @@
+import math
+
 from marshmallow import Schema, fields, pre_load, post_load
 
+from utils import dnl_sum
 from locations import Position, PositionSchema, PositionSchemaFromCIM
 
 
@@ -20,7 +23,7 @@ class Rail:
         self.speed = kwargs.get('speed', 30)
         self.engines_per_train = kwargs.get('engines_per_train', 2)
         self.cars_per_train = kwargs.get('cars_per_train', 50)
-        self.ato = kwargs.get('ato', 0)
+        self.ato = kwargs.get('ato', 4)
         self.night_fraction = kwargs.get('night_fraction', 0.15)
         self.horns = kwargs.get('horns', False)
         self.bolted_tracks = kwargs.get('bolted_tracks', False)
@@ -38,6 +41,67 @@ class Rail:
             if not closest or d < closest:
                 closest = d
         return closest
+
+    def get_aato_e(self):
+        if self.horns:
+            return self.ato * 10
+        return self.ato
+
+    def get_aato_c(self):
+        if self.bolted_tracks:
+            return self.ato * 4
+        return self.ato
+
+    def get_dnl_sub_e(self):
+        return self.get_aato_e() * (1 - self.night_fraction + 10 * self.night_fraction)
+
+    def get_dnl_sub_c(self):
+        return self.get_aato_c() * (1 - self.night_fraction + 10 * self.night_fraction)
+
+    def get_ae_result_e(self):
+        return 141.7 - 10 * math.log10(self.speed) + 10 * math.log10(self.engines_per_train) - 15 * math.log10(self.distance)
+
+    def get_ae_result_c(self):
+        return 71.4 + 20 * math.log10(self.speed) + 10 * math.log10(self.cars_per_train) - 15 * math.log10(self.distance)
+
+    def get_dnl_result_e(self):
+        return self.get_ae_result_e() + 10 * math.log10(self.get_dnl_sub_e()) - 49.4
+
+    def get_dnl_result_c(self):
+        return self.get_ae_result_c() + 10 * math.log10(self.get_dnl_sub_c()) - 49.4
+
+    def get_dnl_diesel(self):
+        return round(dnl_sum([self.get_dnl_result_e(), self.get_dnl_result_c()]), 1)
+
+    def get_aato_r(self):
+        if self.horns:
+            return self.ato * 100
+        return self.ato
+
+    def get_aato_tot(self):
+        #transferred from HUD website and appears to ignore horns with non-bolted tracks
+        #kept this way for consistency with HUD tool
+        if self.bolted_tracks:
+            return self.get_aato_r() + 4 * self.ato
+        return 2 * self.ato
+
+    def get_dnl_sub(self):
+        return self.get_aato_tot() * (1 - self.night_fraction + 10 * self.night_fraction)
+
+    def get_ae_result(self):
+        return 71.4 + 20 * math.log10(self.speed) + 10 * math.log10(self.engines_per_train + self.cars_per_train + 1) - 15 * math.log10(self.distance)
+
+    def get_dnl_electric(self):
+        return round(self.get_ae_result() + 10 * math.log10(self.get_dnl_sub()) - 49.4, 1)
+
+    def get_dnl(self):
+        if self.ato < 1:
+            return 1
+        if self.diesel:
+            print("dnl diesel", self.get_dnl_diesel())
+            return self.get_dnl_diesel()
+        print("dnl electric", self.get_dnl_electric())
+        return self.get_dnl_electric()
 
 
 class RailSchema(Schema):

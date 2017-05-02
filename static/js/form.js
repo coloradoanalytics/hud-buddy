@@ -86,6 +86,7 @@ var FormTab = {
 
     onGetCalculation: function() {
       var self = this;
+      console.log(JSON.stringify(self.formData))
       fetch('/api/sites/',
         {
           headers: {
@@ -145,7 +146,7 @@ var FormTab = {
   },
 
   mounted: function() {
-    this.onResetForm();
+    //this.onResetForm();
   },
 
   components: {
