@@ -209,7 +209,7 @@ class Road:
             d = p.distance_from(position)
             if not closest or d < closest:
                 closest = d
-        return round(closest,0)
+        return closest
 
     def get_adt(self):
         """
@@ -220,7 +220,7 @@ class Road:
         if self.adt:
             return self.adt
         num_years = self.adt_year - self.counted_adt_year
-        return round(self.counted_adt * (math.exp(self.growth_rate * num_years)),0)
+        return self.counted_adt * (math.exp(self.growth_rate * num_years))
 
     def get_dnl(self):
         """
@@ -234,9 +234,9 @@ class Road:
 class RoadSchema(Schema):
     # required, always sent by client
     name = fields.Str()
-    distance = fields.Number()
-    adt = fields.Number()
-    adt_year = fields.Number()
+    distance = fields.Integer()
+    adt = fields.Integer()
+    adt_year = fields.Integer()
 
     # optional
     stop_sign_distance = fields.Number(allow_none=True)
@@ -263,9 +263,9 @@ class RoadSchemaFromCIM(Schema):
 
     counted_adt = fields.Float(load_from='aadt')
     counted_adt_heavy_trucks = fields.Float(load_from='aadtcomb')
-    counted_adt_year = fields.Number(load_from='aadtyr')
+    counted_adt_year = fields.Integer(load_from='aadtyr')
     county_name = fields.Str()
-    speed_autos = fields.Float(load_from='speedlim')
+    speed_autos = fields.Integer(load_from='speedlim')
 
     @pre_load
     def move_coordinates(self, data):
@@ -292,7 +292,8 @@ class RoadSchemaFromCIM(Schema):
         """
         Creates the Road object from the API data.
         """
-        heavy_truck_fraction = round(data['counted_adt_heavy_trucks'] / data['counted_adt'], 4)
+        heavy_truck_fraction = round(
+            data['counted_adt_heavy_trucks'] / data['counted_adt'], 4)
 
         # The API does not provide a medium truck count,
         # so we make a reasonable assumption

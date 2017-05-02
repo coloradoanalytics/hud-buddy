@@ -115,19 +115,18 @@ class HighwaysClient(CIMClient):
         self.roads = self.get(payload)
 
         if self.roads:
-            self._get_unique_by_name()
-            self._remove_duplicates()
-
             # fill in missing data that the CIM API doesn't provide
             county = self._get_county()
             if county:
                 growth_rate = county.get_growth_rate()
-                #self.county = county
+                self.county = county
 
                 for r in self.roads:
                     r.growth_rate = growth_rate
                     r.distance = r.get_distance(position)
                     r.set_distances()
+            self._get_unique_by_name()
+            self._remove_duplicates()
 
         return self.roads
 
@@ -169,4 +168,3 @@ class RailroadsClient(CIMClient):
                 new_rails.append(rail)
                 distances.add(rail.distance)
         self.rails = new_rails
-

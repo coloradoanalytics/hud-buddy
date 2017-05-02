@@ -37,7 +37,7 @@ class Rail:
             d = p.distance_from(position)
             if not closest or d < closest:
                 closest = d
-        return round(closest,0)
+        return closest
 
 
 class RailSchema(Schema):
@@ -52,7 +52,7 @@ class RailSchema(Schema):
     status = fields.Str()
 
     diesel = fields.Bool()
-    distance = fields.Number()
+    distance = fields.Integer()
     speed = fields.Number()
     engines_per_train = fields.Number()
     cars_per_train = fields.Number()
