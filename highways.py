@@ -242,6 +242,8 @@ class RoadSchema(Schema):
     # optional
     stop_sign_distance = fields.Number(allow_none=True)
     grade = fields.Float(default=0.02)
+    counted_adt = fields.Number(allow_none=True)
+    counted_adt_year = fields.Number(allow_none=True)
 
     # nested objects
     auto = fields.Nested(AutoSchema)
