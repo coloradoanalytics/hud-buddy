@@ -161,7 +161,7 @@ class Road:
         self.distance = kwargs.get('distance', None)
         self.county_name = kwargs.get('county_name', None)
         self.stop_sign_distance = kwargs.get('stop_sign_distance', None)
-        self.grade = kwargs.get('grade', .02)
+        self.grade = kwargs.get('grade', 0.02)
 
         self.counted_adt = kwargs.get('counted_adt', None)
         self.counted_adt_trucks = kwargs.get('counted_adt_trucks', None)
@@ -234,13 +234,13 @@ class Road:
 class RoadSchema(Schema):
     # required, always sent by client
     name = fields.Str()
-    distance = fields.Number()
-    adt = fields.Number()
-    adt_year = fields.Number()
+    distance = fields.Integer()
+    adt = fields.Integer()
+    adt_year = fields.Integer()
 
     # optional
     stop_sign_distance = fields.Number(allow_none=True)
-    grade = fields.Float(default=.02)
+    grade = fields.Float(default=0.02)
 
     # nested objects
     auto = fields.Nested(AutoSchema)
@@ -263,9 +263,9 @@ class RoadSchemaFromCIM(Schema):
 
     counted_adt = fields.Float(load_from='aadt')
     counted_adt_heavy_trucks = fields.Float(load_from='aadtcomb')
-    counted_adt_year = fields.Number(load_from='aadtyr')
+    counted_adt_year = fields.Integer(load_from='aadtyr')
     county_name = fields.Str()
-    speed_autos = fields.Float(load_from='speedlim')
+    speed_autos = fields.Integer(load_from='speedlim')
 
     @pre_load
     def move_coordinates(self, data):
@@ -292,12 +292,12 @@ class RoadSchemaFromCIM(Schema):
         """
         Creates the Road object from the API data.
         """
-        heavy_truck_fraction = (data['counted_adt_heavy_trucks'] /
-                                data['counted_adt'])
+        heavy_truck_fraction = round(
+            data['counted_adt_heavy_trucks'] / data['counted_adt'], 4)
 
         # The API does not provide a medium truck count,
         # so we make a reasonable assumption
-        medium_truck_fraction = .02
+        medium_truck_fraction = 0.02
 
         auto_fraction = 1 - medium_truck_fraction - heavy_truck_fraction
 

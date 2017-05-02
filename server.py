@@ -45,7 +45,7 @@ def sites():
         rail_distance = request.args.get('rail_distance', 1828.8)
 
         rail_client = RailroadsClient()
-        rails = rail_client.get_segments(position, rail_distance)
+        rails = rail_client.get_unique_segments(position, rail_distance)
 
         site = Site(position=position, roads=roads, rails=rails)
 

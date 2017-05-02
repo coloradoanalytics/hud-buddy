@@ -52,7 +52,7 @@ class RailSchema(Schema):
     status = fields.Str()
 
     diesel = fields.Bool()
-    distance = fields.Number()
+    distance = fields.Integer()
     speed = fields.Number()
     engines_per_train = fields.Number()
     cars_per_train = fields.Number()

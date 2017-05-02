@@ -107,42 +107,60 @@ function blankRoad() {
     counted_adt_year: null,
     adt: 1000,
     adt_year: date.getYear() + 1900 + 10,
-    night_fraction_autos: 0.15,
-    night_fraction_trucks: 0.15,
-    distance: 100,
-    stop_sign_distance: 0,
+    distance: 200,
+    stop_sign_distance: null,
     grade: 0.02,
-    medium_trucks: 0.02,
-    heavy_trucks: 0.02,
-    speed_autos: 55,
-    speed_trucks: 55,
-    dnl: null
+    dnl: null,
+    auto: {
+      night_fraction: 0.15,
+      speed: 55,
+    },
+    medium_truck: {
+      adt_fraction: 0.02,
+      night_fraction: 0.15,
+      speed: 55
+    },
+    heavy_truck: {
+      adt_fraction: 0.02,
+      night_fraction: 0.15,
+      speed: 55
+    }
   }
 }
 
 function blankRail() {
   return {
-    name: "Rail",
+    name: "New Rail",
     distance: 1000,
-    speed: 45,
+    speed: 30,
     diesel: true,
     engines_per_train: 2,
-    cars_per_train: 80,
-    ato: 8,
+    cars_per_train: 50,
+    ato: 0,
     night_fraction: 0.15,
     horns: false,
     bolted_tracks: false,
-    dnl: null
+    dnl: null,
+    railroad: "-railroad-",
+    branch: "-branch-",
+    division: "-division-",
+    subdivision: "-subdivision-",
+    rr_class: "",
+    rrowner_1: "-owner-",
+    status: "-status-"
   }
 }
 
 function blankSite() {
+  var d = new Date();
   return {
-    site_name: 'NAL',
-    combined_dnl: null,
-    county: {name: ''},
+    name: 'NAL',
+    date: d.toJSON(),
+    user_name: "",
     growth_rate: 0.015,
     position: {lat: null, lng: null},
+    county: {name: ''},
+    combined_dnl: null,
     roads: [],
     rails: [],
     airports: []

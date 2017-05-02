@@ -119,14 +119,14 @@ class HighwaysClient(CIMClient):
             county = self._get_county()
             if county:
                 growth_rate = county.get_growth_rate()
+                self.county = county
 
                 for r in self.roads:
                     r.growth_rate = growth_rate
                     r.distance = r.get_distance(position)
                     r.set_distances()
-
-                self._get_unique_by_name()
-                self._remove_duplicates()
+            self._get_unique_by_name()
+            self._remove_duplicates()
 
         return self.roads
 
@@ -137,7 +137,29 @@ class RailroadsClient(CIMClient):
     schema_class = RailroadSchemaFromCIM
     many = True
 
-    def get_segments(self, position, distance):
+    def get_unique_segments(self, position, distance):
         payload = {"$where": "within_circle(the_geom, {}, {}, {})".format(
             position.lat, position.lng, distance)}
-        return self.get(payload)
+
+        self.position = position
+
+        self.rails = self.get(payload)
+
+        if self.rails:
+            self._remove_duplicates()
+            for r in self.rails:
+                r.distance = r.get_distance(position)
+
+        return self.rails
+
+    def _remove_duplicates(self):
+        """
+        Remove rail segments with equal distance
+        """
+        new_rails = []
+        distances = set()
+        for rail in self.rails:
+            if rail.distance not in distances:
+                new_rails.append(rail)
+                distances.add(rail.distance)
+        self.rails = new_rails
