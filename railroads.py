@@ -30,8 +30,9 @@ class Rail:
 
         self.dnl = kwargs.get('dnl', None)
 
-    @property
-    def name(self):
+        self.name = kwargs.get('name', self.get_default_name())
+
+    def get_default_name(self):
         return "{} / {} / {}".format(self.railroad, self.branch, self.division)
 
     def get_distance(self, position):
