@@ -19,14 +19,14 @@ class Site:
     client submits.
     """
 
-    def __init__(self, position, *args, **kwargs):
-        self.position = position
+    def __init__(self, *args, **kwargs):
+        self.position = kwargs.get('position', None)
 
         self.roads = kwargs.get('roads', [])
         self.rails = kwargs.get('rails', [])
         self.airports = kwargs.get('airports', [])
         self.county = kwargs.get('county', None)
-        self.name = kwargs.get('NAL', None)
+        self.name = kwargs.get('name', 'NAL')
         self.growth_rate = kwargs.get('growth_rate', None)
         self.combined_dnl = kwargs.get('combined_dnl', None)
 
@@ -75,7 +75,7 @@ class SiteSchema(Schema):
     rails = fields.Nested(RailSchema, many=True)
     county = fields.Nested(CountySchema, allow_none=True)
     name = fields.Str(allow_none=True)
-    growth_rate = fields.Decimal(allow_none=True, places=2)
+    growth_rate = fields.Float(allow_none=True, places=2)
     combined_dnl = fields.Float(dump_only=True)
 
     @post_load

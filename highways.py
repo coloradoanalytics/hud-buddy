@@ -76,8 +76,8 @@ class VehicleSchema(Schema):
     grade = fields.Number(allow_none=True, load_only=True)
 
     # specific to vehicle, input and output
-    speed = fields.Number(required=True)
     adt_fraction = fields.Float(required=True)
+    speed = fields.Number(required=True)
     night_fraction = fields.Float(default=.15)
 
     # always calculated, output only
@@ -85,6 +85,7 @@ class VehicleSchema(Schema):
 
 
 class AutoSchema(VehicleSchema):
+    adt_fraction = fields.Float(required=False, allow_none=True)
 
     @post_load
     def make_auto(self, data):

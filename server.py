@@ -41,13 +41,16 @@ def sites():
 
         road_client = HighwaysClient()
         roads = road_client.get_unique_segments(position, road_distance)
+        county = road_client.county
+        growth_rate = road_client.county.get_growth_rate()
 
         rail_distance = request.args.get('rail_distance', 1828.8)
 
         rail_client = RailroadsClient()
         rails = rail_client.get_unique_segments(position, rail_distance)
 
-        site = Site(position=position, roads=roads, rails=rails)
+        site = Site(position=position, roads=roads, rails=rails,
+                    county=county, growth_rate=growth_rate)
 
     elif request.method == 'POST':
         site = SiteSchema().load(request.get_json()).data
