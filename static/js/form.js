@@ -86,7 +86,6 @@ var FormTab = {
 
     onGetCalculation: function() {
       var self = this;
-      console.log(JSON.stringify(self.formData))
       fetch('/api/sites/',
         {
           headers: {
@@ -115,6 +114,7 @@ var FormTab = {
     },
 
     onUpdateSite: function(data) {
+      //relay update-site event and data
       this.$emit('update-site', data);
     },
 
