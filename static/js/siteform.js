@@ -2,7 +2,7 @@ var SiteForm = {
 	template: `
 		<div class="card" v-if="editing">
 			<div class="card-header">
-        <p class="card-header-title">Editing: {{ editValues.site_name }}</p>
+        <p class="card-header-title">Editing: {{ editValues.name }}</p>
       </div>
 
       <div class="card-content">
@@ -14,7 +14,7 @@ var SiteForm = {
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <input class="input" type="text" v-model="editValues.site_name">
+                <input class="input" type="text" v-model="editValues.name">
               </div>
             </div>
           </div>
@@ -117,7 +117,7 @@ var SiteForm = {
 	computed: {
 		siteData: function() {
 			return {
-				site_name: this.formData.site_name,
+				name: this.formData.name,
 				county: this.formData.county,
 				combined_dnl: this.formData.combined_dnl,
 				growth_rate: this.formData.growth_rate,

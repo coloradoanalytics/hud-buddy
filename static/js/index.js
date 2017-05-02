@@ -4,7 +4,7 @@ var app = new Vue( {
   data: {
     currentMarkerId: '',
     currentTab: 'map',
-    formData: {},
+    formData: blankSite(),
     roadEditIndex: null
   },
 
@@ -60,7 +60,7 @@ var app = new Vue( {
 
     onSendToForm: function(data) {
       this.formData = data;
-      if (!this.formData.site_name) this.formData.site_name = "NAL";
+      if (!this.formData.name) this.formData.name = "NAL";
       this.currentTab = 'form';
     },
 

@@ -136,4 +136,4 @@ class CombinedDNLTestCase(CustomTestCase):
 
     def test_combined_dnl(self):
         dnl = self.road.get_dnl()
-        self.assertAlmostEqual(dnl, 82, 1)
+        self.assertAlmostEqual(dnl, 81.8, 1)

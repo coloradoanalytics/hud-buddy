@@ -114,6 +114,7 @@ var FormTab = {
     },
 
     onUpdateSite: function(data) {
+      //relay update-site event and data
       this.$emit('update-site', data);
     },
 
@@ -145,7 +146,7 @@ var FormTab = {
   },
 
   mounted: function() {
-    this.onResetForm();
+    //this.onResetForm();
   },
 
   components: {
