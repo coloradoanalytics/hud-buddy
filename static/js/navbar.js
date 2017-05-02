@@ -18,7 +18,7 @@ var NavBar = {
           </div>
           <div class="nav-right">
             <span class="nav-item">
-              <a class="button">Sign in</a>
+              <!-- <a class="button">Sign in</a> -->
             </span>
           </div>
         </div>

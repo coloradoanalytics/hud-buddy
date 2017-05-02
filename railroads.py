@@ -54,16 +54,24 @@ class Rail:
         return self.ato
 
     def get_dnl_sub_e(self):
-        return self.get_aato_e() * (1 - self.night_fraction + 10 * self.night_fraction)
+        if self.engines_per_train and self.engines_per_train > 0:
+            return self.get_aato_e() * (1 - self.night_fraction + 10 * self.night_fraction)
+        return 1
 
     def get_dnl_sub_c(self):
-        return self.get_aato_c() * (1 - self.night_fraction + 10 * self.night_fraction)
+        if self.cars_per_train and self.cars_per_train > 0:
+            return self.get_aato_c() * (1 - self.night_fraction + 10 * self.night_fraction)
+        return 1
 
     def get_ae_result_e(self):
-        return 141.7 - 10 * math.log10(self.speed) + 10 * math.log10(self.engines_per_train) - 15 * math.log10(self.distance)
+        if self.engines_per_train and self.engines_per_train > 0:
+            return 141.7 - 10 * math.log10(self.speed) + 10 * math.log10(self.engines_per_train) - 15 * math.log10(self.distance)
+        return 0
 
     def get_ae_result_c(self):
-        return 71.4 + 20 * math.log10(self.speed) + 10 * math.log10(self.cars_per_train) - 15 * math.log10(self.distance)
+        if self.cars_per_train and self.cars_per_train > 0:
+            return 71.4 + 20 * math.log10(self.speed) + 10 * math.log10(self.cars_per_train) - 15 * math.log10(self.distance)
+        return 0
 
     def get_dnl_result_e(self):
         return self.get_ae_result_e() + 10 * math.log10(self.get_dnl_sub_e()) - 49.4

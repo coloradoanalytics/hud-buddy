@@ -91,9 +91,29 @@ var app = new Vue( {
         }
       }
     }
-
   }
+
 });
+
+function okString() {
+  return "^[A-Za-z0-9 _,./-]*[A-Za-z0-9][A-Za-z0-9 _,./-]*$";
+}
+
+function isNumeric(value) {
+  return !isNaN(parseFloat(value)) && isFinite(value);
+}
+
+function isYear(value) {
+  if (value == null || value.length < 4 || value.length > 4) return false;
+  var p = /^[0-9]+$/;
+  return p.test(value);
+}
+
+function isSpeed(value) {
+  if (value == null || value.length < 2 || value.length > 2) return false;
+  var p = /^[0-9]+$/;
+  return p.test(value);
+}
 
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -121,7 +141,7 @@ function blankRoad() {
       speed: 55
     },
     heavy_truck: {
-      adt_fraction: 0.02,
+      adt_fraction: 0.05,
       night_fraction: 0.15,
       speed: 55
     }

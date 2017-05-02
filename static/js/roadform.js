@@ -16,6 +16,7 @@ var RoadForm = {
             <div class="field">
               <div class="control">
                 <input class="input" type="text" v-model="editValues.name">
+                <p class="help is-danger" v-show="nameIsValid == false">Required. Letters, numbers and , . - only</p>
               </div>
             </div>
           </div>
@@ -29,6 +30,7 @@ var RoadForm = {
             <div class="field">
               <div class="control">
                 <input class="input" type="text" v-model="editValues.distance">
+                <p class="help is-danger" v-show="distanceIsValid == false">Required. Must be numeric</p>
               </div>
             </div>
           </div>
@@ -42,6 +44,7 @@ var RoadForm = {
             <div class="field">
               <div class="control">
                 <input class="input" type="text" v-model="editValues.adt">
+                <p class="help is-danger" v-show="adtIsValid == false">Required. Must be a number</p>
               </div>
             </div>
           </div>
@@ -55,6 +58,7 @@ var RoadForm = {
             <div class="field is-grouped">
               <div class="control is-expanded">
                 <input class="input" type="text" v-model="editValues.adt_year">
+                <p class="help is-danger" v-show="adtYearIsValid == false">Must be a year</p>
               </div>
               <div class="control">
                 <a class="button is-info" v-on:click="toggleProjection">Projection</a>
@@ -74,6 +78,7 @@ var RoadForm = {
               <div class="control">
                 <input class="input" type="text" v-model="editValues.counted_adt">
                 <p class="help">Total ADT from published traffic count</p>
+                <p class="help is-danger" v-show="countedAdtIsValid == false">Must be a number</p>
               </div>
             </div>
           </div>
@@ -88,9 +93,10 @@ var RoadForm = {
               <div class="control is-expanded">
                 <input class="input" type="text" v-model="editValues.counted_adt_year">
                 <p class="help">Year of published traffic count</p>
+                <p class="help is-danger" v-show="countedAdtYearIsValid == false">Must be a year</p>
               </div>
               <div class="control">
-                <a class="button is-info" v-on:click="projectAdt">Calculate</a>
+                <a class="button is-info" v-on:click="projectAdt" :disabled="projectionValuesValid == false">Calculate</a>
               </div>
             </div>
           </div>
@@ -113,22 +119,46 @@ var RoadForm = {
               <td>Autos</td>
               <td>{{ autosAdt }}</td>
               <td>{{ autosPercent }}%</td>
-              <td><input class="input" type="text" v-model="editValues.auto.night_fraction"></td>
-              <td><input class="input" type="text" v-model="editValues.auto.speed"></td>
+              <td>
+                <input class="input" type="text" v-model="editValues.auto.night_fraction">
+                <p class="help is-danger" v-show="autosNightFractionIsValid == false">Must be a number</p>
+              </td>
+              <td>
+                <input class="input" type="text" v-model="editValues.auto.speed">
+                <p class="help is-danger" v-show="autosSpeedIsValid == false">Must be a number in MPH</p>
+              </td>
             </tr>
             <tr>
               <td>Medium Trucks</td>
               <td>{{ mediumTrucksAdt }}</td>
-              <td><input class="input" type="text" v-model="editValues.medium_truck.adt_fraction"></td>
-              <td><input class="input" type="text" v-model="editValues.medium_truck.night_fraction"></td>
-              <td><input class="input" type="text" v-model="editValues.medium_truck.speed"></td>
+              <td>
+                <input class="input" type="text" v-model="editValues.medium_truck.adt_fraction">
+                <p class="help is-danger" v-show="mediumTrucksFractionIsValid == false">Must be a number</p>
+              </td>
+              <td>
+                <input class="input" type="text" v-model="editValues.medium_truck.night_fraction">
+                <p class="help is-danger" v-show="mediumTrucksNightFractionIsValid == false">Must be a number</p>
+              </td>
+              <td>
+                <input class="input" type="text" v-model="editValues.medium_truck.speed">
+                <p class="help is-danger" v-show="mediumTrucksSpeedIsValid == false">Must be a number in MPH</p>
+              </td>
             </tr>
             <tr>
               <td>Heavy Trucks</td>
               <td>{{ heavyTrucksAdt }}</td>
-              <td><input class="input" type="text" v-model="editValues.heavy_truck.adt_fraction"></td>
-              <td><input class="input" type="text" v-model="editValues.heavy_truck.night_fraction"></td>
-              <td><input class="input" type="text" v-model="editValues.heavy_truck.speed"></td>
+              <td>
+                <input class="input" type="text" v-model="editValues.heavy_truck.adt_fraction">
+                <p class="help is-danger" v-show="heavyTrucksFractionIsValid == false">Must be a number</p>
+              </td>
+              <td>
+                <input class="input" type="text" v-model="editValues.heavy_truck.night_fraction">
+                <p class="help is-danger" v-show="heavyTrucksNightFractionIsValid == false">Must be a number</p>
+              </td>
+              <td>
+                <input class="input" type="text" v-model="editValues.heavy_truck.speed">
+                <p class="help is-danger" v-show="heavyTrucksSpeedIsValid == false">Must be a number in MPH</p>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -143,6 +173,7 @@ var RoadForm = {
                 <input class="input" type="text" v-model="editValues.stop_sign_distance">
               </div>
               <p class="help">Leave blank if no stop sign or greater than 600 feet</p>
+              <p class="help is-danger" v-show="stopSignDistanceIsValid == false">Must be a number</p>
             </div>
           </div>
         </div>
@@ -157,6 +188,7 @@ var RoadForm = {
                 <input class="input" type="text" v-model="editValues.grade">
               </div>
               <p class="help">0.02 (2%) default. Use 0 if less than 2%</p>
+              <p class="help is-danger" v-show="gradeIsValid == false">Must be a number</p>
             </div>
           </div>
         </div>
@@ -168,7 +200,7 @@ var RoadForm = {
           <div class="field">
             <div class="control is-grouped">
               <button class="button" v-on:click="cancelEdit">Cancel</button>
-              <button class="button is-primary" v-on:click="saveEdit">Save</button>
+              <button class="button is-primary" v-on:click="saveEdit" :disabled="formIsValid == false">Save</button>
             </div>
           </div>
         </div>
@@ -187,6 +219,14 @@ var RoadForm = {
   `,
 
   computed: {
+    adtIsValid: function() {
+      return isNumeric(this.editValues.adt);
+    },
+
+    adtYearIsValid: function() {
+      return isYear(this.editValues.adt_year);
+    },
+
     autosAdt: function() {
       if (this.road.adt) {
         p = 1 - this.editValues.heavy_truck.adt_fraction - this.editValues.medium_truck.adt_fraction;
@@ -196,9 +236,40 @@ var RoadForm = {
       return 0;
     },
 
+    autosNightFractionIsValid: function() {
+      return isNumeric(this.editValues.auto.night_fraction);
+    },
+
+    autosSpeedIsValid: function() {
+      return isSpeed(this.editValues.auto.speed);
+    },
+
     autosPercent: function() {
       p = 1 - this.editValues.heavy_truck.adt_fraction - this.editValues.medium_truck.adt_fraction;
       return (Math.round(p * 10000)/100).toFixed(2);
+    },
+
+    countedAdtIsValid: function() {
+      return isNumeric(this.editValues.counted_adt);
+    },
+
+    countedAdtYearIsValid: function() {
+      return isYear(this.editValues.counted_adt_year);
+    },
+
+    distanceIsValid: function() {
+      return isNumeric(this.editValues.distance);
+    },
+
+    formIsValid: function() {
+      return this.nameIsValid && this.distanceIsValid && this.adtIsValid && this.adtYearIsValid &&
+        this.autosNightFractionIsValid && this.mediumTrucksNightFractionIsValid && this.heavyTrucksNightFractionIsValid &&
+        this.autosSpeedIsValid && this.mediumTrucksSpeedIsValid && this.heavyTrucksSpeedIsValid && this.mediumTrucksFractionIsValid &&
+        this.heavyTrucksFractionIsValid && this.stopSignDistanceIsValid && this.gradeIsValid;
+    },
+
+    gradeIsValid: function() {
+      return isNumeric(this.editValues.grade);
     },
 
     heavyTrucksAdt: function() {
@@ -208,12 +279,54 @@ var RoadForm = {
       return 0;      
     },
 
+    heavyTrucksFractionIsValid: function() {
+      return isNumeric(this.editValues.heavy_truck.adt_fraction);
+    },
+
+    heavyTrucksNightFractionIsValid: function() {
+      return isNumeric(this.editValues.heavy_truck.night_fraction);
+    },
+
+    heavyTrucksSpeedIsValid: function() {
+      return isSpeed(this.editValues.heavy_truck.speed);
+    },
+
     mediumTrucksAdt: function() {
       if (this.editValues.adt) {
         return numberWithCommas(Math.round(this.editValues.medium_truck.adt_fraction * this.editValues.adt));
       }
       return 0;      
     },
+
+    mediumTrucksFractionIsValid: function() {
+      return isNumeric(this.editValues.medium_truck.adt_fraction);
+    },
+
+    mediumTrucksNightFractionIsValid: function() {
+      return isNumeric(this.editValues.medium_truck.night_fraction);
+    },
+
+    mediumTrucksSpeedIsValid: function() {
+      return isSpeed(this.editValues.medium_truck.speed);
+    },
+
+    nameIsValid: function() {
+      var p = new RegExp(okString());
+      return p.test(this.editValues.name);
+    },
+
+    projectionValuesValid: function() {
+      return this.adtYearIsValid && this.countedAdtIsValid && this.countedAdtYearIsValid;
+    },
+
+    stopSignDistanceIsValid: function() {
+      if (this.editValues.stop_sign_distance == null) return true;
+      if (this.editValues.stop_sign_distance == '') {
+        this.editValues.stop_sign_distance = null;
+        return true;
+      }
+      return isNumeric(this.editValues.stop_sign_distance);
+    }
   },
 
   methods: {
@@ -242,6 +355,8 @@ var RoadForm = {
     saveEdit: function() {
       //invalidate road dnl calculation
       this.editValues.dnl = null;
+      //convert a deleted stop sign distance to null
+      if (this.editValues.stop_sign_distance == '') this.editValues.stop_sign_distance = null;
       //send up new values to replace current values
       this.$emit('update-road', this.index, this.editValues);
       this.editing = false;
