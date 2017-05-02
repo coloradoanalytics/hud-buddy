@@ -137,11 +137,6 @@ class RailroadsClient(CIMClient):
     schema_class = RailroadSchemaFromCIM
     many = True
 
-    # def get_segments(self, position, distance):
-    #     payload = {"$where": "within_circle(the_geom, {}, {}, {})".format(
-    #         position.lat, position.lng, distance)}
-    #     return self.get(payload)
-
     def get_unique_segments(self, position, distance):
         payload = {"$where": "within_circle(the_geom, {}, {}, {})".format(
             position.lat, position.lng, distance)}
