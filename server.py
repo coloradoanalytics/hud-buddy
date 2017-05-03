@@ -60,14 +60,12 @@ def sites():
 
 @app.route("/api/reports/", methods=['POST'])
 def reports():
-    #site = SiteSchema().load(request.get_json()).data
-    print(request.form['site_json'])
+    # turn the string in request.form['site_json'] into a site object
+    site = SiteSchema().loads(request.form['site_json']).data
 
-    #turn the string in request.form['site_json'] into a site object
+    # generate a report file using methods on the site object
 
-    #generate a report file using methods on the site object
-
-    #test case is to upload a dynmically generated csv file
+    # test case is to upload a dynmically generated csv file
 
     csv = """"REVIEW_DATE","AUTHOR","ISBN","DISCOUNTED_PRICE"
         "1985/01/21","Douglas Adams",0345391802,5.95
@@ -77,6 +75,7 @@ def reports():
         "2004/10/04","Randel Helms",0879755725,4.50"""
 
     response = make_response(csv)
+
     response.headers["Content-Disposition"] = "attachment; filename=test.csv"
     return response
 
