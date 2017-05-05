@@ -6,6 +6,7 @@ from utils import dnl_sum
 from locations import PositionSchema, CountySchema
 from highways import RoadSchema, RoadSchemaFromCIM
 from railroads import RailSchema, RailroadSchemaFromCIM
+import report
 
 
 class Site:
@@ -29,6 +30,7 @@ class Site:
         self.name = kwargs.get('name', 'NAL')
         self.growth_rate = kwargs.get('growth_rate', None)
         self.combined_dnl = kwargs.get('combined_dnl', None)
+        self.user_name = kwargs.get('user_name', None)
 
     def process(self):
         """
@@ -67,6 +69,9 @@ class Site:
             road.dnl = road.get_dnl()
         for rail in self.rails:
             rail.dnl = rail.get_dnl()
+ 
+    def generate_report(self, filename):
+        report.generate_report(self, filename)
 
 
 class SiteSchema(Schema):

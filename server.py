@@ -5,6 +5,7 @@ import requests
 from clients import HighwaysClient, RailroadsClient
 from locations import Position
 from sites import Site, SiteSchema
+import random
 
 
 # use custom Flask delimiters to prevent collision with Vue
@@ -63,18 +64,12 @@ def reports():
     # turn the string in request.form['site_json'] into a site object
     site = SiteSchema().loads(request.form['site_json']).data
 
+    filename = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
     # generate a report file using methods on the site object
+    site.generate_report(filename)    
 
-    # test case is to upload a dynmically generated csv file
-
-    csv = """"REVIEW_DATE","AUTHOR","ISBN","DISCOUNTED_PRICE"
-        "1985/01/21","Douglas Adams",0345391802,5.95
-        "1990/01/12","Douglas Hofstadter",0465026567,9.95
-        "1998/07/15","Timothy ""The Parser"" Campbell",0968411304,18.99
-        "1999/12/03","Richard Friedman",0060630353,5.95
-        "2004/10/04","Randel Helms",0879755725,4.50"""
-
-    response = make_response(csv)
+    pdf_file = open(filename,'r')
+    response = make_response(pdf_file)
 
     response.headers["Content-Disposition"] = "attachment; filename=test.csv"
     return response
