@@ -29,6 +29,7 @@ class Site:
         self.name = kwargs.get('name', 'NAL')
         self.growth_rate = kwargs.get('growth_rate', None)
         self.combined_dnl = kwargs.get('combined_dnl', None)
+        self.user_name = kwargs.get('user_name', None)
 
     def process(self):
         """
@@ -84,6 +85,7 @@ class SiteSchema(Schema):
     name = fields.Str(allow_none=True)
     growth_rate = fields.Float(allow_none=True, places=2)
     combined_dnl = fields.Float(dump_only=True)
+    user_name = fields.Str(allow_none=True)
 
     @post_load
     def make_site(self, data):
