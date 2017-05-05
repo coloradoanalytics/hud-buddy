@@ -158,7 +158,14 @@ class RailroadSchemaFromCIM(Schema):
         by the key `coordinates` above.
         """
         the_geom = data.pop('the_geom')
-        data['positions'] = the_geom['coordinates']
+
+        #Use this to compensate for the May 4th shift in the dataset's
+        #structure, which may or may not be permanent
+        data['positions'] = the_geom['coordinates'][0]
+
+        #use this if they change it back
+        #data['positions'] = the_geom['coordinates']
+
         return data
 
     @post_load
