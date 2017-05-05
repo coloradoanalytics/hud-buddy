@@ -110,7 +110,7 @@ function isYear(value) {
 }
 
 function isSpeed(value) {
-  if (value == null || value.length < 2 || value.length > 2) return false;
+  if (value == null || value.length < 1 || value.length > 2) return false;
   var p = /^[0-9]+$/;
   return p.test(value);
 }
