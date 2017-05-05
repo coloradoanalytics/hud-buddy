@@ -41,8 +41,11 @@ def sites():
 
         road_client = HighwaysClient()
         roads = road_client.get_unique_segments(position, road_distance)
-        county = road_client.county
-        growth_rate = road_client.county.get_growth_rate()
+        county = None
+        growth_rate = None
+        if roads:
+            county = road_client.county
+            growth_rate = road_client.county.get_growth_rate()
 
         rail_distance = request.args.get('rail_distance', 1828.8)
 

@@ -55,6 +55,9 @@ class Site:
             else:
                 return None
 
+        if energy == 0:
+            return None
+            
         return round(10 * math.log10(energy), 1)
 
     def set_adts(self):
