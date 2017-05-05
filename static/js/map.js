@@ -239,7 +239,7 @@ var MapTab = {
     },
 
     'redrawMarker': function(marker, json) {
-      if (json.roads.length == 0) {
+      if (json.combined_dnl == null) {
         marker.labelContent = "N/A";
         marker.label.setContent();
       } else {
