@@ -6,6 +6,7 @@ from utils import dnl_sum
 from locations import PositionSchema, CountySchema
 from highways import RoadSchema, RoadSchemaFromCIM
 from railroads import RailSchema, RailroadSchemaFromCIM
+import report
 
 
 class Site:
@@ -71,6 +72,9 @@ class Site:
             road.dnl = road.get_dnl()
         for rail in self.rails:
             rail.dnl = rail.get_dnl()
+ 
+    def generate_report(self, filename):
+        report.generate_report(self, filename)
 
 
 class SiteSchema(Schema):
