@@ -27,7 +27,7 @@ class VehicleType:
         self.adt = kwargs.get('adt', None)
         self.adt_fraction = kwargs.get('adt_fraction', None)
         self.speed = kwargs.get('speed', None)
-        self.night_fraction = kwargs.get('night_fraction', .15)
+        self.night_fraction = kwargs.get('night_fraction', 0.15)
         self.day_fraction = 1 - self.night_fraction
 
         # shared across the whole Site object
@@ -35,7 +35,6 @@ class VehicleType:
         self.stop_sign_distance = kwargs.get('stop_sign_distance', None)
 
         self.grade = kwargs.get('grade', 0)
-        self.num_gaf = math.pow(self.grade, .5)
 
     def get_eadt(self):
         if not self.stop_sign_distance:
@@ -78,7 +77,7 @@ class VehicleSchema(Schema):
     # specific to vehicle, input and output
     adt_fraction = fields.Float(required=True)
     speed = fields.Number(required=True)
-    night_fraction = fields.Float(default=.15)
+    night_fraction = fields.Float(default=0.15)
 
     # always calculated, output only
     dnl = fields.Float(dump_only=True)
@@ -136,11 +135,15 @@ class HeavyTruck(VehicleType):
             ae_result = 80.5 + 20 * log_1 - 15 * log_2
         return ae_result
 
+    def get_num_gaf(self):
+        #HUD formula actually uses "grade" in a literal sense, like 2% means 2, not 0.02
+        return (self.grade * 100) ** 0.5
+
     def get_dnl_result(self):
         ae_result = self.get_ae_result()
         log_dnl_sub = self.get_log_dnl_sub()
         if self.grade > 0:
-            dnl_result = (ae_result + 10 * log_dnl_sub - 49.4 + self.num_gaf)
+            dnl_result = (ae_result + 10 * log_dnl_sub - 49.4 + self.get_num_gaf())
         else:
             dnl_result = (ae_result + 10 * log_dnl_sub - 49.4)
         return dnl_result
