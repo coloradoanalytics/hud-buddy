@@ -107,22 +107,24 @@ class Rail:
         if self.ato < 1:
             return 1
         if self.diesel:
-            print("dnl diesel", self.get_dnl_diesel())
             return self.get_dnl_diesel()
-        print("dnl electric", self.get_dnl_electric())
         return self.get_dnl_electric()
 
 
 class RailSchema(Schema):
+    #setting Meta.strict to True causes marshmallow to stop on a validation error instead of defaulting to a dict
+    class Meta:
+        strict = True
+
     name = fields.Str()
 
-    railroad = fields.Str()
-    branch = fields.Str()
-    division = fields.Str()
-    subdivision = fields.Str()
-    rr_class = fields.Str()
-    rrowner_1 = fields.Str()
-    status = fields.Str()
+    railroad = fields.Str(allow_null=True, allow_none=True)
+    branch = fields.Str(allow_null=True, allow_none=True)
+    division = fields.Str(allow_null=True, allow_none=True)
+    subdivision = fields.Str(allow_null=True, allow_none=True)
+    rr_class = fields.Str(allow_null=True, allow_none=True)
+    rrowner_1 = fields.Str(allow_null=True, allow_none=True)
+    status = fields.Str(allow_null=True, allow_none=True)
 
     diesel = fields.Bool()
     distance = fields.Integer()
@@ -141,14 +143,18 @@ class RailSchema(Schema):
 
 
 class RailroadSchemaFromCIM(Schema):
+    #setting Meta.strict to True causes marshmallow to stop on a validation error instead of defaulting to a dict
+    class Meta:
+        strict = True
+
     positions = fields.Nested(PositionSchemaFromCIM, many=True)
-    railroad = fields.Str()
-    branch = fields.Str()
-    division = fields.Str()
-    subdivision = fields.Str(load_from='subdivisio')
-    rr_class = fields.Str()
-    rrowner_1 = fields.Str()
-    status = fields.Str()
+    railroad = fields.Str(allow_null=True, allow_none=True)
+    branch = fields.Str(allow_null=True, allow_none=True)
+    division = fields.Str(allow_null=True, allow_none=True)
+    subdivision = fields.Str(load_from='subdivisio', allow_null=True, allow_none=True)
+    rr_class = fields.Str(allow_null=True, allow_none=True)
+    rrowner_1 = fields.Str(allow_null=True, allow_none=True)
+    status = fields.Str(allow_null=True, allow_none=True)
 
     @pre_load
     def move_coordinates(self, data):

@@ -69,6 +69,10 @@ class Auto(VehicleType):
 
 
 class VehicleSchema(Schema):
+    #setting Meta.strict to True causes marshmallow to stop on a validation error instead of defaulting to a dict
+    class Meta:
+        strict = True
+
     # from parent road, used for input only
     distance = fields.Number(load_only=True)
     stop_sign_distance = fields.Number(allow_none=True, load_only=True)
@@ -84,6 +88,9 @@ class VehicleSchema(Schema):
 
 
 class AutoSchema(VehicleSchema):
+    #setting Meta.strict to True causes marshmallow to stop on a validation error instead of defaulting to a dict
+    class Meta:
+        strict = True
     adt_fraction = fields.Float(required=False, allow_none=True)
 
     @post_load
@@ -100,6 +107,9 @@ class MediumTruck(VehicleType):
 
 
 class MediumTruckSchema(VehicleSchema):
+    #setting Meta.strict to True causes marshmallow to stop on a validation error instead of defaulting to a dict
+    class Meta:
+        strict = True
 
     @post_load
     def make_medium_truck(self, data):
@@ -150,6 +160,9 @@ class HeavyTruck(VehicleType):
 
 
 class HeavyTruckSchema(VehicleSchema):
+    #setting Meta.strict to True causes marshmallow to stop on a validation error instead of defaulting to a dict
+    class Meta:
+        strict = True
 
     @post_load
     def make_heavy_truck(self, data):
@@ -236,6 +249,10 @@ class Road:
 
 
 class RoadSchema(Schema):
+    #setting Meta.strict to True causes marshmallow to stop on a validation error instead of defaulting to a dict
+    class Meta:
+        strict = True
+
     # required, always sent by client
     name = fields.Str()
     distance = fields.Integer()
@@ -264,6 +281,10 @@ class RoadSchema(Schema):
 
 
 class RoadSchemaFromCIM(Schema):
+    #setting Meta.strict to True causes marshmallow to stop on a validation error instead of defaulting to a dict
+    class Meta:
+        strict = True
+    
     name = fields.Str(load_from='alias')
     positions = fields.Nested(PositionSchemaFromCIM, many=True)
 
