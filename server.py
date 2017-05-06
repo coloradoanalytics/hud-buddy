@@ -1,12 +1,11 @@
-from flask import Flask, request, json, current_app, make_response
+from flask import Flask, request, json, current_app, make_response, send_file
 
 import requests
 
 from clients import HighwaysClient, RailroadsClient
 from locations import Position
 from sites import Site, SiteSchema
-import random
-
+import uuid
 
 # use custom Flask delimiters to prevent collision with Vue
 # https://github.com/yymm/flask-vuejs
@@ -67,15 +66,11 @@ def reports():
     # turn the string in request.form['site_json'] into a site object
     site = SiteSchema().loads(request.form['site_json']).data
 
-    filename = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+    filename = str(uuid.uuid4())
     # generate a report file using methods on the site object
-    site.generate_report(filename)    
-
-    pdf_file = open(filename,'r')
-    response = make_response(pdf_file)
-
-    response.headers["Content-Disposition"] = "attachment; filename=test.csv"
-    return response
+    site.generate_report(filename)
+    
+    return send_file(filename + '.pdf', as_attachment=True, attachment_filename='HUDL_Report.pdf')
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -46,14 +46,14 @@ class Site:
         # return None
         energy = 0
         for road in self.roads:
-            if road.dnl != None:
-                energy += 10 ** (road.dnl / 10)
+            if road.get_dnl() != None:
+                energy += 10 ** (road.get_dnl() / 10)
             else:
                 return None
 
         for rail in self.rails:
-            if rail.dnl != None:
-                energy += 10 ** (rail.dnl / 10)
+            if rail.get_dnl() != None:
+                energy += 10 ** (rail.get_dnl() / 10)
             else:
                 return None
 
