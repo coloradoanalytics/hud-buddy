@@ -15,6 +15,8 @@ var SiteCard = {
       </header>
 
       <div class="card-content">
+        <div>Roads DNL: {{ roadsDnl }}</div>
+        <div>Rail DNL: {{ railDnl}}</div>
       	<div>County: {{ countyName }}</div>
       	<div>Growth rate: {{ growthRate }}%</div>
       	<div>User: {{ siteData.user_name }}</div>
@@ -29,7 +31,7 @@ var SiteCard = {
     </div>
 	`,
 
-	props: [ 'site-data' ],
+	props: [ 'site-data', 'form-data' ],
 
   computed: {
     combinedDnl: function() {
@@ -46,7 +48,26 @@ var SiteCard = {
 
     growthRate: function() {
       return (Math.round(this.siteData.growth_rate * 10000)/100).toFixed(2);
+    },
+
+    railDnl: function() {
+      var nrg = 0;
+      for (var i = 0; i < this.formData.rails.length; i++) {
+        if (this.formData.rails[i].dnl) nrg += Math.pow(10, this.formData.rails[i].dnl / 10);
+      }
+      if (nrg > 0) return Math.round(10 * Math.log10(nrg) * 10) / 10;
+      return "--";
+    },
+
+    roadsDnl: function() {
+      var nrg = 0;
+      for (var i = 0; i < this.formData.roads.length; i++) {
+        if (this.formData.roads[i].dnl) nrg += Math.pow(10, this.formData.roads[i].dnl / 10);
+      }
+      if (nrg > 0) return Math.round(10 * Math.log10(nrg) * 10) / 10;
+      return "--";
     }
+
   },
 
 	methods: {
