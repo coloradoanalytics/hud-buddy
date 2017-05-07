@@ -76,6 +76,18 @@ class Site:
     def generate_report(self, filename):
         report.generate_report(self, filename)
 
+    def get_roads_dnl(self):
+        dnl_list = list()
+        for road in self.roads:
+            dnl_list.append(road.get_dnl())
+        return dnl_sum(dnl_list)
+
+    def get_rails_dnl(self):
+        dnl_list = list()
+        for rail in self.rails:
+            dnl_list.append(rail.get_dnl())
+        return dnl_sum(dnl_list)
+
 
 class SiteSchema(Schema):
     #setting Meta.strict to True causes marshmallow to stop on a validation error instead of defaulting to a dict
