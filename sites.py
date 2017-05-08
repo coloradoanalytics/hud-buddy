@@ -6,6 +6,7 @@ from utils import dnl_sum
 from locations import PositionSchema, CountySchema
 from highways import RoadSchema, RoadSchemaFromCIM
 from railroads import RailSchema, RailroadSchemaFromCIM
+from airports import AirportSchema, AirportSchemaFromCIM
 
 
 class Site:
@@ -21,7 +22,6 @@ class Site:
 
     def __init__(self, *args, **kwargs):
         self.position = kwargs.get('position', None)
-
         self.roads = kwargs.get('roads', [])
         self.rails = kwargs.get('rails', [])
         self.airports = kwargs.get('airports', [])
@@ -56,6 +56,12 @@ class Site:
             else:
                 return None
 
+        for airport in self.airports:
+            if airport.dnl != None:
+                energy += 10 ** (airport.dnl / 10)
+            else:
+                return None
+
         if energy == 0:
             return None
             
@@ -81,6 +87,7 @@ class SiteSchema(Schema):
     position = fields.Nested(PositionSchema)
     roads = fields.Nested(RoadSchema, many=True)
     rails = fields.Nested(RailSchema, many=True)
+    airports = fields.Nested(AirportSchema, many=True)
     county = fields.Nested(CountySchema, allow_none=True)
     name = fields.Str(allow_none=True)
     growth_rate = fields.Float(allow_none=True, places=2)

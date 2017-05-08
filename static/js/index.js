@@ -17,6 +17,12 @@ var app = new Vue( {
 
   methods: {
 
+    onAddAirport: function() {
+      //add a new blank airport to the form and invalidate combined dnl
+      this.formData.airports.push(blankAirport());
+      this.formData.combined_dnl = null;
+    },
+
     onAddRail: function() {
       //add a new blank rail to the form and invalidate combined dnl
       this.formData.rails.push(blankRail());
@@ -31,6 +37,12 @@ var app = new Vue( {
 
     onMoveMarker: function() {
       this.currentMarkerId = '';
+    },
+
+    onRemoveAirport: function(index) {
+      //remove rail from form data and invalidate combined dnl
+      this.formData.airports.splice(index, 1);
+      this.formData.combined_dnl = null;
     },
 
     onRemoveRail: function(index) {
@@ -66,6 +78,14 @@ var app = new Vue( {
 
     onUpdateForm: function(data) {
       this.formData = data;
+    },
+
+    onUpdateAirport: function(index, data) {
+      //overwrite airport with data from form
+      //Vue.set is required to ensure reactivity for this operation
+      Vue.set(this.formData.airports, index, data);
+      //assume new values invalidate dnl calculation
+      this.formData.combined_dnl = null;
     },
 
     onUpdateRail: function(index, data) {
@@ -117,6 +137,16 @@ function isSpeed(value) {
 
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function blankAirport() {
+  return {
+    name: "New Airport",
+    airport_type: "",
+    distance: null,
+    annual_ops: null,
+    dnl: null
+  }
 }
 
 function blankRoad() {
