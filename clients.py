@@ -3,6 +3,7 @@ import threading
 import requests
 from highways import RoadSchemaFromCIM
 from railroads import RailroadSchemaFromCIM
+from airports import AirportSchemaFromCIM
 from locations import County, CountyPopulationByAgeSchema, \
     CountyPopulationByAgeGroup
 
@@ -136,6 +137,8 @@ class RailroadsClient(CIMClient):
     resource_id = '2tib-gtif'
     schema_class = RailroadSchemaFromCIM
     many = True
+    rails = []
+    position = None
 
     def get_unique_segments(self, position, distance):
         payload = {"$where": "within_circle(the_geom, {}, {}, {})".format(
@@ -163,3 +166,39 @@ class RailroadsClient(CIMClient):
                 new_rails.append(rail)
                 distances.add(rail.distance)
         self.rails = new_rails
+
+
+class AirportsClient(CIMClient):
+
+    #curl -X GET `https://data.colorado.gov/resource/siwx-ebh7.json?$where=within_circle(the_geom,39.890105,-104.75206,24140)`
+    
+    #https://dev.socrata.com/foundry/data.colorado.gov/siwx-ebh7
+    resource_id = 'siwx-ebh7'
+    schema_class = AirportSchemaFromCIM
+    many = True
+    airports = []
+    position = None
+
+    def get_airports(self, position, distance):
+        payload = {"$where": "within_circle(the_geom, {}, {}, {})".format(
+            position.lat, position.lng, distance)}
+
+        self.position = position
+
+        self.airports = self.get(payload)
+
+        if self.airports:
+            self._remove_small_airports()
+
+        return self.airports
+
+    def _remove_small_airports(self):
+        """
+        Remove airports from list that are are not commercial, reliever, or military
+        """
+        new_airports = []
+        for airport in self.airports:
+            if "CS" in airport.airport_type or "RLVR" in airport.airport_type or "Military" in airport.airport_type:
+                new_airports.append(airport)
+
+        self.airports = new_airports

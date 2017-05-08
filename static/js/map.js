@@ -4,19 +4,36 @@ var MapRoadDisplay = {
   template: `
   <article class="media">
     <div class="media-content">
-      <div class="content">
-        <strong>{{ road.name }}</strong>
-        <br>
-        <div class="level">
-          <div class="level-left">
-            <div class="level-item">
-              {{ road.adt_year }} ADT: {{ futureAdt }}
-            </div>
+      <div class="level">
+        <div class="level-left">
+          <div class="level-item">
+            <strong>{{ road.name }}</strong>
           </div>
-          <div class="level-right">
-            <div class="level-item">
-              Heavy Trucks: {{ heavyTrucks }}
-            </div>
+        </div>
+        <div class="level-right">
+          <div class="level-item">
+            <strong>{{ roadDnl }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="level">
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">distance</p>
+            <p> {{ road.distance }} feet</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">{{ road.adt_year }} ADT</p>
+            <p> {{ futureAdt }}</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Heavy Trucks</p>
+            <p> {{ heavyTrucks }}</p>
           </div>
         </div>
       </div>
@@ -32,6 +49,11 @@ var MapRoadDisplay = {
 
     heavyTrucks: function() {
       return Math.round(this.road.heavy_truck.adt_fraction * 10000)/100 + "%";
+    },
+
+    roadDnl: function() {
+      if (this.road.dnl) return this.road.dnl.toString() + " dB";
+      return "--";
     }
   },
 
@@ -42,14 +64,71 @@ var MapRailDisplay = {
   template: `
   <article class="media">
     <div class="media-content">
-      <div class="content">
-        <strong>{{ rail.name }}</strong>
+      <div class="level">
+        <div class="level-left">
+          <div class="level-item">
+            <strong>{{ rail.name }}</strong>
+          </div>
+        </div>
+        <div class="level-right">
+          <div class="level-item">
+            <strong>{{ railDnl }}</strong>
+          </div>
+        </div>
       </div>
     </div>
   </article>
   `,
 
+  computed: {
+    railDnl: function() {
+      if (this.rail.dnl) return this.rail.dnl.toString() + " dB";
+      return "--";
+    }
+  },
+
   props: [ 'rail' ]
+}
+
+var MapAirportDisplay = {
+  template: `
+  <article class="media">
+    <div class="media-content">
+        <strong>{{ airport.name }}</strong>
+
+        <div class="level">
+          <div class="level-item has-text-centered">
+            <div>
+            <p class="heading">Type</p>
+            <p>{{airport.airport_type}}</p>
+            </div>
+          </div>
+          <div class="level-item has-text-centered">
+            <div>
+            <p class="heading">Distance</p>
+            <p>{{ distanceInMiles }} miles</p>
+            </div>
+          </div>
+          <div class="level-item has-text-centered">
+            <div>
+            <p class="heading">Annual Ops</p>
+            <p>{{airport.annual_ops}}</p>
+            </div>
+          </div>
+        </div>
+
+    </div>
+  </article>
+  `,
+
+  computed: {
+    distanceInMiles: function() {
+      var miles = this.airport.distance / 5280;
+      return Math.round(miles * 10) / 10;
+    }
+  },
+
+  props: [ 'airport' ]
 }
 
 //main component for map tab
@@ -114,6 +193,17 @@ var MapTab = {
                 <map-rail-display v-for="rail in currentMarker.data.rails" v-bind:rail="rail" :key="rail.railroad"></map-rail-display>
               </div>
             </div>
+
+            <div class="card">
+              <header class="card-header">
+                <p class="card-header-title">
+                  Airports
+                </p>
+              </header>
+              <div class="card-content">
+                <map-airport-display v-for="airport in currentMarker.data.airports" v-bind:airport="airport" :key="airport.name"></map-airport-display>
+              </div>
+            </div>  
           </template>
 
           <template v-else>
@@ -138,22 +228,13 @@ var MapTab = {
   `,
 
   methods: {
-    'initMap': function() {
-      this.map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 39.797, lng: -104.958},
-        zoom: 12
-      });
 
-      var self = this;
-      this.map.addListener('click', function(event) {
-        self.createMarker(event, this);
-      });
-    },
-
-    'removeCurrentMarker': function() {
-      markers[this.currentMarkerId].marker.setMap(null);
-      delete markers[this.currentMarkerId];
-      this.$emit('select-marker', '');
+    'clearSelectedMarker': function() {
+      if (this.currentMarkerId) {
+        this.currentMarker.marker.labelAnchor = new google.maps.Point(18, -6);
+        this.currentMarker.marker.labelClass = "labels";
+        this.currentMarker.marker.label.draw();
+      }
     },
 
     'createMarker': function(event, map) {
@@ -199,6 +280,18 @@ var MapTab = {
       this.placeMarker(marker, lat, lng);
     },
 
+    'initMap': function() {
+      this.map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: 39.797, lng: -104.958},
+        zoom: 12
+      });
+
+      var self = this;
+      this.map.addListener('click', function(event) {
+        self.createMarker(event, this);
+      });
+    },
+    
     'moveMarker': function(event, marker) {
       var lat = event.latLng.lat();
       var lng = event.latLng.lng();
@@ -223,21 +316,6 @@ var MapTab = {
 
     },
 
-    'selectMarker': function(marker) {
-      marker.labelAnchor = new google.maps.Point(23,-6);
-      marker.labelClass = "labels selected";
-      marker.label.draw();
-      this.$emit('select-marker', marker.id);
-    },
-
-    'clearSelectedMarker': function() {
-      if (this.currentMarkerId) {
-        this.currentMarker.marker.labelAnchor = new google.maps.Point(18, -6);
-        this.currentMarker.marker.labelClass = "labels";
-        this.currentMarker.marker.label.draw();
-      }
-    },
-
     'redrawMarker': function(marker, json) {
       if (json.combined_dnl == null) {
         marker.labelContent = "N/A";
@@ -253,6 +331,19 @@ var MapTab = {
         marker.icon.strokeColor = pinColor;
         marker.setShape();
       }
+    },
+
+    'removeCurrentMarker': function() {
+      markers[this.currentMarkerId].marker.setMap(null);
+      delete markers[this.currentMarkerId];
+      this.$emit('select-marker', '');
+    },
+
+    'selectMarker': function(marker) {
+      marker.labelAnchor = new google.maps.Point(23,-6);
+      marker.labelClass = "labels selected";
+      marker.label.draw();
+      this.$emit('select-marker', marker.id);
     },
 
     sendToForm: function() {
@@ -299,6 +390,7 @@ var MapTab = {
 
   components: {
     'map-road-display': MapRoadDisplay,
-    'map-rail-display': MapRailDisplay
+    'map-rail-display': MapRailDisplay,
+    'map-airport-display': MapAirportDisplay
   }
 };

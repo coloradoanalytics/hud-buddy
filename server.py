@@ -2,7 +2,7 @@ from flask import Flask, request, json, current_app
 
 import requests
 
-from clients import HighwaysClient, RailroadsClient
+from clients import HighwaysClient, RailroadsClient, AirportsClient
 from locations import Position
 from sites import Site, SiteSchema
 
@@ -35,9 +35,12 @@ def sites():
         lng = float(request.args.get('lng'))
         position = Position(lat, lng)
 
-        # regulation is to consider roads within 1000', but consider 2000' in
-        # case of very busy highways
-        road_distance = request.args.get('road_distance', 609.6)
+        #find roads within 1500 ft
+        road_distance = request.args.get('road_distance', 457.2)
+        #find railways within 4500 ft
+        rail_distance = request.args.get('rail_distance', 1371.6)
+        #find airports within 15 miles
+        airport_distance = request.args.get('airport-distance', 24140.2)
 
         road_client = HighwaysClient()
         roads = road_client.get_unique_segments(position, road_distance)
@@ -47,13 +50,17 @@ def sites():
             county = road_client.county
             growth_rate = road_client.county.get_growth_rate()
 
-        rail_distance = request.args.get('rail_distance', 1828.8)
-
         rail_client = RailroadsClient()
         rails = rail_client.get_unique_segments(position, rail_distance)
 
+        airports_client = AirportsClient()
+        airports = airports_client.get_airports(position, airport_distance)
+        if airports:
+            for a in airports:
+                a.set_distance(position)
+
         site = Site(position=position, roads=roads, rails=rails,
-                    county=county, growth_rate=growth_rate)
+                    county=county, growth_rate=growth_rate, airports=airports)
 
     elif request.method == 'POST':
         site = SiteSchema().load(request.get_json()).data
