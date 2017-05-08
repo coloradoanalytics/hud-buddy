@@ -88,6 +88,15 @@ class Site:
             dnl_list.append(rail.get_dnl())
         return dnl_sum(dnl_list)
 
+    def get_hud_status(self):
+        dnl = self.get_combined_dnl()
+        if dnl <= 65:
+            return 'Acceptable'
+        elif dnl > 65 and dnl <= 75:
+            return 'Normally Unacceptable'
+        else:
+            return 'Unacceptable'
+
 
 class SiteSchema(Schema):
     #setting Meta.strict to True causes marshmallow to stop on a validation error instead of defaulting to a dict

@@ -24,16 +24,21 @@ def generate_report(site,filename):
     doc.preamble.append(NoEscape(r'\cfoot{}'))
     doc.preamble.append(NoEscape(r'\lhead{\begin{tabular}[t]{l} \\ \LARGE Noise Assesment Location \\ \end{tabular}}'))
    # doc.preamble.append(NoEscape(r'\chead{\footnotesize Acceptable:\\Normally Unacceptable:\\Unacceptable:}'))
-    doc.preamble.append(NoEscape(r'\rhead{\begin{tabular}[t]{ll}\scriptsize Acceptable & \scriptsize Up to 65 dB\\ \scriptsize Normally Unacceptable & \scriptsize Between 65 dB and 75 dB\\ \scriptsize Unacceptable & \scriptsize 75 dB and Above\end{tabular}}'))
     doc.preamble.append(NoEscape(r'\setlength{\headsep}{.75in}'))
     #Get current date
     current_date = datetime.datetime.now()
     #doc.append(NoEscape(r'\centering'))
-    doc.append(Section(bold(site.name + ' | Total DNL: ' + str(site.get_combined_dnl()) + ' dB')))
+    doc.append(NoEscape(r'\noindent \textbf{ \noindent \Large ' + site.name + r' | }'))
+    doc.append(NoEscape(r'\hfill'))
+    doc.append(NoEscape(r'\textbf{\large Total DNL: ' + str(site.get_combined_dnl()) + r' dB | ' + site.get_hud_status() + r'}'))
+    #doc.append(NoEscape(r'\\'))
+    #doc.append(NoEscape(r' \flushright{\Large ' + site.get_hud_status() + r'}'))
+    doc.append(NoEscape(r'\\ \\'))
     with doc.create(Tabular('c|c|c|c|c')) as table:
+        table.add_hline()
         table.add_row(('Date','User Name','Growth Rate','Roads DNL','Rail DNL'))
         table.add_hline()
-        table.add_row((current_date.strftime("%B %d, %Y"),site.user_name,percent_str(site.growth_rate),site.get_roads_dnl(),site.get_rails_dnl()))
+        table.add_row((current_date.strftime("%B %d, %Y"),site.user_name,percent_str(site.growth_rate) + r'%',site.get_roads_dnl(),site.get_rails_dnl()))
  
     doc.append(Section('Roads'))
     for road in site.roads:
@@ -59,6 +64,7 @@ def generate_report(site,filename):
         doc.append(NoEscape(r'\vspace{.25in}'))
         doc.append(NoEscape(r'\\'))
         
+    doc.append(NoEscape(r'\vspace{-.25in}'))
     doc.append(Section('Rail'))
     for rail in site.rails:
         doc.append(bold(rail.name))
@@ -66,9 +72,11 @@ def generate_report(site,filename):
         doc.append(bold(str(rail.get_dnl()) + ' dB'))
         doc.append(NoEscape(r'\\'))
         with doc.create(Tabular('cccc')) as table:
+            table.add_hline()
             table.add_row(('Effective Distance (feet)', 'Speed (mph)', 'Engines per Train', 'Cars per Train'))
             table.add_hline()
             table.add_row((rail.distance, rail.speed, rail.engines_per_train, rail.cars_per_train))
+            table.add_hline()
 	
         doc.append(NoEscape(r'\\'))
         
