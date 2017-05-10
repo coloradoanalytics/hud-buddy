@@ -88,8 +88,7 @@ def generate_report(site,filename):
     doc.generate_pdf(filename,clean_tex=False)
 
 def get_background_string():
-  background_string = r'\backgroundsetup{ scale=1, color=black, opacity=1, angle=0, position=current page.south, vshift=60pt, contents={ \small\sffamily \begin{minipage}{.8\textwidth} \parbox[b]{.6\textwidth}{Page \thepage\ of   \pageref{LastPage}}\hfill\parbox[b]{.4\textwidth}{\raggedleft \hspace{-1in}Conforms to HUD Noise Guidebook}\      \textcolor{orange}{\rule{\textwidth}{1.5pt}}\ \href{http://hudl.coloradoanalytics.com}{http://hudl.coloradoanalytics.com}\end{minipage}\hspace{.02\textwidth}\begin{minipage}{.18\textwidth}\includegraphics[width=\linewidth,height=70pt,keepaspectratio]{static/images/hudl-report.png}\end{minipage}}}'
-  return background_string
+  return r'\backgroundsetup{ scale=1, color=black, opacity=1, angle=0, position=current page.south, vshift=60pt, contents={ \small\sffamily \begin{minipage}{.8\textwidth} \parbox[b]{.6\textwidth}{Page \thepage\ of   \pageref{LastPage}}\hfill\parbox[b]{.4\textwidth}{\raggedleft \hspace{-1in}Calculations conform to HUD Noise Guidebook}\      \textcolor{orange}{\rule{\textwidth}{1.5pt}}\ \href{http://hud.coloradoanalytics.com}{http://hud.coloradoanalytics.com}\end{minipage}\hspace{.02\textwidth}\begin{minipage}{.18\textwidth}\end{minipage}}}'
 
 def percent_str(value):
     return("%.2f" % (value*100))

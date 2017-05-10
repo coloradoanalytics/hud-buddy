@@ -3,9 +3,9 @@ var AboutTab = {
 	template: `
 	 <div class="section">
     <div class="container">
-      <p class="title is-2">What is HUDL?</p>
+      <p class="title is-2">What is HUDX?</p>
       <p>
-        HUDL is a tool that can instantly produce HUD noise studies.
+        HUDX is a tool that can instantly produce HUD noise studies.
         It was born out of the frustrations of an acoustical engineer using the worksheets in the HUD Noise Guidebook.
       </p>
       <br>
@@ -15,36 +15,36 @@ var AboutTab = {
       <br>
       <p>
         We are one of 10 finalist teams. On May 24th we will present this application to an audience and a panel of judges. 
-        If we are chosen as a winning team, we will receive money and resources to help us develop HUDL into an even better tool.
+        If we are chosen as a winning team, we will receive money and resources to help us develop HUDX into an even better tool.
       </p>
       <br>
       <p>
         The best possible evidence we can use to sway the judges to our favor is real-life users. 
-        So if you find HUDL handy and think you'll use it, please send a quick note to <a href="mailto:joshua@coloradoanalytics.com">joshua@coloradoanalytics.com</a>.
+        So if you find HUDX handy and think you'll use it, please send a quick note to <a href="mailto:joshua@coloradoanalytics.com">joshua@coloradoanalytics.com</a>.
       </p>
       <br>
       <br>
 
       <p class="title is-2">How to Use</p>
       <p>
-        There are two parts to HUDL: The <strong>Map</strong> and the <strong>Form</strong>.
+        There are two parts to HUDX: The <strong>Map</strong> and the <strong>Form</strong>.
       </p>
       <br>
       <p class="title is-4">Using the Map</p>
       <p>
-        When you click on the map HUDL performs an instant noise analysis using the methods in the HUD Noise Guidebook.
-        HUDL queries public data sources to find significant roads and railways along with as much information as it can find
-        about those noise sources. A marker will appear on the map and you'll see a summary of the data HUDL found.
+        When you click on the map HUDX performs an instant noise analysis using the methods in the HUD Noise Guidebook.
+        HUDX queries public data sources to find significant roads and railways along with as much information as it can find
+        about those noise sources. A marker will appear on the map and you'll see a summary of the data HUDX found.
       </p>
       <br>
       <p>
-        In <strong>most cases</strong>, the data that HUDL automatically collects will be enough to produce a complete Noise Assessment Location (NAL) worksheet.
+        In <strong>most cases</strong>, the data that HUDX automatically collects will be enough to produce a complete Noise Assessment Location (NAL) worksheet.
         When this happens, the map marker will show the calculated Day-Night Level (DNL) for that location and will be color-coded according to its HUD classification.
       </p>
       <br>
       <p>
         You can add multiple markers to the map.
-        If you'd like to move a marker, drag it to the new location and HUDL will do a new query and analysis.
+        If you'd like to move a marker, drag it to the new location and HUDX will do a new query and analysis.
       </p>
       <br>
       <p>
@@ -53,7 +53,7 @@ var AboutTab = {
       <br>
       <p class="title is-4">Using the Form</p>
       <p>
-        HUDL's form is a replacement for the <a href="https://www.hudexchange.info/environmental-review/dnl-calculator/">DNL Calculator</a> at the HUD Exchange.
+        HUDX's form is a replacement for the <a href="https://www.hudexchange.info/environmental-review/dnl-calculator/">DNL Calculator</a> at the HUD Exchange.
         The calculations on both sites are the same, but we think our form is cleaner and easier to use.
       </p>
       <br>
@@ -79,7 +79,7 @@ var AboutTab = {
       <br>
       <p class="title is-2">Road Map</p>
       <p>
-        HUDL's automatic data retrieval currently works only in Colorado.
+        HUDX's automatic data retrieval currently works only in Colorado.
         We plan to start adding more states soon after the conclusion of the GoCode Colorado contest (sooner if we win!).
       </p>
       <br>
