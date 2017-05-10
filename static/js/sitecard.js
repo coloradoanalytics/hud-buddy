@@ -24,8 +24,8 @@ var SiteCard = {
 
       <footer class="card-footer">
         <a class="card-footer-item" v-on:click="resetForm">Reset</a>
-        <a class="card-footer-item">Generate Report</a>
-        <a class="card-footer-item is-primary" v-on:click="getCalculation">Calculate</a>
+        <a class="card-footer-item" v-on:click="getReport">Generate Report</a>
+        <a class="card-footer-item" v-on:click="getCalculation">Calculate</a>
       </footer>
 
     </div>
@@ -78,6 +78,10 @@ var SiteCard = {
 		getCalculation: function() {
 			this.$emit('get-calculation');
 		},
+
+    getReport: function() {
+      this.$emit('get-report');
+    },
 
     resetForm: function() {
       this.$emit('reset-form');

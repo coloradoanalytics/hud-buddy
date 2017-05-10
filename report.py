@@ -1,67 +1,113 @@
 from pylatex import Document, Section, Subsection, Subsubsection, Tabular, Math, Figure, Matrix, Command
 import datetime
-from pylatex.utils import italic, NoEscape
+from pylatex.utils import italic, NoEscape, bold
 from pylatex import Package
 
-def generate_report(input_object,responses):
-    geom_opts = {"tmargin":"1cm","lmargin":"1in"}
+def generate_report(site,filename):
+    #Set Document Geometry
+    geom_opts = {"tmargin":"1in","bmargin":"1.5in","lmargin":"1.5in","rmargin":"2.2in"}
+    #Create document object
     doc = Document(geometry_options=geom_opts)
+    #Add Latex packages
     doc.packages.append(Package('graphicx'))
     doc.packages.append(Package('background'))
     doc.packages.append(Package('lastpage'))
     doc.packages.append(Package('titling'))
     doc.packages.append(Package('geometry'))
     doc.packages.append(Package('url'))
-    now = datetime.datetime.now()
-    #doc.preamble.append(Command('title', 'Environmental Review: Day Night Level'))
-    doc.preamble.append(NoEscape(r'\setlength{\droptitle}{4cm}'))
-    doc.preamble.append(NoEscape(r'\title{Environmental Review: Day Night Level}'))
+    doc.packages.append(Package('hyperref', 'hidelinks'))
+    doc.packages.append(Package('fancyhdr'))
+    #Add document footer
     doc.preamble.append(NoEscape(get_background_string()))
-    #doc.preamble.append(Command('date', now.strftime("%B %d, %Y")))
-    #doc.preamble.append(Command('author', "Prepared For " + input_object['developer_name']))
-    doc.preamble.append(NoEscape(r"\author{Prepared For " + input_object['developer_name'] + r"}"))
-    doc.append(NoEscape(r'\maketitle'))
-    doc.append(NoEscape(r'\centering'))
-    with doc.create(Tabular('c|c|c')) as table:
-        table.add_row(('Site ID','Record Date','User\'s Name'))
+    doc.preamble.append(NoEscape(r'\fancyheadoffset{.5in}'))
+    doc.preamble.append(NoEscape(r'\pagestyle{fancy}'))
+    doc.preamble.append(NoEscape(r'\cfoot{}'))
+    doc.preamble.append(NoEscape(r'\lhead{\begin{tabular}[t]{l} \\ \LARGE Noise Assesment Location \\ \end{tabular}}'))
+    doc.preamble.append(NoEscape(r'\setlength{\headsep}{.75in}'))
+    #Get current date
+    current_date = datetime.datetime.now()
+    #doc.append(NoEscape(r'\centering'))
+    doc.append(NoEscape(r'\noindent \textbf{ \noindent \Large ' + site.name + r' }'))
+    doc.append(NoEscape(r'\hfill'))
+    doc.append(NoEscape(r'\textbf{\large DNL ' + str(site.get_combined_dnl()) + r'}'))
+    #doc.append(NoEscape(r'\textbf{\large DNL ' + str(site.get_combined_dnl()) + r' | ' + site.get_hud_status() + r'}'))
+    #doc.append(NoEscape(r'\\'))
+    #doc.append(NoEscape(r' \flushright{\Large ' + site.get_hud_status() + r'}'))
+    doc.append(NoEscape(r'\\ \\'))
+    with doc.create(Tabular('c|c|c|c|c')) as table:
         table.add_hline()
-        table.add_row((input_object['site_id'],now.strftime("%B %d, %Y"),input_object['users_name']))
-    doc.append(NoEscape(r"\\"))
-    doc.append(NoEscape(r"\includegraphics{hudl.png}"))
-    
-    doc.append(NoEscape(r'\newpage'))
-    doc.append(NoEscape(r'\tableofcontents'))
-    doc.append(NoEscape(r'\newpage'))
-    
-    for response in responses['responses']:
-        with doc.create(Section('Site: ' + response['site_id'])):
-            for segment in response['segments']:
-                doc.append(Subsubsection('Road Name: ' + segment['street_name']))
-                with doc.create(Tabular('lccc')) as table:
-                    table.add_row(('Vehicle Type','Cars','Medium Trucks','Heavy Trucks'))
-                    table.add_hline()
-                    dist = int(segment['distance'])
-                    table.add_row(('Effective Distance (ft)',dist,dist,dist))
-                    table.add_row(('Distance to Stop Sign',0,0,0))
-                    table.add_row(('Average Speed',0,0,0))
-                    table.add_row(('Average Daily Trips (ADT)',0,0,0))
-                    table.add_row(('Night Fraction of ADT',0,0,0))
-                    table.add_row(('Road Gradient (%)',0,0,0))
-                    table.add_row(('Vehicle DNL',0,0,0))
-                    table.add_empty_row()
-                    table.add_row(('Road DNL',0,'',''))
-                    doc.append(NoEscape(r'\\'))
-            doc.append(Subsubsection('Combined DNL'))
-            with doc.create(Tabular('lc')) as table:
-                table.add_row(('Airport Noise Level',0))
-                table.add_row(('Loud Impulse Sounds?','No'))
-                table.add_row(('Road & Rail DNL',0))
-                table.add_row(('DNL Including Airport',0))
-                table.add_row(('Site DNL with Loud Impulse Sound',0))
-        doc.append(NoEscape(r'\newpage'))
+        table.add_row(('Date','User Name','Growth Rate','Roads DNL','Rail DNL'))
+        table.add_hline()
+        table.add_row((current_date.strftime("%B %d, %Y"),site.user_name,percent_str(site.growth_rate) + r'%',site.get_roads_dnl(),site.get_rails_dnl()))
+ 
+    doc.append(Section('Roads', numbering=False))
+    for road in site.roads:
+        doc.append(bold(road.name))
+        doc.append(NoEscape(r'\hfill'))
+        doc.append(bold(str(road.get_dnl())+ ' dB'))
+        doc.append(NoEscape(r'\\'))
+        with doc.create(Tabular('lcccc')) as table:
+            table.add_hline()
+            table.add_row(('Traffic','ADT','Percent of ADT','Night Fraction','Speed (mph)'))
+            table.add_hline()
+            table.add_row(('Autos',num_str(road.auto.adt),percent_str(road.auto.adt_fraction),road.auto.night_fraction,road.auto.speed))
+            table.add_row(('Medium Trucks',num_str(road.medium_truck.adt),percent_str(road.medium_truck.adt_fraction),road.medium_truck.night_fraction,road.medium_truck.speed))
+            table.add_row(('Heavy Trucks',num_str(road.heavy_truck.adt),percent_str(road.heavy_truck.adt_fraction),road.heavy_truck.night_fraction,road.heavy_truck.speed))
+            table.add_row(('Total',num_str(road.adt),'-','-','-'))
+            table.add_hline()
 
-    doc.generate_pdf('report',clean_tex=False, compiler_args=['xlatex'])
+        doc.append(NoEscape(r'\\'))
+        with doc.create(Tabular('cccc')) as table:
+            table.add_row(('Effective Distance (feet)','Grade','Distance to Stop Sign (feet)','For Year'))
+            table.add_hline()
+            table.add_row((road.distance,percent_str(road.grade) + "%",road.stop_sign_distance,road.adt_year))
+        doc.append(NoEscape(r'\vspace{.25in}'))
+        doc.append(NoEscape(r'\\'))
+        
+    doc.append(NoEscape(r'\vspace{-.25in}'))
+    doc.append(Section('Rail', numbering=False))
+    for rail in site.rails:
+        doc.append(bold(rail.name))
+        doc.append(NoEscape(r'\hfill'))
+        doc.append(bold(str(rail.get_dnl()) + ' dB'))
+        doc.append(NoEscape(r'\\'))
+        with doc.create(Tabular('cccc')) as table:
+            table.add_hline()
+            table.add_row(('Effective Distance (feet)', 'Speed (mph)', 'Engines per Train', 'Cars per Train'))
+            table.add_hline()
+            table.add_row((rail.distance, rail.speed, rail.engines_per_train, rail.cars_per_train))
+            table.add_hline()
+	
+        doc.append(NoEscape(r'\\'))
+        
+        with doc.create(Tabular('ccccc')) as table:
+            table.add_row(('Trains per Day', 'Night Fraction', 'Type', 'Horns', 'Tracks'))
+            table.add_hline()
+            table.add_row((rail.ato, rail.night_fraction, train_type_str(rail.diesel), yes_no_str(rail.horns), track_type_str(rail.bolted_tracks)))
+
+    doc.generate_pdf(filename,clean_tex=False)
 
 def get_background_string():
-  background_string = r'\backgroundsetup{ scale=1, color=black, opacity=1, angle=0, position=current page.south, vshift=60pt, contents={ \small\sffamily \begin{minipage}{.8\textwidth} \parbox[b]{.6\textwidth}{Page \thepage\ of   \pageref{LastPage}}\hfill\parbox[b]{.4\textwidth}{\raggedleft HUDL by HUD-Buddy \\ Denver, CO}\      \textcolor{orange}{\rule{\textwidth}{1.5pt}}\ \url{www.hudbuddy.com/hudl}\end{minipage}\hspace{.02\textwidth}\begin{minipage}{.18\textwidth}\includegraphics[width=\linewidth,height=70pt,keepaspectratio]{hudl.png}\end{minipage}}}'
+  background_string = r'\backgroundsetup{ scale=1, color=black, opacity=1, angle=0, position=current page.south, vshift=60pt, contents={ \small\sffamily \begin{minipage}{.8\textwidth} \parbox[b]{.6\textwidth}{Page \thepage\ of   \pageref{LastPage}}\hfill\parbox[b]{.4\textwidth}{\raggedleft \hspace{-1in}Conforms to HUD Noise Guidebook}\      \textcolor{orange}{\rule{\textwidth}{1.5pt}}\ \href{http://hudl.coloradoanalytics.com}{http://hudl.coloradoanalytics.com}\end{minipage}\hspace{.02\textwidth}\begin{minipage}{.18\textwidth}\includegraphics[width=\linewidth,height=70pt,keepaspectratio]{static/images/hudl-report.png}\end{minipage}}}'
   return background_string
+
+def percent_str(value):
+    return("%.2f" % (value*100))
+
+def num_str(value):
+    return("%.0f" % value)
+
+def track_type_str(bolted):
+    if bolted:
+        return "Bolted"
+    return "Welded"
+
+def train_type_str(diesel):
+    if diesel:
+        return "Diesel"
+    return "Electric"
+
+def yes_no_str(val):
+    if val:
+        return "Yes"
+    return "No"

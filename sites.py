@@ -6,6 +6,7 @@ from utils import dnl_sum
 from locations import PositionSchema, CountySchema
 from highways import RoadSchema, RoadSchemaFromCIM
 from railroads import RailSchema, RailroadSchemaFromCIM
+import report
 from airports import AirportSchema, AirportSchemaFromCIM
 
 
@@ -45,14 +46,14 @@ class Site:
         # return None
         energy = 0
         for road in self.roads:
-            if road.dnl != None:
-                energy += 10 ** (road.dnl / 10)
+            if road.get_dnl() != None:
+                energy += 10 ** (road.get_dnl() / 10)
             else:
                 return None
 
         for rail in self.rails:
-            if rail.dnl != None:
-                energy += 10 ** (rail.dnl / 10)
+            if rail.get_dnl() != None:
+                energy += 10 ** (rail.get_dnl() / 10)
             else:
                 return None
 
@@ -77,6 +78,30 @@ class Site:
             road.dnl = road.get_dnl()
         for rail in self.rails:
             rail.dnl = rail.get_dnl()
+ 
+    def generate_report(self, filename):
+        report.generate_report(self, filename)
+
+    def get_roads_dnl(self):
+        dnl_list = list()
+        for road in self.roads:
+            dnl_list.append(road.get_dnl())
+        return dnl_sum(dnl_list)
+
+    def get_rails_dnl(self):
+        dnl_list = list()
+        for rail in self.rails:
+            dnl_list.append(rail.get_dnl())
+        return dnl_sum(dnl_list)
+
+    def get_hud_status(self):
+        dnl = self.get_combined_dnl()
+        if dnl <= 65:
+            return 'Acceptable'
+        elif dnl > 65 and dnl <= 75:
+            return 'Normally Unacceptable'
+        else:
+            return 'Unacceptable'
 
 
 class SiteSchema(Schema):
