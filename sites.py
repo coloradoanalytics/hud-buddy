@@ -82,6 +82,12 @@ class Site:
     def generate_report(self, filename):
         report.generate_report(self, filename)
 
+    def get_airports_dnl(self):
+        dnl_list = list()
+        for a in self.airports:
+            dnl_list.append(a.get_dnl())
+        return dnl_sum(dnl_list)
+
     def get_roads_dnl(self):
         dnl_list = list()
         for road in self.roads:
