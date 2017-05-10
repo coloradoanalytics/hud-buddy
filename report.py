@@ -5,15 +5,17 @@ from pylatex import Package
 
 def generate_report(site,filename):
     #Set Document Geometry
-    geom_opts = {"tmargin":"1in","bmargin":"1.5in","lmargin":"1.5in","rmargin":"2.2in"}
+    #geom_opts = {"tmargin":"1in","bmargin":"1.5in","lmargin":"1.5in","rmargin":"2.2in"}
     #Create document object
-    doc = Document(geometry_options=geom_opts)
+    #doc = Document(geometry_options=geom_opts)
+    doc = Document()
     #Add Latex packages
     doc.packages.append(Package('graphicx'))
     doc.packages.append(Package('background'))
     doc.packages.append(Package('lastpage'))
     doc.packages.append(Package('titling'))
-    doc.packages.append(Package('geometry'))
+    doc.preamble.append(NoEscape(r'\usepackage[tmargin=1in,bmargin=1.5in,lmargin=1.5in,rmargin=2.2in]{geometry}'))
+    #doc.packages.append(Package('geometry'))
     doc.packages.append(Package('url'))
     doc.packages.append(Package('hyperref', 'hidelinks'))
     doc.packages.append(Package('fancyhdr'))
@@ -84,6 +86,19 @@ def generate_report(site,filename):
             table.add_row(('Trains per Day', 'Night Fraction', 'Type', 'Horns', 'Tracks'))
             table.add_hline()
             table.add_row((rail.ato, rail.night_fraction, train_type_str(rail.diesel), yes_no_str(rail.horns), track_type_str(rail.bolted_tracks)))
+    doc.append(NoEscape(r'\vspace{-.25in}'))
+    doc.append(Section('Airports', numbering=False))
+    for airport in site.airports:
+        doc.append(bold(airport.name))
+        doc.append(NoEscape(r'\hfill'))
+        doc.append(bold(str(airport.get_dnl()) + ' dB'))
+        doc.append(NoEscape(r'\\'))
+        with doc.create(Tabular('ccc')) as table:
+            table.add_row(('Type', 'Distance (miles)', 'Anual Ops'))
+            table.add_hline()
+            table.add_row((airport.airport_type, num_str(airport.distance), airport.annual_ops))
+            
+        doc.append(NoEscape(r'\\'))
 
     doc.generate_pdf(filename,clean_tex=False)
 

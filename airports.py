@@ -17,6 +17,9 @@ class Airport:
         self.distance = round(self.position.distance_from(position),0)
         print('distance', self.distance)
 
+    def get_dnl(self):
+        return self.dnl
+
 
 class AirportSchema(Schema):
     class Meta:
