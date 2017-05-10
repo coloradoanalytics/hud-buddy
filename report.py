@@ -5,37 +5,29 @@ from pylatex import Package
 import os
 
 def generate_report(site,filename):
-    #Set Document Geometry
-    #geom_opts = {"tmargin":"1in","bmargin":"1.5in","lmargin":"1.5in","rmargin":"2.2in"}
     #Create document object
-    #doc = Document(geometry_options=geom_opts)
     doc = Document()
     #Add Latex packages
     doc.packages.append(Package('graphicx'))
-    doc.packages.append(Package('background'))
     doc.packages.append(Package('lastpage'))
     doc.packages.append(Package('titling'))
     doc.preamble.append(NoEscape(r'\usepackage[tmargin=1in,bmargin=1.5in,lmargin=1.5in,rmargin=2.2in]{geometry}'))
-    #doc.packages.append(Package('geometry'))
     doc.packages.append(Package('url'))
     doc.packages.append(Package('hyperref', 'hidelinks'))
     doc.packages.append(Package('fancyhdr'))
     #Add document footer
-    doc.preamble.append(NoEscape(get_background_string()))
     doc.preamble.append(NoEscape(r'\fancyheadoffset{.5in}'))
     doc.preamble.append(NoEscape(r'\pagestyle{fancy}'))
     doc.preamble.append(NoEscape(r'\cfoot{}'))
-    doc.preamble.append(NoEscape(r'\lhead{\begin{tabular}[t]{l} \\ \LARGE Noise Assesment Location \\ \end{tabular}}'))
+    doc.preamble.append(NoEscape(r'\lhead{\LARGE Noise Assesment Location}'))
+    doc.preamble.append(NoEscape(r'\rhead{\footnotesize Calculations conform to HUD Noise Guidebook}'))
+    doc.preamble.append(NoEscape(r'\rfoot{Page \thepage\ of   \pageref{LastPage}}'))
     doc.preamble.append(NoEscape(r'\setlength{\headsep}{.75in}'))
     #Get current date
     current_date = datetime.datetime.now()
-    #doc.append(NoEscape(r'\centering'))
     doc.append(NoEscape(r'\noindent \textbf{ \noindent \Large ' + site.name + r' }'))
     doc.append(NoEscape(r'\hfill'))
     doc.append(NoEscape(r'\textbf{\large DNL ' + str(site.get_combined_dnl()) + r'}'))
-    #doc.append(NoEscape(r'\textbf{\large DNL ' + str(site.get_combined_dnl()) + r' | ' + site.get_hud_status() + r'}'))
-    #doc.append(NoEscape(r'\\'))
-    #doc.append(NoEscape(r' \flushright{\Large ' + site.get_hud_status() + r'}'))
     doc.append(NoEscape(r'\\ \\'))
     with doc.create(Tabular('c|c|c|c|c')) as table:
         table.add_hline()
@@ -88,7 +80,6 @@ def generate_report(site,filename):
             table.add_row(('Trains per Day', 'Night Fraction', 'Type', 'Horns', 'Tracks'))
             table.add_hline()
             table.add_row((rail.ato, rail.night_fraction, train_type_str(rail.diesel), yes_no_str(rail.horns), track_type_str(rail.bolted_tracks)))
-    doc.append(NoEscape(r'\vspace{-.25in}'))
     if len(site.airports) > 0:
         doc.append(Section('Airports', numbering=False))
     for airport in site.airports:
@@ -104,10 +95,6 @@ def generate_report(site,filename):
         doc.append(NoEscape(r'\\'))
 
     doc.generate_pdf(filename,clean_tex=False)
-    os.system('pdflatex ' + filename + '.tex')
-    os.system('pdflatex ' + filename + '.tex')
-def get_background_string():
-  return r'\backgroundsetup{ scale=1, color=black, opacity=1, angle=0, position=current page.south, vshift=60pt, contents={ \small\sffamily \begin{minipage}{.8\textwidth} \parbox[b]{.6\textwidth}{Page \thepage\ of   \pageref{LastPage}}\hfill\parbox[b]{.4\textwidth}{\raggedleft \hspace{-1in}Calculations conform to HUD Noise Guidebook}\      \textcolor{orange}{\rule{\textwidth}{1.5pt}}\ \href{http://hud.coloradoanalytics.com}{http://hud.coloradoanalytics.com}\end{minipage}\hspace{.02\textwidth}\begin{minipage}{.18\textwidth}\end{minipage}}}'
 
 def percent_str(value):
     return("%.2f" % (value*100))
