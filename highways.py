@@ -247,6 +247,17 @@ class Road:
         return dnl_sum(
             [self.auto.dnl, self.medium_truck.dnl, self.heavy_truck.dnl])
 
+    def get_auto_adt_fraction(self):
+        return(self.auto.adt/(self.auto.adt + self.medium_truck.adt + self.heavy_truck.adt))
+    
+    def get_medium_truck_adt_fraction(self):
+        return(self.medium_truck.adt/(self.auto.adt + self.medium_truck.adt + self.heavy_truck.adt))
+    
+    def get_heavy_truck_adt_fraction(self):
+        return(self.heavy_truck.adt/(self.auto.adt + self.medium_truck.adt + self.heavy_truck.adt))
+
+
+
 
 class RoadSchema(Schema):
     #setting Meta.strict to True causes marshmallow to stop on a validation error instead of defaulting to a dict
