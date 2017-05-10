@@ -25,11 +25,11 @@ class AirportSchema(Schema):
     class Meta:
         strict = True
 
-    position = fields.Nested(PositionSchema)
-    airport_type = fields.Str()
-    annual_ops = fields.Number()
+    position = fields.Nested(PositionSchema, allow_null=True, allow_none=True)
+    airport_type = fields.Str(allow_null=True)
+    annual_ops = fields.Number(allow_null=True, allow_none=True)
     name = fields.Str()
-    distance = fields.Number()
+    distance = fields.Number(allow_null=True)
     dnl = fields.Float(allow_null=True, allow_none=True)
 
     @post_load

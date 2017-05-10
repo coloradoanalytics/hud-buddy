@@ -17,8 +17,8 @@ class PositionSchema(Schema):
     class Meta:
         strict = True
 
-    lat = fields.Float(allow_none=True)
-    lng = fields.Float(allow_none=True)
+    lat = fields.Float(allow_none=True, allow_null=True)
+    lng = fields.Float(allow_none=True, allow_null=True)
 
     @post_load
     def make_position(self, data):
