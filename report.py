@@ -2,6 +2,7 @@ from pylatex import Document, Section, Subsection, Subsubsection, Tabular, Math,
 import datetime
 from pylatex.utils import italic, NoEscape, bold
 from pylatex import Package
+import os
 
 def generate_report(site,filename):
     #Set Document Geometry
@@ -103,8 +104,8 @@ def generate_report(site,filename):
         doc.append(NoEscape(r'\\'))
 
     doc.generate_pdf(filename,clean_tex=False)
-    doc.generate_pdf(filename,clean_tex=False)
-
+    os.system('pdflatex ' + filename + '.tex')
+    os.system('pdflatex ' + filename + '.tex')
 def get_background_string():
   return r'\backgroundsetup{ scale=1, color=black, opacity=1, angle=0, position=current page.south, vshift=60pt, contents={ \small\sffamily \begin{minipage}{.8\textwidth} \parbox[b]{.6\textwidth}{Page \thepage\ of   \pageref{LastPage}}\hfill\parbox[b]{.4\textwidth}{\raggedleft \hspace{-1in}Calculations conform to HUD Noise Guidebook}\      \textcolor{orange}{\rule{\textwidth}{1.5pt}}\ \href{http://hud.coloradoanalytics.com}{http://hud.coloradoanalytics.com}\end{minipage}\hspace{.02\textwidth}\begin{minipage}{.18\textwidth}\end{minipage}}}'
 
