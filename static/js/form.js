@@ -130,7 +130,6 @@ var FormTab = {
         });
     },
 
-
     onGetReport: function() {
       var self = this;
       var form = document.createElement('form');
@@ -144,6 +143,7 @@ var FormTab = {
       form.appendChild(hiddenField);
       document.body.appendChild(form);
       form.submit();
+    },
 
     onUpdateAirport: function(index, data) {
       //relay update-airport event and data
