@@ -10,11 +10,11 @@ var AboutTab = {
       </p>
       <br>
       <p>
-        This application is our entry in the 2017 <a>GoCode Colorado</a> business and software development contest put on by the Colorado Secretary of State.
+        This application is our team's entry in the 2017 <a href="http://gocode.colorado.gov/" target="_blank">GoCode Colorado</a> business and software development contest put on by the Colorado Secretary of State.
       </p>
       <br>
       <p>
-        We are one of 10 finalist teams. On May 24th we will present this application to an audience and a panel of judges. 
+        We are one of 10 <a href="http://gocode.colorado.gov/media-advisory-winners-go-code-colorados-challenge-weekend-2017/" target="_blank">finalist teams</a>. On May 24th we will present this application to an audience and a panel of judges. 
         If we are chosen as a winning team, we will receive money and resources to help us develop HUDX into an even better tool.
       </p>
       <br>
