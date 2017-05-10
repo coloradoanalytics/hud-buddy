@@ -67,7 +67,8 @@ def generate_report(site,filename):
         doc.append(NoEscape(r'\\'))
         
     doc.append(NoEscape(r'\vspace{-.25in}'))
-    doc.append(Section('Rail', numbering=False))
+    if len(site.rails) > 0:
+        doc.append(Section('Rail', numbering=False))
     for rail in site.rails:
         doc.append(bold(rail.name))
         doc.append(NoEscape(r'\hfill'))
@@ -87,7 +88,8 @@ def generate_report(site,filename):
             table.add_hline()
             table.add_row((rail.ato, rail.night_fraction, train_type_str(rail.diesel), yes_no_str(rail.horns), track_type_str(rail.bolted_tracks)))
     doc.append(NoEscape(r'\vspace{-.25in}'))
-    doc.append(Section('Airports', numbering=False))
+    if len(site.airports) > 0:
+        doc.append(Section('Airports', numbering=False))
     for airport in site.airports:
         doc.append(bold(airport.name))
         doc.append(NoEscape(r'\hfill'))
@@ -100,6 +102,7 @@ def generate_report(site,filename):
             
         doc.append(NoEscape(r'\\'))
 
+    doc.generate_pdf(filename,clean_tex=False)
     doc.generate_pdf(filename,clean_tex=False)
 
 def get_background_string():
