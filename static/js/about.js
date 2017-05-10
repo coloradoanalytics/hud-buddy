@@ -21,6 +21,7 @@ var AboutTab = {
       <p>
         The best possible evidence we can use to sway the judges to our favor is real-life users. 
         So if you find HUDX handy and think you'll use it, please send a quick note to <a href="mailto:joshua@coloradoanalytics.com">joshua@coloradoanalytics.com</a>.
+        (That's also the address to use if you find a bug).
       </p>
       <br>
       <br>
@@ -44,11 +45,25 @@ var AboutTab = {
       <br>
       <p>
         You can add multiple markers to the map.
-        If you'd like to move a marker, drag it to the new location and HUDX will do a new query and analysis.
+        If you'd like to move a marker, drag it to the new location and HUDX will do a new query and calculation.
       </p>
       <br>
       <p>
         To edit the data at a location or to print out a report, click Send to Form.
+      </p>
+      <br>
+      <p class="title is-5">Trains</p>
+      <p>
+        The Colorado datasets provide meta information about railways, but no details about train operations.
+        HUDX fills in all of the default values specified by HUD. This covers everything but operations per day.
+        The number of train operations per day that is automatically filled in is just a guess.
+        Eventually we hope to have this information filled in automatically but, for now, you'll have to get it from the FRA.
+      </p>
+      <br>
+      <p class="title is-5">Airports</p>
+      <p>
+        HUDX finds all "CS" and "Military" airports within 15 miles of the NAL.
+        Although we would like to automatcally calculate Airport DNL, for now you'll have to enter airport DNL manually on the form.
       </p>
       <br>
       <p class="title is-4">Using the Form</p>
@@ -59,7 +74,7 @@ var AboutTab = {
       <br>
       <p>
         Using the form should be fairly intuitive.
-        You can add or remove roads and railways and edit their details as needed.
+        You can add or remove roads, railways, and airports and edit their details as needed.
         You can either start with a blank form or pre-fill it from a location on the map.
         Click Calculate whenever you want to check the noise levels according to the current state of the form.
       </p>

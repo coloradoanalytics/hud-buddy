@@ -198,7 +198,8 @@ class AirportsClient(CIMClient):
         """
         new_airports = []
         for airport in self.airports:
-            if "CS" in airport.airport_type or "RLVR" in airport.airport_type or "Military" in airport.airport_type:
+            #if "CS" in airport.airport_type or "RLVR" in airport.airport_type or "Military" in airport.airport_type:
+            if "CS" in airport.airport_type or "Military" in airport.airport_type:
                 new_airports.append(airport)
 
         self.airports = new_airports
