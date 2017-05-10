@@ -69,6 +69,7 @@ var SiteForm = {
 		<site-card
 			v-else
 			:site-data="siteData"
+      :form-data="formData"
 			@reset-form="onResetForm"
 			@get-calculation="onGetCalculation"
 			@edit-site="onEditSite"

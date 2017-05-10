@@ -49,7 +49,6 @@ var FormTab = {
 
           <div class="column">
             <div class="title">Summary</div>
-
             <site-form
               :form-data="formData"
               @reset-form="onResetForm"
@@ -57,6 +56,26 @@ var FormTab = {
               @get-calculation="onGetCalculation"
               @get-report="onGetReport"
             ></site-form>
+            
+            <br><br>
+            
+            <div class="title">Airports</div>
+            <airport-form v-for="(airport, index) in formData.airports"
+              v-bind:key="airportKey(index)"
+              v-bind:airport="airport"
+              v-bind:index="index"
+              @remove-airport="onRemoveAirport"
+              @update-airport="onUpdateAirport"
+            ></airport-form>
+
+            <div class="level">
+              <div class="level-left"></div>
+              <div class="level-right">
+                <p class="level-item">
+                  <a class="button is-primary" v-on:click="addAirport">Add Airport</a>
+                </p>
+              </div>
+            </div>
 
           </div>
 
@@ -76,13 +95,20 @@ var FormTab = {
   },
 
   methods: {
+    addAirport: function() {
+      this.$emit('add-airport');
+    },
     
     addRail: function() {
-      this.$emit('add-rail')
+      this.$emit('add-rail');
     },
 
     addRoad: function() {
       this.$emit('add-road');
+    },
+
+    airportKey: function(index) {
+      return "airport-" + index.toString();
     },
 
     onGetCalculation: function() {
@@ -104,6 +130,7 @@ var FormTab = {
         });
     },
 
+
     onGetReport: function() {
       var self = this;
       var form = document.createElement('form');
@@ -117,6 +144,11 @@ var FormTab = {
       form.appendChild(hiddenField);
       document.body.appendChild(form);
       form.submit();
+
+    onUpdateAirport: function(index, data) {
+      //relay update-airport event and data
+      this.$emit('update-airport', index, data);
+
     },
 
     onUpdateRail: function(index, data) {
@@ -132,6 +164,11 @@ var FormTab = {
     onUpdateSite: function(data) {
       //relay update-site event and data
       this.$emit('update-site', data);
+    },
+
+    onRemoveAirport: function(index) {
+      //relay remove-airport event
+      this.$emit('remove-airport', index);
     },
 
     onRemoveRail: function(index) {
@@ -168,6 +205,7 @@ var FormTab = {
   components: {
     'rail-form': RailForm,
     'road-form': RoadForm,
-    'site-form': SiteForm
+    'site-form': SiteForm,
+    'airport-form': AirportForm
   }
 }
