@@ -21,7 +21,7 @@ def generate_report(site,filename):
     doc.preamble.append(NoEscape(r'\cfoot{}'))
     doc.preamble.append(NoEscape(r'\lhead{\LARGE Noise Assesment Location}'))
     doc.preamble.append(NoEscape(r'\rhead{\footnotesize Calculations conform to HUD Noise Guidebook}'))
-    doc.preamble.append(NoEscape(r'\rfoot{\href{http://hud.coloradoanalytics.com}{hud.coloradoanalytics.com}}'))
+    doc.preamble.append(NoEscape(r'\rfoot{\href{http://hud.coloradoanalytics.com}{http://hud.coloradoanalytics.com}}'))
     doc.preamble.append(NoEscape(r'\setlength{\headsep}{.75in}'))
     #Get current date
     current_date = datetime.datetime.now()
@@ -93,6 +93,7 @@ def generate_report(site,filename):
                 table.add_row(('Type', 'Distance (miles)'))
                 table.add_hline()
                 table.add_row((airport.airport_type, feet_to_miles(airport.distance)))
+
             
         doc.append(NoEscape(r'\\'))
 
