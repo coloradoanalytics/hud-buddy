@@ -33,9 +33,10 @@ var AboutTab = {
       <br>
       <p class="title is-4">Using the Map</p>
       <p>
-        When you click on the map HUDX performs an instant noise analysis using the methods in the HUD Noise Guidebook.
+        When you click on the map, HUDX performs an instant noise analysis using the methods in the HUD Noise Guidebook.
         HUDX queries public data sources to find significant roads and railways along with as much information as it can find
         about those noise sources. A marker will appear on the map and you'll see a summary of the data HUDX found.
+        (Note: automatic data retrieval currently works only for sites in Colorado)
       </p>
       <br>
       <p>
@@ -52,7 +53,7 @@ var AboutTab = {
         To edit the data at a location or to print out a report, click Send to Form.
       </p>
       <br>
-      <p class="title is-5">Trains</p>
+      <p class="title is-5">Railroads</p>
       <p>
         The Colorado datasets provide meta information about railways, but no details about train operations.
         HUDX fills in all of the default values specified by HUD. This covers everything but operations per day.
@@ -69,7 +70,7 @@ var AboutTab = {
       <p class="title is-4">Using the Form</p>
       <p>
         HUDX's form is a replacement for the <a href="https://www.hudexchange.info/environmental-review/dnl-calculator/">DNL Calculator</a> at the HUD Exchange.
-        The calculations on both sites are the same, but we think our form is cleaner and easier to use.
+        The calculations on both websites are the same, but we think ours is cleaner and easier to use.
       </p>
       <br>
       <p>
@@ -81,9 +82,9 @@ var AboutTab = {
       <br>
       <p class="title is-5">Traffic Projections</p>
       <p>
-        You can edit the growth rate for your site and use that value to project traffic to a future year.
+        You can edit the growth rate for your site and use that value to project traffic to a future year for any of your roads.
         With a road in edit mode, click the Projection button to reveal the Counted ADT and Traffic Count Year fields.
-        After you fill in a counted daily traffic value as well as the year of the traffic count, clicking the Project button will project ADT to your design year and place this value in the Total ADT field.
+        After you've filled in a counted daily traffic value and the year of the traffic count, clicking the Project button will project ADT to your design year and place this value in the Total ADT field.
       </p>
       <br>
       <p class="title is-5">Producing a Report</p>
@@ -104,7 +105,7 @@ var AboutTab = {
       <br>
         <p>
           <span class="icon"><i class="fa fa-bolt" aria-hidden="true"></i></span>
-          Automatic discovery of airports
+          Automatic discovery of airport DNL and rail traffic
         </p>
         <p>
           <span class="icon"><i class="fa fa-bolt" aria-hidden="true"></i></span>
