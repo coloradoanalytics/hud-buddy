@@ -26,6 +26,8 @@ def dnl_sum(dnl_list):
     for dnl in dnl_list:
         if dnl and dnl > 1:
             dnl_sum += pow(10, (dnl / 10))
+    if dnl_sum <= 0:
+        return None
     return round(10 * log10(dnl_sum), 1)
 
 
