@@ -90,7 +90,7 @@ def generate_report(site,filename):
         with doc.create(Tabular('ccc')) as table:
             table.add_row(('Type', 'Distance (miles)', 'Anual Ops'))
             table.add_hline()
-            table.add_row((airport.airport_type, num_str(airport.distance), airport.annual_ops))
+            table.add_row((airport.airport_type, num_str(airport.distance/5280), airport.annual_ops))
             
         doc.append(NoEscape(r'\\'))
 
