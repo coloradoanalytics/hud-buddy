@@ -3,9 +3,9 @@ var AboutTab = {
 	template: `
 	 <div class="section">
     <div class="container">
-      <p class="title is-2">What is HUDX?</p>
+      <p class="title is-2">What is HUD Buddy?</p>
       <p>
-        HUDX is a tool that can instantly produce HUD noise studies.
+        HUD Buddy is a tool that can instantly produce HUD noise studies.
         It was born out of the frustrations of an acoustical engineer using the worksheets in the HUD Noise Guidebook.
       </p>
       <br>
@@ -15,12 +15,12 @@ var AboutTab = {
       <br>
       <p>
         We are one of 10 <a href="http://gocode.colorado.gov/media-advisory-winners-go-code-colorados-challenge-weekend-2017/" target="_blank">finalist teams</a>. On May 24th we will present this application to an audience and a panel of judges. 
-        If we are chosen as a winning team, we will receive money and resources to help us develop HUDX into an even better tool.
+        If we are chosen as a winning team, we will receive money and resources to help us develop HUD Buddy into an even better tool.
       </p>
       <br>
       <p>
         The best possible evidence we can use to sway the judges to our favor is real-life users. 
-        So if you find HUDX handy and think you'll use it, please send a quick note to <a href="mailto:joshua@coloradoanalytics.com">joshua@coloradoanalytics.com</a>.
+        So if you find HUD Buddy handy and think you'll use it, please send a quick note to <a href="mailto:joshua@coloradoanalytics.com">joshua@coloradoanalytics.com</a>.
         (That's also the address to use if you find a bug).
       </p>
       <br>
@@ -28,25 +28,25 @@ var AboutTab = {
 
       <p class="title is-2">How to Use</p>
       <p>
-        There are two parts to HUDX: The <strong>Map</strong> and the <strong>Form</strong>.
+        There are two parts to HUD Buddy: The <strong>Map</strong> and the <strong>Form</strong>.
       </p>
       <br>
       <p class="title is-4">Using the Map</p>
       <p>
-        When you click on the map, HUDX performs an instant noise analysis using the methods in the HUD Noise Guidebook.
-        HUDX queries public data sources to find significant roads and railways along with as much information as it can find
-        about those noise sources. A marker will appear on the map and you'll see a summary of the data HUDX found.
+        When you click on the map, HUD Buddy performs an instant noise analysis using the methods in the HUD Noise Guidebook.
+        HUD Buddy queries public data sources to find significant roads and railways along with as much information as it can find
+        about those noise sources. A marker will appear on the map and you'll see a summary of the data HUD Buddy found.
         (Note: automatic data retrieval currently works only for sites in Colorado)
       </p>
       <br>
       <p>
-        In <strong>most cases</strong>, the data that HUDX automatically collects will be enough to produce a complete Noise Assessment Location (NAL) worksheet.
+        In <strong>most cases</strong>, the data that HUD Buddy automatically collects will be enough to produce a complete Noise Assessment Location (NAL) worksheet.
         When this happens, the map marker will show the calculated Day-Night Level (DNL) for that location and will be color-coded according to its HUD classification.
       </p>
       <br>
       <p>
         You can add multiple markers to the map.
-        If you'd like to move a marker, drag it to the new location and HUDX will do a new query and calculation.
+        If you'd like to move a marker, drag it to the new location and HUD Buddy will do a new query and calculation.
       </p>
       <br>
       <p>
@@ -56,20 +56,20 @@ var AboutTab = {
       <p class="title is-5">Railroads</p>
       <p>
         The Colorado datasets provide meta information about railways, but no details about train operations.
-        HUDX fills in all of the default values specified by HUD. This covers everything but operations per day.
+        HUD Buddy fills in all of the default values specified by HUD. This covers everything but operations per day.
         The number of train operations per day that is automatically filled in is just a guess.
         Eventually we hope to have this information filled in automatically but, for now, you'll have to get it from the FRA.
       </p>
       <br>
       <p class="title is-5">Airports</p>
       <p>
-        HUDX finds all "CS" and "Military" airports within 15 miles of the NAL.
+        HUD Buddy finds all "CS" and "Military" airports within 15 miles of the NAL.
         Although we would like to automatcally calculate Airport DNL, for now you'll have to enter airport DNL manually on the form.
       </p>
       <br>
       <p class="title is-4">Using the Form</p>
       <p>
-        HUDX's form is a replacement for the <a href="https://www.hudexchange.info/environmental-review/dnl-calculator/">DNL Calculator</a> at the HUD Exchange.
+        HUD Buddy's form is a replacement for the <a href="https://www.hudexchange.info/environmental-review/dnl-calculator/">DNL Calculator</a> at the HUD Exchange.
         The calculations on both websites are the same, but we think ours is cleaner and easier to use.
       </p>
       <br>
@@ -95,7 +95,7 @@ var AboutTab = {
       <br>
       <p class="title is-2">Road Map</p>
       <p>
-        HUDX's automatic data retrieval currently works only in Colorado.
+        HUD Buddy's automatic data retrieval currently works only in Colorado.
         We plan to start adding more states soon after the conclusion of the GoCode Colorado contest (sooner if we win!).
       </p>
       <br>
