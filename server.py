@@ -1,15 +1,17 @@
-from flask import Flask, request, json, current_app, make_response, send_file
-
-import requests
 import os
+import uuid
+
+from flask import Flask, request, json, current_app, make_response
 
 from clients import HighwaysClient, RailroadsClient, AirportsClient
 from locations import Position
 from sites import Site, SiteSchema
-import uuid
+
 
 # use custom Flask delimiters to prevent collision with Vue
 # https://github.com/yymm/flask-vuejs
+
+
 class CustomFlask(Flask):
     jinja_options = Flask.jinja_options.copy()
     jinja_options.update(dict(
@@ -20,6 +22,7 @@ class CustomFlask(Flask):
         comment_start_string='(#',
         comment_end_string='#)',
     ))
+
 
 app = CustomFlask(__name__)
 
@@ -36,12 +39,11 @@ def sites():
         lng = float(request.args.get('lng'))
         position = Position(lat, lng)
 
-
-        #find roads within 1500 ft
+        # find roads within 1500 ft
         road_distance = request.args.get('road_distance', 457.2)
-        #find railways within 4500 ft
+        # find railways within 4500 ft
         rail_distance = request.args.get('rail_distance', 1371.6)
-        #find airports within 15 miles
+        # find airports within 15 miles
         airport_distance = request.args.get('airport-distance', 24140.2)
 
         road_client = HighwaysClient()
@@ -87,16 +89,16 @@ def reports():
     file = open(filename + '.pdf', 'r+b').read()
     response = make_response(file)
     response.headers["Content-Type"] = "application/pdf"
-    
-    # set disposition to 'inline' to open in new browser tab, set to 'attachment' to download immediately
+
+    # set disposition to 'inline' to open in new browser tab, set to
+    # 'attachment' to download immediately
     response.headers["Content-Disposition"] = "inline; filename=NAL.pdf"
 
     # clean generated files then serve response
     os.remove(filename + '.pdf')
     os.remove(filename + '.tex')
     return response
-    
-    #return send_file(filename + '.pdf', as_attachment=True, attachment_filename='NAL.pdf')
+
 
 if __name__ == "__main__":
     app.run(debug=True)

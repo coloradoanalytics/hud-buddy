@@ -1,13 +1,13 @@
 import math
 
-from marshmallow import Schema, fields, pre_load, post_load, pre_dump
+from marshmallow import Schema, fields, post_load
 
 from utils import dnl_sum
 from locations import PositionSchema, CountySchema
-from highways import RoadSchema, RoadSchemaFromCIM
-from railroads import RailSchema, RailroadSchemaFromCIM
+from highways import RoadSchema
+from railroads import RailSchema
 import report
-from airports import AirportSchema, AirportSchemaFromCIM
+from airports import AirportSchema
 
 
 class Site:
@@ -41,31 +41,28 @@ class Site:
         self.combined_dnl = self.get_combined_dnl()
 
     def get_combined_dnl(self):
-        # if self.roads:
-        #     return dnl_sum([road.dnl for road in self.roads])
-        # return None
         energy = 0
         for road in self.roads:
-            if road.get_dnl() != None:
+            if road.get_dnl() is not None:
                 energy += 10 ** (road.get_dnl() / 10)
             else:
                 return None
 
         for rail in self.rails:
-            if rail.get_dnl() != None:
+            if rail.get_dnl() is not None:
                 energy += 10 ** (rail.get_dnl() / 10)
             else:
                 return None
 
         for airport in self.airports:
-            if airport.dnl != None:
+            if airport.dnl is not None:
                 energy += 10 ** (airport.dnl / 10)
             else:
                 return None
 
         if energy == 0:
             return None
-            
+
         return round(10 * math.log10(energy), 1)
 
     def set_adts(self):
@@ -78,7 +75,7 @@ class Site:
             road.dnl = road.get_dnl()
         for rail in self.rails:
             rail.dnl = rail.get_dnl()
- 
+
     def generate_report(self, filename):
         report.generate_report(self, filename)
 
@@ -111,7 +108,7 @@ class Site:
 
 
 class SiteSchema(Schema):
-    #setting Meta.strict to True causes marshmallow to stop on a validation error instead of defaulting to a dict
+
     class Meta:
         strict = True
 
@@ -131,10 +128,3 @@ class SiteSchema(Schema):
         for r in site.roads:
             r.set_distances()
         return site
-
-    ############REMOVE##################3333
-    # @pre_dump
-    # def site_pre_dump(self, data):
-    #     print("site_pre_dump")
-    #     print(data.county.current_population.population)
-    #     return data
