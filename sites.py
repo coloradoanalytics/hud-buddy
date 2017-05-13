@@ -7,7 +7,7 @@ from locations.schemas import PositionSchema, CountySchema
 from highways import RoadSchema
 from railroads import RailSchema
 import report
-from airports import AirportSchema
+from airports.schemas import AirportSchema
 
 
 class Site:

@@ -2,7 +2,7 @@ import requests
 
 from highways import RoadSchemaFromCIM
 from railroads import RailroadSchemaFromCIM
-from airports import AirportSchemaFromCIM
+from airports.schemas import AirportSchemaFromCIM
 from locations.models import County, CountyPopulationByAgeGroup
 from locations.schemas import CountyPopulationByAgeSchema
 
