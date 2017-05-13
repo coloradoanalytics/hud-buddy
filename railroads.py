@@ -23,7 +23,7 @@ class Rail:
         self.speed = kwargs.get('speed', 30)
         self.engines_per_train = kwargs.get('engines_per_train', 2)
         self.cars_per_train = kwargs.get('cars_per_train', 50)
-        self.ato = kwargs.get('ato', 4)
+        self.ato = kwargs.get('ato', 0)
         self.night_fraction = kwargs.get('night_fraction', 0.15)
         self.horns = kwargs.get('horns', False)
         self.bolted_tracks = kwargs.get('bolted_tracks', False)
@@ -130,7 +130,7 @@ class Rail:
 
     def get_dnl(self):
         if self.ato < 1:
-            return 1
+            return 0
         if self.diesel:
             return self.get_dnl_diesel()
         return self.get_dnl_electric()
