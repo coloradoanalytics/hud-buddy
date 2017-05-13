@@ -76,14 +76,6 @@ class CountySchema(Schema):
     name = fields.Str(allow_null=True, allow_none=True)
     current_population = fields.Nested(PopulationSchema)
     future_population = fields.Nested(PopulationSchema)
-    # current_population = fields.Number(allow_null=True, allow_none=True)
-    # future_population = fields.Number(allow_null=True, allow_none=True)
-
-    # REMOVE#############3333
-    # @pre_load
-    # def county_schema_reload(self, data):
-    #     print("current_population", data["current_population"])
-    #     return data
 
 
 class CountyPopulationByAge:

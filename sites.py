@@ -41,9 +41,6 @@ class Site:
         self.combined_dnl = self.get_combined_dnl()
 
     def get_combined_dnl(self):
-        # if self.roads:
-        #     return dnl_sum([road.dnl for road in self.roads])
-        # return None
         energy = 0
         for road in self.roads:
             if road.get_dnl() is not None:
