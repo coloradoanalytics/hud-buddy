@@ -14,6 +14,7 @@ class Position:
 
 
 class PositionSchema(Schema):
+
     class Meta:
         strict = True
 
@@ -26,8 +27,9 @@ class PositionSchema(Schema):
 
 
 class PositionSchemaFromCIM(PositionSchema):
+
     class Meta:
-        strict=True
+        strict = True
 
     @pre_load
     def move_positions(self, data):
@@ -43,6 +45,7 @@ class Population:
 
 
 class PopulationSchema(Schema):
+
     class Meta:
         strict = True
 
@@ -66,6 +69,7 @@ class County:
 
 
 class CountySchema(Schema):
+
     class Meta:
         strict = True
 
@@ -75,7 +79,7 @@ class CountySchema(Schema):
     # current_population = fields.Number(allow_null=True, allow_none=True)
     # future_population = fields.Number(allow_null=True, allow_none=True)
 
-    ##############REMOVE#############3333
+    # REMOVE#############3333
     # @pre_load
     # def county_schema_reload(self, data):
     #     print("current_population", data["current_population"])
@@ -104,8 +108,9 @@ class CountyPopulationByAgeGroup:
 
 
 class CountyPopulationByAgeSchema(Schema):
+
     class Meta:
-        strict=True
+        strict = True
 
     name = fields.Str(load_from='county')
     population = fields.Float(load_from='totalpopulation')

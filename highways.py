@@ -3,8 +3,7 @@ import math
 from marshmallow import Schema, fields, pre_load, post_load
 
 from utils import dnl_sum
-from locations import Position, PositionSchema, \
-    PositionSchemaFromCIM, CountySchema
+from locations import PositionSchemaFromCIM
 
 
 class VehicleType:
@@ -258,13 +257,22 @@ class Road:
             [self.auto.dnl, self.medium_truck.dnl, self.heavy_truck.dnl])
 
     def get_auto_adt_fraction(self):
-        return(self.auto.adt / (self.auto.adt + self.medium_truck.adt + self.heavy_truck.adt))
+        return(
+            self.auto.adt /
+            (self.auto.adt + self.medium_truck.adt + self.heavy_truck.adt)
+        )
 
     def get_medium_truck_adt_fraction(self):
-        return(self.medium_truck.adt / (self.auto.adt + self.medium_truck.adt + self.heavy_truck.adt))
+        return(
+            self.medium_truck.adt /
+            (self.auto.adt + self.medium_truck.adt + self.heavy_truck.adt)
+        )
 
     def get_heavy_truck_adt_fraction(self):
-        return(self.heavy_truck.adt / (self.auto.adt + self.medium_truck.adt + self.heavy_truck.adt))
+        return(
+            self.heavy_truck.adt /
+            (self.auto.adt + self.medium_truck.adt + self.heavy_truck.adt)
+        )
 
 
 class RoadSchema(Schema):
@@ -331,7 +339,7 @@ class RoadSchemaFromCIM(Schema):
         data['positions'] = the_geom['coordinates'][0]
 
         # use this if they change it back
-        #data['positions'] = the_geom['coordinates']
+        # data['positions'] = the_geom['coordinates']
 
         return data
 

@@ -1,9 +1,9 @@
-from math import radians, cos, sin, asin, sqrt, ceil, log, log10
+from math import radians, cos, sin, asin, sqrt, log, log10
 
 
 def haversine(lon1, lat1, lon2, lat2):
     """
-    Calculate the great circle distance between two points 
+    Calculate the great circle distance between two points
     on the earth (specified in decimal degrees)
 
     Returns the distance in feet.

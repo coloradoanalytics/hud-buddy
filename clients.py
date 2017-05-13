@@ -1,6 +1,5 @@
-import threading
-
 import requests
+
 from highways import RoadSchemaFromCIM
 from railroads import RailroadSchemaFromCIM
 from airports import AirportSchemaFromCIM
@@ -70,8 +69,12 @@ class HighwaysClient(CIMClient):
             future_client = PopulationsClient(
                 county_name=county_name, year="2027")
 
-            current_population = current_client.get_populations().get_total_population()
-            future_population = future_client.get_populations().get_total_population()
+            current_population = (
+                current_client.get_populations().get_total_population()
+            )
+            future_population = (
+                future_client.get_populations().get_total_population()
+            )
 
             county = County(current_population=current_population,
                             future_population=future_population,
@@ -171,7 +174,8 @@ class RailroadsClient(CIMClient):
 class AirportsClient(CIMClient):
 
     # curl -X GET
-    # `https://data.colorado.gov/resource/siwx-ebh7.json?$where=within_circle(the_geom,39.890105,-104.75206,24140)`
+    # `https://data.colorado.gov/resource/siwx-ebh7.json?
+    # $where=within_circle(the_geom,39.890105,-104.75206,24140)`
 
     # https://dev.socrata.com/foundry/data.colorado.gov/siwx-ebh7
     resource_id = 'siwx-ebh7'
@@ -195,13 +199,12 @@ class AirportsClient(CIMClient):
 
     def _remove_small_airports(self):
         """
-        Remove airports from list that are are not commercial, reliever, or military
+        Remove airports from list that are are not
+        commercial, reliever, or military.
         """
         new_airports = []
-        for airport in self.airports:
-            # if "CS" in airport.airport_type or "RLVR" in airport.airport_type
-            # or "Military" in airport.airport_type:
-            if "CS" in airport.airport_type or "Military" in airport.airport_type:
-                new_airports.append(airport)
+        for a in self.airports:
+            if "CS" in a.airport_type or "Military" in a.airport_type:
+                new_airports.append(a)
 
         self.airports = new_airports
