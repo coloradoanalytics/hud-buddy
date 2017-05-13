@@ -1,7 +1,7 @@
 from tests.common import CustomTestCase
 
 from locations.models import Position
-from highways import Road, Auto, MediumTruck, HeavyTruck
+from roads.models import Road, Auto, MediumTruck, HeavyTruck
 
 
 class DistanceTestCase(CustomTestCase):

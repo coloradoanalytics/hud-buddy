@@ -1,7 +1,7 @@
 from tests.common import CustomTestCase
 
 from clients import HighwaysClient
-from highways import Road
+from roads.models import Road
 from locations.models import Position
 
 

@@ -3,10 +3,11 @@ import math
 from marshmallow import Schema, fields, post_load
 
 from utils import dnl_sum
-from locations.schemas import PositionSchema, CountySchema
-from highways import RoadSchema
-from railroads import RailSchema
 import report
+
+from locations.schemas import PositionSchema, CountySchema
+from roads.schemas import RoadSchema
+from railroads.schemas import RailSchema
 from airports.schemas import AirportSchema
 
 
