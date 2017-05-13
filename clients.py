@@ -170,9 +170,10 @@ class RailroadsClient(CIMClient):
 
 class AirportsClient(CIMClient):
 
-    #curl -X GET `https://data.colorado.gov/resource/siwx-ebh7.json?$where=within_circle(the_geom,39.890105,-104.75206,24140)`
-    
-    #https://dev.socrata.com/foundry/data.colorado.gov/siwx-ebh7
+    # curl -X GET
+    # `https://data.colorado.gov/resource/siwx-ebh7.json?$where=within_circle(the_geom,39.890105,-104.75206,24140)`
+
+    # https://dev.socrata.com/foundry/data.colorado.gov/siwx-ebh7
     resource_id = 'siwx-ebh7'
     schema_class = AirportSchemaFromCIM
     many = True
@@ -198,7 +199,8 @@ class AirportsClient(CIMClient):
         """
         new_airports = []
         for airport in self.airports:
-            #if "CS" in airport.airport_type or "RLVR" in airport.airport_type or "Military" in airport.airport_type:
+            # if "CS" in airport.airport_type or "RLVR" in airport.airport_type
+            # or "Military" in airport.airport_type:
             if "CS" in airport.airport_type or "Military" in airport.airport_type:
                 new_airports.append(airport)
 

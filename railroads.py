@@ -88,8 +88,8 @@ class Rail:
         return self.ato
 
     def get_aato_tot(self):
-        #transferred from HUD website and appears to ignore horns with non-bolted tracks
-        #kept this way for consistency with HUD tool
+        # transferred from HUD website and appears to ignore horns with non-bolted tracks
+        # kept this way for consistency with HUD tool
         if self.bolted_tracks:
             return self.get_aato_r() + 4 * self.ato
         return 2 * self.ato
@@ -112,7 +112,9 @@ class Rail:
 
 
 class RailSchema(Schema):
-    #setting Meta.strict to True causes marshmallow to stop on a validation error instead of defaulting to a dict
+    # setting Meta.strict to True causes marshmallow to stop on a validation
+    # error instead of defaulting to a dict
+
     class Meta:
         strict = True
 
@@ -143,7 +145,9 @@ class RailSchema(Schema):
 
 
 class RailroadSchemaFromCIM(Schema):
-    #setting Meta.strict to True causes marshmallow to stop on a validation error instead of defaulting to a dict
+    # setting Meta.strict to True causes marshmallow to stop on a validation
+    # error instead of defaulting to a dict
+
     class Meta:
         strict = True
 
@@ -151,7 +155,8 @@ class RailroadSchemaFromCIM(Schema):
     railroad = fields.Str(allow_null=True, allow_none=True)
     branch = fields.Str(allow_null=True, allow_none=True)
     division = fields.Str(allow_null=True, allow_none=True)
-    subdivision = fields.Str(load_from='subdivisio', allow_null=True, allow_none=True)
+    subdivision = fields.Str(load_from='subdivisio',
+                             allow_null=True, allow_none=True)
     rr_class = fields.Str(allow_null=True, allow_none=True)
     rrowner_1 = fields.Str(allow_null=True, allow_none=True)
     status = fields.Str(allow_null=True, allow_none=True)
@@ -165,12 +170,12 @@ class RailroadSchemaFromCIM(Schema):
         """
         the_geom = data.pop('the_geom')
 
-        #Use this to compensate for the May 4th shift in the dataset's
-        #structure, which may or may not be permanent
+        # Use this to compensate for the May 4th shift in the dataset's
+        # structure, which may or may not be permanent
         data['positions'] = the_geom['coordinates'][0]
 
-        #use this if they change it back
-        #data['positions'] = the_geom['coordinates']
+        # use this if they change it back
+        # data['positions'] = the_geom['coordinates']
 
         return data
 

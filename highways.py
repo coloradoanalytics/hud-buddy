@@ -69,7 +69,9 @@ class Auto(VehicleType):
 
 
 class VehicleSchema(Schema):
-    #setting Meta.strict to True causes marshmallow to stop on a validation error instead of defaulting to a dict
+    # setting Meta.strict to True causes marshmallow to stop on a validation
+    # error instead of defaulting to a dict
+
     class Meta:
         strict = True
 
@@ -88,7 +90,9 @@ class VehicleSchema(Schema):
 
 
 class AutoSchema(VehicleSchema):
-    #setting Meta.strict to True causes marshmallow to stop on a validation error instead of defaulting to a dict
+    # setting Meta.strict to True causes marshmallow to stop on a validation
+    # error instead of defaulting to a dict
+
     class Meta:
         strict = True
     adt_fraction = fields.Float(required=False, allow_none=True)
@@ -107,7 +111,9 @@ class MediumTruck(VehicleType):
 
 
 class MediumTruckSchema(VehicleSchema):
-    #setting Meta.strict to True causes marshmallow to stop on a validation error instead of defaulting to a dict
+    # setting Meta.strict to True causes marshmallow to stop on a validation
+    # error instead of defaulting to a dict
+
     class Meta:
         strict = True
 
@@ -146,21 +152,25 @@ class HeavyTruck(VehicleType):
         return ae_result
 
     def get_num_gaf(self):
-        #HUD formula actually uses "grade" in a literal sense, like 2% means 2, not 0.02
+        # HUD formula actually uses "grade" in a literal sense, like 2% means
+        # 2, not 0.02
         return (self.grade * 100) ** 0.5
 
     def get_dnl_result(self):
         ae_result = self.get_ae_result()
         log_dnl_sub = self.get_log_dnl_sub()
         if self.grade > 0:
-            dnl_result = (ae_result + 10 * log_dnl_sub - 49.4 + self.get_num_gaf())
+            dnl_result = (ae_result + 10 * log_dnl_sub -
+                          49.4 + self.get_num_gaf())
         else:
             dnl_result = (ae_result + 10 * log_dnl_sub - 49.4)
         return dnl_result
 
 
 class HeavyTruckSchema(VehicleSchema):
-    #setting Meta.strict to True causes marshmallow to stop on a validation error instead of defaulting to a dict
+    # setting Meta.strict to True causes marshmallow to stop on a validation
+    # error instead of defaulting to a dict
+
     class Meta:
         strict = True
 
@@ -248,19 +258,19 @@ class Road:
             [self.auto.dnl, self.medium_truck.dnl, self.heavy_truck.dnl])
 
     def get_auto_adt_fraction(self):
-        return(self.auto.adt/(self.auto.adt + self.medium_truck.adt + self.heavy_truck.adt))
-    
+        return(self.auto.adt / (self.auto.adt + self.medium_truck.adt + self.heavy_truck.adt))
+
     def get_medium_truck_adt_fraction(self):
-        return(self.medium_truck.adt/(self.auto.adt + self.medium_truck.adt + self.heavy_truck.adt))
-    
+        return(self.medium_truck.adt / (self.auto.adt + self.medium_truck.adt + self.heavy_truck.adt))
+
     def get_heavy_truck_adt_fraction(self):
-        return(self.heavy_truck.adt/(self.auto.adt + self.medium_truck.adt + self.heavy_truck.adt))
-
-
+        return(self.heavy_truck.adt / (self.auto.adt + self.medium_truck.adt + self.heavy_truck.adt))
 
 
 class RoadSchema(Schema):
-    #setting Meta.strict to True causes marshmallow to stop on a validation error instead of defaulting to a dict
+    # setting Meta.strict to True causes marshmallow to stop on a validation
+    # error instead of defaulting to a dict
+
     class Meta:
         strict = True
 
@@ -292,10 +302,12 @@ class RoadSchema(Schema):
 
 
 class RoadSchemaFromCIM(Schema):
-    #setting Meta.strict to True causes marshmallow to stop on a validation error instead of defaulting to a dict
+    # setting Meta.strict to True causes marshmallow to stop on a validation
+    # error instead of defaulting to a dict
+
     class Meta:
         strict = True
-    
+
     name = fields.Str(load_from='alias')
     positions = fields.Nested(PositionSchemaFromCIM, many=True)
 
@@ -314,13 +326,13 @@ class RoadSchemaFromCIM(Schema):
         """
         the_geom = data.pop('the_geom')
 
-        #Use this to compensate for the May 4th shift in the dataset's
-        #structure, which may or may not be permanent
+        # Use this to compensate for the May 4th shift in the dataset's
+        # structure, which may or may not be permanent
         data['positions'] = the_geom['coordinates'][0]
 
-        #use this if they change it back
+        # use this if they change it back
         #data['positions'] = the_geom['coordinates']
-        
+
         return data
 
     @pre_load

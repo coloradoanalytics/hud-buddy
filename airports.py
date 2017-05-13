@@ -1,6 +1,6 @@
-import math
 from marshmallow import Schema, fields, pre_load, post_load
 from locations import Position, PositionSchema, PositionSchemaFromCIM
+
 
 class Airport:
 
@@ -13,15 +13,14 @@ class Airport:
         self.distance = kwargs.get('distance', None)
 
     def set_distance(self, position):
-        print('set_distance')
-        self.distance = round(self.position.distance_from(position),0)
-        print('distance', self.distance)
+        self.distance = round(self.position.distance_from(position), 0)
 
     def get_dnl(self):
         return self.dnl
 
 
 class AirportSchema(Schema):
+
     class Meta:
         strict = True
 
@@ -38,7 +37,9 @@ class AirportSchema(Schema):
 
 
 class AirportSchemaFromCIM(Schema):
-    #setting Meta.strict to True causes marshmallow to stop on a validation error instead of defaulting to a dict
+    # setting Meta.strict to True causes marshmallow to stop on a validation
+    # error instead of defaulting to a dict
+
     class Meta:
         strict = True
 
@@ -57,6 +58,3 @@ class AirportSchemaFromCIM(Schema):
     @post_load
     def make_airport(self, data):
         return Airport(**data)
-
-
-
