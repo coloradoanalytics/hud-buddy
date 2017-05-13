@@ -1,4 +1,4 @@
-from utils import haversine, growth_rate
+from common.utils import haversine, growth_rate
 
 
 class Position:

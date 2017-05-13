@@ -1,4 +1,4 @@
-from tests.common import CustomTestCase
+from tests.custom import CustomTestCase
 
 from roads.models import Road, Auto, MediumTruck, HeavyTruck
 from roads.schemas import RoadSchema

@@ -1,4 +1,4 @@
-from common import CustomTestCase
+from tests.custom import CustomTestCase
 
 from locations.models import Population, County
 

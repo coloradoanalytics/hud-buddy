@@ -1,6 +1,6 @@
 import math
 
-from utils import dnl_sum
+from common.utils import dnl_sum
 import report
 
 

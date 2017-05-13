@@ -3,7 +3,10 @@ import uuid
 
 from flask import Flask, request, json, current_app, make_response
 
-from clients import HighwaysClient, RailroadsClient, AirportsClient
+from roads.clients import HighwaysClient
+from railroads.clients import RailroadsClient
+from airports.clients import AirportsClient
+
 from locations.models import Position
 from sites.models import Site
 from sites.schemas import SiteSchema
