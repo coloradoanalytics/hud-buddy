@@ -37,10 +37,10 @@ class AirportSchema(Schema):
 
 
 class AirportSchemaFromCIM(Schema):
-    # setting Meta.strict to True causes marshmallow to stop on a validation
-    # error instead of defaulting to a dict
 
     class Meta:
+        # setting Meta.strict to True causes marshmallow
+        # to stop on a validation error instead of defaulting to a dict.
         strict = True
 
     position = fields.Nested(PositionSchemaFromCIM)

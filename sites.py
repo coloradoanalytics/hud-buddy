@@ -111,8 +111,6 @@ class Site:
 
 
 class SiteSchema(Schema):
-    # setting Meta.strict to True causes marshmallow to stop on a validation
-    # error instead of defaulting to a dict
 
     class Meta:
         strict = True
@@ -133,10 +131,3 @@ class SiteSchema(Schema):
         for r in site.roads:
             r.set_distances()
         return site
-
-    # REMOVE##################3333
-    # @pre_dump
-    # def site_pre_dump(self, data):
-    #     print("site_pre_dump")
-    #     print(data.county.current_population.population)
-    #     return data

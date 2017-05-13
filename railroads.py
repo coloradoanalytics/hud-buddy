@@ -137,8 +137,6 @@ class Rail:
 
 
 class RailSchema(Schema):
-    # setting Meta.strict to True causes marshmallow to stop on a validation
-    # error instead of defaulting to a dict
 
     class Meta:
         strict = True
@@ -170,8 +168,6 @@ class RailSchema(Schema):
 
 
 class RailroadSchemaFromCIM(Schema):
-    # setting Meta.strict to True causes marshmallow to stop on a validation
-    # error instead of defaulting to a dict
 
     class Meta:
         strict = True

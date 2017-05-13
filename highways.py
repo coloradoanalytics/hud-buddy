@@ -68,8 +68,6 @@ class Auto(VehicleType):
 
 
 class VehicleSchema(Schema):
-    # setting Meta.strict to True causes marshmallow to stop on a validation
-    # error instead of defaulting to a dict
 
     class Meta:
         strict = True
@@ -89,11 +87,10 @@ class VehicleSchema(Schema):
 
 
 class AutoSchema(VehicleSchema):
-    # setting Meta.strict to True causes marshmallow to stop on a validation
-    # error instead of defaulting to a dict
 
     class Meta:
         strict = True
+
     adt_fraction = fields.Float(required=False, allow_none=True)
 
     @post_load
@@ -110,8 +107,6 @@ class MediumTruck(VehicleType):
 
 
 class MediumTruckSchema(VehicleSchema):
-    # setting Meta.strict to True causes marshmallow to stop on a validation
-    # error instead of defaulting to a dict
 
     class Meta:
         strict = True
@@ -167,8 +162,6 @@ class HeavyTruck(VehicleType):
 
 
 class HeavyTruckSchema(VehicleSchema):
-    # setting Meta.strict to True causes marshmallow to stop on a validation
-    # error instead of defaulting to a dict
 
     class Meta:
         strict = True
@@ -276,8 +269,6 @@ class Road:
 
 
 class RoadSchema(Schema):
-    # setting Meta.strict to True causes marshmallow to stop on a validation
-    # error instead of defaulting to a dict
 
     class Meta:
         strict = True
@@ -310,8 +301,6 @@ class RoadSchema(Schema):
 
 
 class RoadSchemaFromCIM(Schema):
-    # setting Meta.strict to True causes marshmallow to stop on a validation
-    # error instead of defaulting to a dict
 
     class Meta:
         strict = True
