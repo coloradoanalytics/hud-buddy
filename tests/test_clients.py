@@ -2,7 +2,7 @@ from tests.common import CustomTestCase
 
 from clients import HighwaysClient
 from highways import Road
-from locations import Position
+from locations.models import Position
 
 
 class UniqueTestCase(CustomTestCase):

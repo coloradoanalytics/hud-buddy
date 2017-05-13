@@ -1,8 +1,10 @@
-from marshmallow import Schema, fields, pre_load, post_load
 from utils import haversine, growth_rate
 
 
 class Position:
+    """
+    Represents a latitude/longitude pair
+    """
 
     def __init__(self, lat, lng):
         self.lat = lat
@@ -13,30 +15,10 @@ class Position:
                          position.lng, position.lat)
 
 
-class PositionSchema(Schema):
-
-    class Meta:
-        strict = True
-
-    lat = fields.Float(allow_none=True, allow_null=True)
-    lng = fields.Float(allow_none=True, allow_null=True)
-
-    @post_load
-    def make_position(self, data):
-        return Position(**data)
-
-
-class PositionSchemaFromCIM(PositionSchema):
-
-    class Meta:
-        strict = True
-
-    @pre_load
-    def move_positions(self, data):
-        return dict(lat=data[1], lng=data[0])
-
-
 class Population:
+    """
+    Stores the population count of a given county in a given year.
+    """
 
     def __init__(self, population, year, county):
         self.population = population
@@ -44,17 +26,10 @@ class Population:
         self.county = county
 
 
-class PopulationSchema(Schema):
-
-    class Meta:
-        strict = True
-
-    population = fields.Number(allow_none=True, allow_null=True)
-    year = fields.Number(allow_none=True, allow_null=True)
-    county = fields.Str(allow_none=True, allow_null=True)
-
-
 class County:
+    """
+    A county, along with its current and future populations.
+    """
 
     def __init__(self, current_population, future_population, name):
         self.current_population = current_population
@@ -68,17 +43,11 @@ class County:
         return growth_rate(current_pop, future_pop, num_years)
 
 
-class CountySchema(Schema):
-
-    class Meta:
-        strict = True
-
-    name = fields.Str(allow_null=True, allow_none=True)
-    current_population = fields.Nested(PopulationSchema)
-    future_population = fields.Nested(PopulationSchema)
-
-
 class CountyPopulationByAge:
+    """
+    Used to model the information returned by the CIM endpoint
+    for population by county.
+    """
 
     def __init__(self, name, population, age, year):
         self.name = name
@@ -88,6 +57,11 @@ class CountyPopulationByAge:
 
 
 class CountyPopulationByAgeGroup:
+    """
+    Groups together multiple CountyPopulationByAge objects
+    and combines their population counts into a single
+    Population object.
+    """
 
     def __init__(self, populations):
         self.populations = populations
@@ -97,18 +71,3 @@ class CountyPopulationByAgeGroup:
         return Population(population=population,
                           year=self.populations[0].year,
                           county=self.populations[0].name)
-
-
-class CountyPopulationByAgeSchema(Schema):
-
-    class Meta:
-        strict = True
-
-    name = fields.Str(load_from='county')
-    population = fields.Float(load_from='totalpopulation')
-    age = fields.Number()
-    year = fields.Number()
-
-    @post_load
-    def make_position(self, data):
-        return CountyPopulationByAge(**data)

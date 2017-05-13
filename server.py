@@ -4,7 +4,7 @@ import uuid
 from flask import Flask, request, json, current_app, make_response
 
 from clients import HighwaysClient, RailroadsClient, AirportsClient
-from locations import Position
+from locations.models import Position
 from sites import Site, SiteSchema
 
 

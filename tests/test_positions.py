@@ -1,6 +1,6 @@
 from tests.common import CustomTestCase
 
-from locations import Position
+from locations.models import Position
 
 
 class DistanceFromTestCase(CustomTestCase):

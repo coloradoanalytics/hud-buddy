@@ -3,7 +3,7 @@ import math
 from marshmallow import Schema, fields, post_load
 
 from utils import dnl_sum
-from locations import PositionSchema, CountySchema
+from locations.schemas import PositionSchema, CountySchema
 from highways import RoadSchema
 from railroads import RailSchema
 import report

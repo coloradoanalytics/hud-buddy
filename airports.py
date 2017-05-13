@@ -1,5 +1,5 @@
 from marshmallow import Schema, fields, pre_load, post_load
-from locations import PositionSchema, PositionSchemaFromCIM
+from locations.schemas import PositionSchema, PositionSchemaFromCIM
 
 
 class Airport:

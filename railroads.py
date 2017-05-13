@@ -3,7 +3,7 @@ import math
 from marshmallow import Schema, fields, pre_load, post_load
 
 from utils import dnl_sum
-from locations import PositionSchemaFromCIM
+from locations.schemas import PositionSchemaFromCIM
 
 
 class Rail:
