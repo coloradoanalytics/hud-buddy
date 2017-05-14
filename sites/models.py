@@ -1,7 +1,7 @@
 import math
 
 from common.utils import dnl_sum
-import report
+from .report import generate_report
 
 
 class Site:
@@ -71,7 +71,7 @@ class Site:
             rail.dnl = rail.get_dnl()
 
     def generate_report(self, filename):
-        report.generate_report(self, filename)
+        generate_report(self, filename)
 
     def get_airports_dnl(self):
         dnl_list = list()
