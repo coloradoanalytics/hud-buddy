@@ -40,7 +40,7 @@ Each app consists of one or more of the following:
  
  The `sites` app contains an additional file, `reports.py`, which handles the creation of the PDF report with `PyLaTex`.
  
-** apps:**
+**apps**:
 
 - airports
 	- `clients.py`
