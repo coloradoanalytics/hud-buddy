@@ -1,6 +1,6 @@
-from common import CustomTestCase
+from tests.custom import CustomTestCase
 
-from locations import Population, County
+from locations.models import Population, County
 
 
 class GrowthRateTestCase(CustomTestCase):

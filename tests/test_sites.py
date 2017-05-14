@@ -1,4 +1,4 @@
-from tests.common import CustomTestCase
+from tests.custom import CustomTestCase
 
 
 class SiteProcessTestCase(CustomTestCase):

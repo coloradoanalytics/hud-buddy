@@ -1,8 +1,8 @@
-from tests.common import CustomTestCase
+from tests.custom import CustomTestCase
 
-from clients import HighwaysClient
-from highways import Road
-from locations import Position
+from roads.clients import HighwaysClient
+from roads.models import Road
+from locations.models import Position
 
 
 class UniqueTestCase(CustomTestCase):
