@@ -1,5 +1,6 @@
 *.spw
 *.pyc
 *.tex
+*.ini
 __pycache__/
 response.txt

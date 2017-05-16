@@ -14,7 +14,7 @@ class CIMClient:
 
     def __init__(self):
         self.url = self.base_url.format(self.resource_id)
-        self.token = os.environ.get('HUDBUDDY_CIM_TOKEN', '1')
+        self.token = os.environ.get('HUDBUDDY_CIM_TOKEN', '')
 
     def get(self, payload, context=None):
         headers = {'X-App-Token': self.token}
