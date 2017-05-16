@@ -1,3 +1,5 @@
+import os
+
 import requests
 
 
@@ -12,9 +14,12 @@ class CIMClient:
 
     def __init__(self):
         self.url = self.base_url.format(self.resource_id)
+        self.token = os.environ.get('HUDBUDDY_CIM_TOKEN', '1')
 
     def get(self, payload, context=None):
-        response = self.session.get(self.url, params=payload).json()
+        headers = {'X-App-Token': self.token}
+        response = self.session.get(
+            self.url, params=payload, headers=headers).json()
         schema = self.schema_class(many=self.many)
         schema.context = context
         return schema.load(response).data
