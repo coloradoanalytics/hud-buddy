@@ -3,7 +3,6 @@ var SiteForm = {
 		<div class="card" v-if="editing">
 			<div class="card-header">
         <p class="card-header-title">Editing: {{ editValues.name }}</p>
-        <
       </div>
 
       <div class="card-content">
