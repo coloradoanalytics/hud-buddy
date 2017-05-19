@@ -5,13 +5,15 @@
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
 
-    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> -->
     <link rel="stylesheet" href="static/font-awesome-4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="static/css/bulma.min.css">
     <link rel="stylesheet" type="text/css" href="static/css/style.css">
 
-    <!-- <script src="https://unpkg.com/vue/dist/vue.js"></script> -->
-    <script src="/static/js/vue.js"></script>
+    <!-- Use min version from CDN for deployed -->
+    <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
+
+    <!-- Use dev version local for development -->
+    <!-- <script src="/static/vue/vue.min.js"></script> -->
   </head>
 
   <body>
@@ -20,8 +22,7 @@
       <navbar
         @select-tab="onSelectTab"
         v-bind:current-tab="currentTab"
-        >
-      </navbar>
+      ></navbar>
 
       <maptab
         v-show="currentTab == 'map'"
@@ -29,8 +30,7 @@
         @select-marker="onSelectMarker"
         @move-marker="onMoveMarker"
         @send-to-form="onSendToForm"
-        >  
-      </maptab>
+      ></maptab>
 
       <formtab
         v-show="currentTab == 'form'"
@@ -48,19 +48,30 @@
         @update-road="onUpdateRoad"
         @update-form="onUpdateForm"
         @update-site="onUpdateSite"
-        >
-      </formtab>
+      ></formtab>
 
       <abouttab
         v-show="currentTab == 'about'"
-        >
-      </abouttab>
+      ></abouttab>
 
     </div>
+
+    <footer class="footer">
+      <div class="level">
+
+        <div class="level-item">
+          <p>
+            Calculations are equivalent to the HUD Exchange <a href="https://www.hudexchange.info/environmental-review/dnl-calculator/" target="_blank">DNL Calculator</a> and consistent with the HUD Noise Guidebook.
+          </p>
+        </div>
+      </div>
+    </footer>
   
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyB20D3rZ8LVMzQg9_3ABmZ_IlkoakQMRKo"></script>
-    <script src="static/js/markerwithlabel.js"></script>
 
+    <script type="text/javascript" src="static/js/markerwithlabel.js"></script>
+
+    <script type="text/javascript" src="static/js/utils.js"></script>
     <script type="text/javascript" src="static/js/navbar.js"></script>
     <script type="text/javascript" src="static/js/airportcard.js"></script>
     <script type="text/javascript" src="static/js/airportform.js"></script>

@@ -4,7 +4,7 @@ var NavBar = {
         <div class="container">
           <div class="nav-left">
             <a class="nav-item">
-              <img src="static/images/hudx100.png">
+              <img src="static/images/hudbuddy100.png">
             </a>
             <a v-bind:class="tabClass('map')" v-on:click="selectTab('map')">
               Map
@@ -15,11 +15,6 @@ var NavBar = {
             <a v-bind:class="tabClass('about')" v-on:click="selectTab('about')">
               About
             </a>
-          </div>
-          <div class="nav-right">
-            <span class="nav-item">
-              <!-- <a class="button">Sign in</a> -->
-            </span>
           </div>
         </div>
       </nav>
