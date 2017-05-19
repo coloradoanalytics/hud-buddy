@@ -102,15 +102,29 @@ var MapTab = {
           </template>
 
           <template v-else>
-            <div class="level">
-              <div class="level-left">
-                <div class="level-item>">
-                  <div class="title">Select Analysis Location</div>
-                </div>
-              </div>
-              <div class="level-right">
-              </div>
-            </div>
+            <div class="title">Select Analysis Location</div>
+            <p>Click the map to place a marker. HUD Buddy will search public records for transportation noise sources.</p>
+            <br>
+            <p>
+              <span class="icon"><i class="fa fa-car" aria-hidden="true"></i></span>
+              Highways within 1500 feet
+            </p>
+            <p>
+              <span class="icon"><i class="fa fa-train" aria-hidden="true"></i></span>
+              Railroads within 4500 feet
+            </p>
+            <p>
+              <span class="icon"><i class="fa fa-plane" aria-hidden="true"></i></span>
+              Airports within 15 miles
+            </p>
+            <br>
+            <p>
+              A DNL calculation will be performed using available data. Click Send to Form to edit or add additional data.
+            </p>
+            <br>
+            <p>
+              Moving a marker will start a new public data query and recalculate the noise level for the new location.
+            </p>
           </template>
 
           </div>
