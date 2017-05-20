@@ -23,7 +23,7 @@ These datasets are used in the following way:
 
 Using the site is intuitive and all features can be explored in just a few minutes. The following steps will take you through everything the application does.
 
-1. Go to http://hudbuddy.com
+1. Go to https://hudbuddy.com
 2. Explore the map to find a location that you'd like to analyze. It should be near a highway or busy roadway.
 3. Click the location to place a marker and start the analysis. The back-end will query the CIM datasets for roads, rail, and airports within range.
 	- If the location is within range of road noise sources only (most likely scenario), there is enough data in the CIM to perform a complete analysis and you will get a value with no warnings.
