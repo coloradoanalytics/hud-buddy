@@ -56,7 +56,7 @@ def generate_report(site, filename):
     doc.preamble.append(
         NoEscape(r'\rhead{\footnotesize Calculations conform to HUD Noise Guidebook}'))
     doc.preamble.append(NoEscape(
-        r'\rfoot{\href{http://hud.coloradoanalytics.com}{http://hud.coloradoanalytics.com}}'))
+        r'\rfoot{\href{https://hudbuddy.com}{https://hudbuddy.com}}'))
     doc.preamble.append(NoEscape(r'\setlength{\headsep}{.75in}'))
     # Get current date
     current_date = datetime.datetime.now()
