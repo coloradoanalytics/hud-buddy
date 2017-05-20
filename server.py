@@ -116,5 +116,6 @@ def reports():
     return response
 
 
+# run the app in debug mode locally
 if __name__ == "__main__":
     app.run(debug=True)

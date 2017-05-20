@@ -5,6 +5,11 @@ from roads.schemas import RoadSchema
 
 
 class RoadSchemaTestCase(CustomTestCase):
+    """
+    Test that the RoadSchema class is creating actual
+    Road, Auto, MediumTruck and HeavyTruck objects
+    when loading the dictionary data.
+    """
 
     def test_load(self):
         data = {
