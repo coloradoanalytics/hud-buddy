@@ -3,7 +3,7 @@ from fabric.api import env, run, cd, sudo
 PYTHON = '~/Envs/hudl/bin/python3'
 PIP = '~/Envs/hudl/bin/pip3'
 
-env.hosts = ['hudl.coloradoanalytics.com']
+env.hosts = ['hudbuddy.com']
 env.user = 'hudl'
 
 
