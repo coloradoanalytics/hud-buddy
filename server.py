@@ -33,11 +33,18 @@ app = CustomFlask(__name__)
 
 @app.route("/")
 def home():
+    """
+    Route that serves the home page.
+    """
     return current_app.send_static_file('html/index.html')
 
 
 @app.route("/api/sites/", methods=['GET', 'POST'])
 def sites():
+    """
+    API route that takes a latitude and longitude
+    and responds with a fully computed Site object.
+    """
     if request.method == 'GET':
         lat = float(request.args.get('lat'))
         lng = float(request.args.get('lng'))
@@ -80,6 +87,11 @@ def sites():
 
 @app.route("/api/reports/", methods=['POST'])
 def reports():
+    """
+    API route that takes a Site object and returns a PDF file
+    with the results of the calculations.
+    """
+
     # turn the string in request.form['site_json'] into a site object
     site = SiteSchema().loads(request.form['site_json']).data
 
