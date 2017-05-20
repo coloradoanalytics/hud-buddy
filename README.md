@@ -120,6 +120,12 @@ Each app consists of one or more of the following:
 		- defines JSON schemas for the `Site` class
 	- `report.py`
 		- turns a `Site` object into a PDF report file using `PyLaTex`.
+		
+**tests**:
+
+The backend application has a unit testing suite whose primary function is to ensure the accuracy of the noise calculations. The tests are located in the `/tests` directory.
+
+For the `roads` app, for example, we came up with several example sites and performed HUD-compliant calculations on those sites outside of our application. We then used the results of those calculations to write unit tests that ensure that the application continues to perform those calculations accurately. This allows us to safely refactor the calculation code without changing the results.
 
 #### Front-End Code
 
