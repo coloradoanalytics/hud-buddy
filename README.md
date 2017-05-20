@@ -2,6 +2,24 @@
 
 #### An application for performing noise analysis to HUD specifications.
 ***
+
+## Data use architecture
+
+The following datasets are used every time HudBuddy analyzes a location:
+1. CIM "HIGHWAYS" dataset (https://data.colorado.gov/dataset/HIGHWAYS/phvc-rwei)
+2. CIM "Population Projections in Colorado" dataset (https://data.colorado.gov/Demographics/Population-Projections-in-Colorado/q5vp-adf3)
+3. CIM "RAIL_LINES_100k" dataset (https://data.colorado.gov/dataset/RAIL_LINES_100K/2tib-gtif)
+4. CIM "Airports" dataset (https://data.colorado.gov/dataset/AIRPORTS/siwx-ebh7)
+
+These datasets are used in the following way:
+
+1. When a user clicks the map, the latitude and longitude of that location are sent to the "Highways" API, which returns a list of highway segments that are within 1500 feet of that point. For each highway, we extract the name, average daily traffic, average daily truck traffic, measurement year, speed limit, and county name.
+2. We then send that county name in two separate queries to the "Population" API. One query gives us an actual counted population value, and one gives us a projected value 20 years in the future. From these values we calculate a growth rate for the county, which is necessary for our noise calculations.
+3. Next, we query the "Rails" API for all railroad segments within 4500 feet of the location. 
+4. And finally, we query the "Airports" API for all airports within 15 miles.
+5. Using data from the above responses, as well as some default and user-provided values when necessary, we calculate a DNL (day-night average sound level) value for each highway/rail/airport, and combine these individual DNL values into a total DNL for the location. This value is the final result of our analysis.
+
+
 ## Code walk-through
 
 HudBuddy consists of:
