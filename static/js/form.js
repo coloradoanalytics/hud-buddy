@@ -113,17 +113,9 @@ var FormTab = {
 
     onGetCalculation: function() {
       var self = this;
-      fetch('/api/sites/',
-        {
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          method: "POST",
-          body: JSON.stringify(self.formData)
-        })
+      axios.post('/api/sites/', self.formData)
         .then(function(response) {
-          return response.json(); 
+          return response.data;
         })
         .then(function(json) {
           self.$emit('update-form', json);

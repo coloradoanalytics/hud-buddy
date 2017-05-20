@@ -240,7 +240,8 @@ var MapTab = {
       var redrawMarker = this.redrawMarker;
       var self = this;
 
-      fetch(url).then(function(response) {return response.json(); }).then(function(json) {
+      axios.get(url).then(
+        function(response) {return response.data; }).then(function(json) {
         markers[marker.id].data = json;
         self.selectMarker(marker);
         self.redrawMarker(marker, json);
