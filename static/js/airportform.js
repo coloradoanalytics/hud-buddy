@@ -17,7 +17,7 @@ var AirportForm = {
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <input class="input" type="text" v-model="editValues.name">
+                <input class="input" type="text" v-model="editValues.name" maxlength="80">
                 <p class="help is-danger" v-show="nameIsValid == false">Required. Letters, numbers and , . - only</p>
               </div>
             </div>
@@ -45,7 +45,7 @@ var AirportForm = {
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <input class="input" type="text" v-model="editValues.distance">
+                <input class="input" type="text" v-model="editValues.distance" maxlength="10">
                 <p class="help is-danger" v-show="distanceIsValid == false">Must be a number</p>
               </div>
             </div>

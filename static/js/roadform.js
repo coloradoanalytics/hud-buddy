@@ -17,7 +17,7 @@ var RoadForm = {
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <input class="input" type="text" v-model="editValues.name">
+                <input class="input" type="text" v-model="editValues.name" maxlength="80">
                 <p class="help is-danger" v-show="nameIsValid == false">Required. Letters, numbers and , . - only</p>
               </div>
             </div>
@@ -31,7 +31,7 @@ var RoadForm = {
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <input class="input" type="text" v-model="editValues.distance">
+                <input class="input" type="text" v-model="editValues.distance" maxlength="10">
                 <p class="help is-danger" v-show="distanceIsValid == false">Required. Must be numeric</p>
               </div>
             </div>
@@ -45,7 +45,7 @@ var RoadForm = {
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <input class="input" type="text" v-model="editValues.adt">
+                <input class="input" type="text" v-model="editValues.adt" maxlength="10">
                 <p class="help is-danger" v-show="adtIsValid == false">Required. Must be a number</p>
               </div>
             </div>
@@ -59,7 +59,7 @@ var RoadForm = {
           <div class="field-body">
             <div class="field is-grouped">
               <div class="control is-expanded">
-                <input class="input" type="text" v-model="editValues.adt_year">
+                <input class="input" type="text" v-model="editValues.adt_year" maxlength="4">
                 <p class="help is-danger" v-show="adtYearIsValid == false">Must be a year</p>
               </div>
               <div class="control">
@@ -78,7 +78,7 @@ var RoadForm = {
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <input class="input" type="text" v-model="editValues.counted_adt">
+                <input class="input" type="text" v-model="editValues.counted_adt" maxlength="10">
                 <p class="help">Total ADT from published traffic count</p>
                 <p class="help is-danger" v-show="countedAdtIsValid == false">Must be a number</p>
               </div>
@@ -93,7 +93,7 @@ var RoadForm = {
           <div class="field-body">
             <div class="field is-grouped">
               <div class="control is-expanded">
-                <input class="input" type="text" v-model="editValues.counted_adt_year">
+                <input class="input" type="text" v-model="editValues.counted_adt_year" maxlength="4">
                 <p class="help">Year of published traffic count</p>
                 <p class="help is-danger" v-show="countedAdtYearIsValid == false">Must be a year</p>
               </div>
@@ -122,11 +122,11 @@ var RoadForm = {
               <td>{{ autosAdt }}</td>
               <td>{{ autosPercent }}%</td>
               <td>
-                <input class="input" type="text" v-model="editValues.auto.night_fraction">
+                <input class="input" type="text" v-model="editValues.auto.night_fraction" maxlength="10">
                 <p class="help is-danger" v-show="autosNightFractionIsValid == false">Must be a number</p>
               </td>
               <td>
-                <input class="input" type="text" v-model="editValues.auto.speed">
+                <input class="input" type="text" v-model="editValues.auto.speed" maxlength="4">
                 <p class="help is-danger" v-show="autosSpeedIsValid == false">Must be a number in MPH</p>
               </td>
             </tr>
@@ -134,15 +134,15 @@ var RoadForm = {
               <td>Medium Trucks</td>
               <td>{{ mediumTrucksAdt }}</td>
               <td>
-                <input class="input" type="text" v-model="editValues.medium_truck.adt_fraction">
+                <input class="input" type="text" v-model="editValues.medium_truck.adt_fraction" maxlength="10">
                 <p class="help is-danger" v-show="mediumTrucksFractionIsValid == false">Must be a number</p>
               </td>
               <td>
-                <input class="input" type="text" v-model="editValues.medium_truck.night_fraction">
+                <input class="input" type="text" v-model="editValues.medium_truck.night_fraction" maxlength="10">
                 <p class="help is-danger" v-show="mediumTrucksNightFractionIsValid == false">Must be a number</p>
               </td>
               <td>
-                <input class="input" type="text" v-model="editValues.medium_truck.speed">
+                <input class="input" type="text" v-model="editValues.medium_truck.speed" maxlength="4">
                 <p class="help is-danger" v-show="mediumTrucksSpeedIsValid == false">Must be a number in MPH</p>
               </td>
             </tr>
@@ -150,15 +150,15 @@ var RoadForm = {
               <td>Heavy Trucks</td>
               <td>{{ heavyTrucksAdt }}</td>
               <td>
-                <input class="input" type="text" v-model="editValues.heavy_truck.adt_fraction">
+                <input class="input" type="text" v-model="editValues.heavy_truck.adt_fraction" maxlength="10">
                 <p class="help is-danger" v-show="heavyTrucksFractionIsValid == false">Must be a number</p>
               </td>
               <td>
-                <input class="input" type="text" v-model="editValues.heavy_truck.night_fraction">
+                <input class="input" type="text" v-model="editValues.heavy_truck.night_fraction" maxlength="10">
                 <p class="help is-danger" v-show="heavyTrucksNightFractionIsValid == false">Must be a number</p>
               </td>
               <td>
-                <input class="input" type="text" v-model="editValues.heavy_truck.speed">
+                <input class="input" type="text" v-model="editValues.heavy_truck.speed" maxlength="4">
                 <p class="help is-danger" v-show="heavyTrucksSpeedIsValid == false">Must be a number in MPH</p>
               </td>
             </tr>
@@ -172,7 +172,7 @@ var RoadForm = {
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <input class="input" type="text" v-model="editValues.stop_sign_distance">
+                <input class="input" type="text" v-model="editValues.stop_sign_distance" maxlength="10">
               </div>
               <p class="help">Leave blank if no stop sign or greater than 600 feet</p>
               <p class="help is-danger" v-show="stopSignDistanceIsValid == false">Must be a number</p>
@@ -187,7 +187,7 @@ var RoadForm = {
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <input class="input" type="text" v-model="editValues.grade">
+                <input class="input" type="text" v-model="editValues.grade" maxlength="10">
               </div>
               <p class="help">0.02 (2%) default. Use 0 if less than 2%</p>
               <p class="help is-danger" v-show="gradeIsValid == false">Must be a number</p>

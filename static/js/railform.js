@@ -17,7 +17,7 @@ var RailForm = {
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <input class="input" type="text" v-model="editValues.name">
+                <input class="input" type="text" v-model="editValues.name" maxlength="80">
                 <p class="help is-danger" v-show="nameIsValid == false">Required. Letters, numbers and , . - only</p>
               </div>
             </div>
@@ -31,7 +31,7 @@ var RailForm = {
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <input class="input" type="text" v-model="editValues.distance">
+                <input class="input" type="text" v-model="editValues.distance" maxlength="10">
                 <p class="help is-danger" v-show="distanceIsValid == false">Required. Must be numeric</p>
               </div>
             </div>
@@ -45,7 +45,7 @@ var RailForm = {
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <input class="input" type="text" v-model="editValues.speed">
+                <input class="input" type="text" v-model="editValues.speed" maxlength="4">
                 <p class="help is-danger" v-show="speedIsValid == false">Required. Must be a number in MPH</p>
               </div>
             </div>
@@ -59,7 +59,7 @@ var RailForm = {
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <input class="input" type="text" v-model="editValues.engines_per_train">
+                <input class="input" type="text" v-model="editValues.engines_per_train" maxlength="4">
                 <p class="help is-danger" v-show="enginesPerTrainIsValid == false">Required. Must be a number</p>
               </div>
             </div>
@@ -73,7 +73,7 @@ var RailForm = {
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <input class="input" type="text" v-model="editValues.cars_per_train">
+                <input class="input" type="text" v-model="editValues.cars_per_train" maxlength="5">
                 <p class="help is-danger" v-show="carsPerTrainIsValid == false">Required. Must be a number</p>
               </div>
             </div>
@@ -87,7 +87,7 @@ var RailForm = {
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <input class="input" type="text" v-model="editValues.ato">
+                <input class="input" type="text" v-model="editValues.ato" maxlength="5">
                 <p class="help is-danger" v-show="atoIsValid == false">Required. Must be a number</p>
               </div>
             </div>
@@ -101,7 +101,7 @@ var RailForm = {
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <input class="input" type="text" v-model="editValues.night_fraction">
+                <input class="input" type="text" v-model="editValues.night_fraction" maxlength="10">
                 <p class="help is-danger" v-show="nightFractionIsValid == false">Required. Must be a number</p>
               </div>
             </div>
