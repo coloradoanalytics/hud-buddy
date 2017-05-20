@@ -1,11 +1,11 @@
-## HudBuddy
+## Hud Buddy
 
 #### An application for performing noise analysis to HUD specifications.
 ***
 
 ## Data use architecture
 
-The following datasets are used every time HudBuddy analyzes a location:
+The following datasets are used every time Hud Buddy analyzes a location:
 1. CIM "HIGHWAYS" dataset (https://data.colorado.gov/dataset/HIGHWAYS/phvc-rwei)
 2. CIM "Population Projections in Colorado" dataset (https://data.colorado.gov/Demographics/Population-Projections-in-Colorado/q5vp-adf3)
 3. CIM "RAIL_LINES_100k" dataset (https://data.colorado.gov/dataset/RAIL_LINES_100K/2tib-gtif)
@@ -38,10 +38,14 @@ Using the site is intuitive and all features can be explored in just a few minut
 9. When you're satisfied with your data, click `Generate Report` to open a generated .pdf report in a new window.
 
 
+## Security
+
+Hud Buddy does not store or otherwise handle sensitive user data. There is no login process or payment handling. Still, we've implemented SSL to ensure that all requests are securely handled over HTTPS. 
+
 
 ## Code walk-through
 
-HudBuddy consists of:
+Hud Buddy consists of:
 
 1. a backend API written in Python/Flask
 2. a web frontend written in Vue.js
@@ -59,7 +63,7 @@ The `GET /api/sites` route is called when the user clicks a location on the map.
 
 The `POST /api/sites` route is called when the user sends their `Site` to the editable form view, makes changes to the supplied values, and clicks `Calculate`. The front-end passes the complete `Site` JSON object, with the user's modifications, to the back-end, which performs the same acoustical caluculations as in the `GET` endpoint. This allows the user to edit or add to the data returned by CIM as they see fit.
 
-The `POST /api/reports` route is called when the user selects `Generate Report`. The full `Site` JSON object is passed to the backend, which performs the acoustical calculations and then renders the result into a nicely formatted PDF document - the end product of a HudBuddy analysis. The `PyLaTeX` library is used to format and create the PDF file.
+The `POST /api/reports` route is called when the user selects `Generate Report`. The full `Site` JSON object is passed to the backend, which performs the acoustical calculations and then renders the result into a nicely formatted PDF document - the end product of a Hud Buddy analysis. The `PyLaTeX` library is used to format and create the PDF file.
 ***
 The rest of the backend is organized into directories, or "apps", corresponding to the noise source or object in question. There are apps for `airports`, `locations`, `railroads`, `roads` and `sites`.
 
