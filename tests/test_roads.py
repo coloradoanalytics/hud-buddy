@@ -100,7 +100,7 @@ class HeavyTruckDNLTestCase(CustomTestCase):
             night_fraction=.15,
             grade=2
         )
-        self.assertAlmostEqual(heavy_truck.dnl, 59.3, 1)
+        self.assertAlmostEqual(heavy_truck.dnl, 72.0, 1)
 
 
 class CombinedDNLTestCase(CustomTestCase):
