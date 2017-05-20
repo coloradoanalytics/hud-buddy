@@ -1,6 +1,6 @@
 #map {
     height: 600px;
-    width: 800px;
+    max-width: 800px;
 }
 
 .labels {
