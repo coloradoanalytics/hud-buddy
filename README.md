@@ -19,6 +19,25 @@ These datasets are used in the following way:
 4. And finally, we query the "Airports" API for all airports within 15 miles.
 5. Using data from the above responses, as well as some default and user-provided values when necessary, we calculate a DNL (day-night average sound level) value for each highway/rail/airport, and combine these individual DNL values into a total DNL for the location. This value is the final result of our analysis.
 
+## Using the application
+
+Using the site is intuitive and all features can be explored in just a few minutes. The following steps will take you through everything the application does.
+
+1. Go to http://hudbuddy.com
+2. Explore the map to find a location that you'd like to analyze. It should be near a highway or busy roadway.
+3. Click the location to place a marker and start the analysis. The back-end will query the CIM datasets for roads, rail, and airports within range.
+	- If the location is within range of road noise sources only (most likely scenario), there is enough data in the CIM to perform a complete analysis and you will get a value with no warnings.
+	- If the location is within range of railroads or airports, it is currently impossible to collect enough information about these noise sources for a complete, automatic analysis. The application tells you as much as it can about these sources and presents a result with appropriate warnings.
+4. Drag a marker to a new location on the map. A new data query and analysis will begin.
+5. Add multiple markers to the map at different distances from a highway. Closer markers will be louder and may result in different HUD classifications and different marker colors.
+6. With a marker selected, click `Send to Form` and all data attached to the current marker will be sent to the editable form.
+7. Edit the features of the site and each data source as you like. Add or remove noise sources as you like.
+	- Airport DNL must be read from contour maps published by the airport or the FAA
+	- Train speed and operations per day must be acquired from the FRA
+8. Click `Calculate` whenever you'd like a new calculation of the noise value at the location (will not work with incomplete noise source data)
+9. When you're satisfied with your data, click `Generate Report` to open a generated .pdf report in a new window.
+
+
 
 ## Code walk-through
 
@@ -102,6 +121,35 @@ Each app consists of one or more of the following:
 	- `report.py`
 		- turns a `Site` object into a PDF report file using `PyLaTex`.
 
+#### Front-End Code
+
+All front-end files are located in `/static`. Files written by us are in `/static/js`, `/static/html/`, and `/static/css`. All code found in other folders under `/static` are libraries that need to be stored and served locally for one reason or another.
+
+The front end is a simple Vue.js application. Although it is divided into components, it is not written in .vue files and bundled by webpack or similar; templates are written literally and .js files are simply called by index.html.
+
+Communication between components is done through standard Vue tools. Data travels down by defining and passing props. Data and messages travel up through Vue's built-in events.
+
+Data is stored and handled in json objects that represent "sites". A site contains all of the information about a single analysis location, including its coordinates and all of the noise sources that are in range.
+
+- index.html and index.js
+	- These files form the base component of the site.
+	- index.html loads all javascript files in order, since we are not bundling with webpack
+- navbar.js
+	- Contains Vue component with the tab control.
+	- Clicking a tab causes a tab selection event to be sent to the main component
+- map.js, form.js, about.js
+	- These files contain the components that make up most of the content in the site
+	- All are loaded, but only one is shown at a time depending on the selected tab
+- mapinfo.js
+	- Contains the components used to display companion info for the map on the map tab
+- road|rail|airport|siteform.js
+	- Components that permit editing of the individual components of a site
+	- When a component is not in edit mode, the "card" version of the component is shown
+- road|rail|airport|sitecard.js
+	- Components that are used to display pieces of a site when they are not in edit mode
+- utils.js
+	- Handy functions that are used by multiple components
+	
  
 ## Local development instructions
 
