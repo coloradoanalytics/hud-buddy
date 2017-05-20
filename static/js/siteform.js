@@ -16,7 +16,7 @@ var SiteForm = {
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <input class="input" type="text" v-model="editValues.name" name="name">
+                <input class="input" type="text" v-model="editValues.name" name="name" maxlength="60">
                 <p class="help is-danger" v-show="nameIsValid == false">Required. Letters, numbers and , . - only.</p>
               </div>
             </div>
@@ -30,7 +30,7 @@ var SiteForm = {
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <input class="input" type="text" v-model="editValues.growth_rate">
+                <input class="input" type="text" v-model="editValues.growth_rate" maxlength="10">
                 <p class="help is-danger" v-show="growthRateIsValid == false">Must be a number.</p>
               </div>
             </div>
@@ -44,7 +44,7 @@ var SiteForm = {
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <input class="input" type="text" v-model="editValues.user_name">
+                <input class="input" type="text" v-model="editValues.user_name" maxlength="40">
                 <p class="help is-danger" v-show="userNameIsValid == false">Letters, numbers and , . - only.</p>
               </div>
             </div>
