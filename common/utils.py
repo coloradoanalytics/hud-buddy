@@ -22,6 +22,9 @@ def haversine(lon1, lat1, lon2, lat2):
 
 
 def dnl_sum(dnl_list):
+    """
+    Formula to combine multiple DNL values into a single sum.
+    """
     dnl_sum = 0
     for dnl in dnl_list:
         if dnl and dnl > 1:
@@ -32,4 +35,9 @@ def dnl_sum(dnl_list):
 
 
 def growth_rate(starting_pop, future_pop, num_years):
+    """
+    Calculated the growth rate of a location, given
+    the starting population, ending population, and number
+    of years in between.
+    """
     return log(future_pop / starting_pop) / num_years

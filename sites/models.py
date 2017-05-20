@@ -35,6 +35,10 @@ class Site:
         self.combined_dnl = self.get_combined_dnl()
 
     def get_combined_dnl(self):
+        """
+        Combine the individual DNL values of each road, rail and
+        airport into a total DNL for this site.
+        """
         energy = 0
         for road in self.roads:
             if road.get_dnl() is not None:
@@ -60,6 +64,10 @@ class Site:
         return round(10 * math.log10(energy), 1)
 
     def set_adts(self):
+        """
+        Calculate future traffic counts for each road, based on
+        the growth rate of the county.
+        """
         for road in self.roads:
             road.adt = road.get_adt()
             road.set_adts()
@@ -92,6 +100,10 @@ class Site:
         return dnl_sum(dnl_list)
 
     def get_hud_status(self):
+        """
+        Returns a string that describes the acceptability level
+        of this site's DNL, based on HUD's specifications.
+        """
         dnl = self.get_combined_dnl()
         if dnl <= 65:
             return 'Acceptable'

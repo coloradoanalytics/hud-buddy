@@ -33,6 +33,9 @@ class Rail:
         return "{} / {} / {}".format(self.railroad, self.branch, self.division)
 
     def get_distance(self, position):
+        """
+        Get this distance between this rail and a given position.
+        """
         closest = None
         for p in self.positions:
             d = p.distance_from(position)
@@ -40,12 +43,23 @@ class Rail:
                 closest = d
         return closest
 
+    # The methods below are the steps to calculate the DNL for a railroad.
+    # Mirrors the steps followed by HUD's online tool, for the sake
+    # of consistency.
+
     def get_aato_e(self):
+        """
+        Adjust the average daily train operations if this rail has horns.
+        """
         if self.horns:
             return self.ato * 10
         return self.ato
 
     def get_aato_c(self):
+        """
+        Adjust the average daily train operations if this rail has
+        bolted tracks.
+        """
         if self.bolted_tracks:
             return self.ato * 4
         return self.ato
@@ -126,6 +140,9 @@ class Rail:
         )
 
     def get_dnl(self):
+        """
+        Calculate the total DNL for this rail.
+        """
         if self.ato < 1:
             return 0
         if self.diesel:

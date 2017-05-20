@@ -71,7 +71,7 @@ class RailroadSchemaFromCIM(Schema):
     @post_load
     def make_rail(self, data):
         """
-        Creates the Road object from the
+        Creates the Rail object from the
         API data.
         """
         return Rail(**data)

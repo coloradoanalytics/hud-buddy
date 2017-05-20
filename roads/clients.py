@@ -19,7 +19,7 @@ class HighwaysClient(CIMClient):
 
     def _get_county(self):
         """
-        Performs an API request to get the county population data
+        Performs an API request to get the county population data.
         """
         if self.roads:
             county_name = self.roads[0].county_name
@@ -72,6 +72,10 @@ class HighwaysClient(CIMClient):
         self.roads = new_roads
 
     def get_unique_segments(self, position, distance):
+        """
+        Perform the API request to get the road segments.
+        Fills out and cleans the data before returning.
+        """
         payload = {"$where": "within_circle(the_geom, {}, {}, {})".format(
             position.lat, position.lng, distance)}
 

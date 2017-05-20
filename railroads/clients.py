@@ -11,6 +11,10 @@ class RailroadsClient(CIMClient):
     position = None
 
     def get_unique_segments(self, position, distance):
+        """
+        Performs an API call, removes duplicate rails from the resopnse,
+        and sets the distance of each rail from the given position.
+        """
         payload = {"$where": "within_circle(the_geom, {}, {}, {})".format(
             position.lat, position.lng, distance)}
 
