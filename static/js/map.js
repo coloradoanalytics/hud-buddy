@@ -1,5 +1,8 @@
+//Global list of markers attached to the map
+//Google Maps does not handle this internally
 var markers = {};
 
+//Vue component that displays when the "map" tab is selected (default)
 var MapTab = {
 
   template: `
@@ -136,6 +139,8 @@ var MapTab = {
 
   methods: {
     'combineSources': function(sources) {
+      //logarithmic addition of all sources in a list
+      //returns an object with the value and with the isComplete indicator that all items had a value
       var nrg = 0;
       var d = {value: 0, isComplete: true, count: sources.length};
 
@@ -152,6 +157,7 @@ var MapTab = {
     },
 
     'clearSelectedMarker': function() {
+      //modify marker label to unselected state
       if (this.currentMarkerId) {
         this.currentMarker.marker.labelAnchor = new google.maps.Point(18, -6);
         this.currentMarker.marker.labelClass = "labels";
@@ -160,6 +166,7 @@ var MapTab = {
     },
 
     'createMarker': function(event, map) {
+      //create a new map marker, add listeners, add to global markers object, add to map
       this.clearSelectedMarker();
       var lat = event.latLng.lat();
       var lng = event.latLng.lng();
@@ -203,6 +210,8 @@ var MapTab = {
     },
 
     'initMap': function() {
+      //initialize map with Google Maps library
+      //center on Denver because Colorado is the best
       this.map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 39.797, lng: -104.958},
         zoom: 12
@@ -215,23 +224,26 @@ var MapTab = {
     },
 
     'moveMarker': function(event, marker) {
+      //re-place a marker after dragging
       var lat = event.latLng.lat();
       var lng = event.latLng.lng();
       this.placeMarker(marker, lat, lng);
-
     },
 
     'onRemoveCurrentMarker': function() {
+      //respond to remove marker event by unselecting and deleting current marker
       markers[this.currentMarkerId].marker.setMap(null);
       delete markers[this.currentMarkerId];
       this.$emit('select-marker', '');
     },
 
     'onSendToForm': function() {
+      //attach current marker's site data to event and send to parent component
       this.$emit('send-to-form', JSON.parse(JSON.stringify(markers[this.currentMarkerId].data)));
     },
 
     'placeMarker': function(marker, lat, lng) {
+      //place marker on map and request data from server
       marker.labelContent = spinnerHTML;
       marker.label.setContent();
       marker.icon.strokeColor = 'white';
@@ -250,6 +262,7 @@ var MapTab = {
     },
 
     'redrawMarker': function(marker, json) {
+      //calculate display value for marker and adjust label accordingly
       var airportsDnl = this.combineSources(json.airports);
       var railsDnl = this.combineSources(json.rails);
       var roadsDnl = this.combineSources(json.roads);
@@ -278,6 +291,7 @@ var MapTab = {
     },
 
     'selectMarker': function(marker) {
+      //change the selected marker
       marker.labelAnchor = new google.maps.Point(23,-6);
       marker.labelClass = "labels selected";
       marker.label.draw();
@@ -293,6 +307,7 @@ var MapTab = {
     },
 
     currentMarker: function() {
+      //returns either the current marker or a placeholder if none is selected
       if (this.currentMarkerId) {
         return markers[this.currentMarkerId];
       }
@@ -304,6 +319,7 @@ var MapTab = {
     },
 
     markerIsSelected: function() {
+      //returns true if a marker is selected
       return this.currentMarkerId != '';
     },
 
@@ -316,6 +332,7 @@ var MapTab = {
     },
 
     siteDnl: function() {
+      //logarithmic addition of all source type noise levels
       var nrg = 0;
 
       if (this.airportsDnl.value) nrg += Math.pow(10, this.airportsDnl.value / 10);

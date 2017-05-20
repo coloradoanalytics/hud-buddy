@@ -1,28 +1,36 @@
+//handy functions used throughout
+
 function okString() {
+  //for validating strings
   return "^[A-Za-z0-9 _,./-]*[A-Za-z0-9][A-Za-z0-9 _,./-]*$";
 }
 
 function isNumeric(value) {
+  //for validating numbers
   return !isNaN(parseFloat(value)) && isFinite(value);
 }
 
 function isYear(value) {
+  //for validating years
   if (value == null || value.length < 4 || value.length > 4) return false;
   var p = /^[0-9]+$/;
   return p.test(value);
 }
 
 function isSpeed(value) {
+  //for validing MPH values
   if (value == null || value.length < 1 || value.length > 2) return false;
   var p = /^[0-9]+$/;
   return p.test(value);
 }
 
 function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  //format a number with thousands commas
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 function blankAirport() {
+  //create a new, empty airport object
   return {
     name: "New Airport",
     airport_type: "",
@@ -33,6 +41,7 @@ function blankAirport() {
 }
 
 function blankRoad() {
+  //create a new, empty road object
   var date = new Date();
   return {
     name: "Road",
@@ -62,6 +71,7 @@ function blankRoad() {
 }
 
 function blankRail() {
+  //create a new, empty railroad object
   return {
     name: "New Rail",
     distance: 1000,
@@ -85,6 +95,7 @@ function blankRail() {
 }
 
 function blankSite() {
+  //create a new, empty site object
   var d = new Date();
   return {
     name: 'NAL',
@@ -101,6 +112,7 @@ function blankSite() {
 }
 
 function newGUID() {
+    //create a random GUID string
     var S4 = function() {
        return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
     };
@@ -108,6 +120,7 @@ function newGUID() {
 }
 
 var getColor = function(dnl) {
+  //return a color that corresponds to a site's HUD classification
   var color = 'green';
 
   if (dnl > 75) {
@@ -123,6 +136,7 @@ var getColor = function(dnl) {
 }
 
 var getDescription = function(dnl) {
+  //return a string that corresponds to a site's HUD classification
   var desc = 'Acceptable';
 
   if (dnl > 75) {
@@ -143,5 +157,7 @@ var spinnerHTML = `
         `
 
 function roundToFive(x) {
+  //rounds a value to the nearest 5
+  //useful for inexact values, like distances
   return (x % 5) >= 2.5 ? parseInt(x / 5) * 5 + 5 : parseInt(x / 5) * 5;
 }

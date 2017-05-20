@@ -1,3 +1,5 @@
+//Vue component to edit and control site data on form
+
 var SiteForm = {
 	template: `
 		<div class="card" v-if="editing">

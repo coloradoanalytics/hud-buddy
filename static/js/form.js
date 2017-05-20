@@ -1,3 +1,6 @@
+//Vue component that is displayed while the "form" tab is selected
+//It displays all data for a site, allows editing, and can send the site to the server for calculation or report generation
+
 var FormTab = {
 
 	template: `
@@ -108,10 +111,13 @@ var FormTab = {
     },
 
     airportKey: function(index) {
+      //produces a unique key for a list element
+      //Vue relies on keys to manipulate lists
       return "airport-" + index.toString();
     },
 
     onGetCalculation: function() {
+      //send the site data currently loaded into the form to the server for calculation
       var self = this;
       axios.post('/api/sites/', self.formData)
         .then(function(response) {
@@ -123,7 +129,9 @@ var FormTab = {
     },
 
     onGetReport: function() {
-      var self = this;
+      //send the current site data to the server and expect a .pdf report as a response
+      //creating a form dynamically and placing the stringified site data into a hidden input
+      //is a workaround that allows the server to respond with a file with a new window as a target
       var form = document.createElement('form');
       form.setAttribute('method', 'POST');
       form.setAttribute('action', '/api/reports/');
@@ -180,18 +188,21 @@ var FormTab = {
 
     railKey: function(index) {
       //create a key for use by Vue
+      //Vue requires keys to manipulate lists
       return "rail-" + index.toString();
     },
 
     roadKey: function(index) {
       //create a key for use by Vue
+      //Vue requires keys to manipulate lists
       return "road-" + index.toString();
     }
 
   },
 
   mounted: function() {
-    //this.onResetForm();
+    //runs when the Vue component mounts
+    //not currently in use
   },
 
   components: {

@@ -1,3 +1,5 @@
+//Vue component used to display the details of an airport on the form
+
 var AirportCard = {
 	template: `
 		<div class="card">

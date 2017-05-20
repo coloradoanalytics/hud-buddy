@@ -1,3 +1,5 @@
+//Vue component that populates the application when the "about" tab is selected.
+
 var AboutTab = {
 
 	template: `

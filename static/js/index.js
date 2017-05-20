@@ -1,3 +1,6 @@
+//main Vue object and component
+//attaches to #app element
+
 var app = new Vue( {
   el: '#app',
 
@@ -5,7 +8,6 @@ var app = new Vue( {
     currentMarkerId: '',
     currentTab: 'map',
     formData: blankSite(),
-    roadEditIndex: null
   },
 
   components: {
@@ -61,7 +63,6 @@ var app = new Vue( {
     onResetForm: function() {
       //clear form by inserting a new, blank site
       this.formData = blankSite();
-      //this.roadEditIndex = null;
     },
 
     onSelectMarker: function(id) {

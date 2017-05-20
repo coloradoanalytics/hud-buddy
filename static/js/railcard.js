@@ -1,3 +1,5 @@
+//Vue component to display railroad details on form interface
+
 var RailCard = {
 	template: `
 		<div class="card">
