@@ -60,7 +60,7 @@ def sites():
         road_client = HighwaysClient()
         roads = road_client.get_unique_segments(position, road_distance)
         county = None
-        growth_rate = None
+        growth_rate = .015
         if roads:
             county = road_client.county
             growth_rate = road_client.county.get_growth_rate()
