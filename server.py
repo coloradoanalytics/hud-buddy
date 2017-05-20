@@ -55,7 +55,7 @@ def sites():
         # find railways within 4500 ft
         rail_distance = request.args.get('rail_distance', 1371.6)
         # find airports within 15 miles
-        airport_distance = request.args.get('airport-distance', 24140.2)
+        airport_distance = request.args.get('airport-distance', 14140.2)
 
         road_client = HighwaysClient()
         roads = road_client.get_unique_segments(position, road_distance)
