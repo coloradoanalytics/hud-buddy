@@ -9,10 +9,10 @@
     <link rel="stylesheet" href="static/css/bulma.min.css">
     <link rel="stylesheet" type="text/css" href="static/css/style.css">
 
-    <!-- Use min version from CDN for deployed -->
+    <!-- Use min version from CDN when deployed -->
     <script src="https://unpkg.com/vue/dist/vue.min.js"></script>
 
-    <!-- Use dev version local for development -->
+    <!-- Use dev version locally for development -->
     <!-- <script src="/static/vue/vue.min.js"></script> -->
   </head>
 
@@ -35,7 +35,6 @@
       <formtab
         v-show="currentTab == 'form'"
         v-bind:form-data="formData"
-        v-bind:road-edit-index="roadEditIndex"
         @reset-form="onResetForm"
         @add-airport="onAddAirport"
         @add-rail="onAddRail"
@@ -69,7 +68,7 @@
   
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyB20D3rZ8LVMzQg9_3ABmZ_IlkoakQMRKo"></script>
 
-    <script type="text/javascript" src="static/js/markerwithlabel.js"></script>
+    <script type="text/javascript" src="static/markerwithlabel/markerwithlabel.js"></script>
 
     <script type="text/javascript" src="static/js/utils.js"></script>
     <script type="text/javascript" src="static/js/navbar.js"></script>

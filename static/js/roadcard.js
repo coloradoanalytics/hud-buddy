@@ -1,3 +1,5 @@
+//Vue component to display a road's details on form
+
 var RoadCard = {
 
 	template: `
@@ -89,6 +91,7 @@ var RoadCard = {
 
 	computed: {
 		autosAdt: function() {
+      //calculate the number of autos based on ADT and truck percentages
 			if (this.road.adt) {
     		p = 1 - this.road.heavy_truck.adt_fraction - this.road.medium_truck.adt_fraction;
       	p = Math.round(p * this.road.adt);
@@ -98,6 +101,7 @@ var RoadCard = {
     },
 
     autosPercent: function() {
+      //calculate percent autos based on truck percentages
       p = 1 - this.road.heavy_truck.adt_fraction - this.road.medium_truck.adt_fraction;
       return (Math.round(p * 10000)/100).toFixed(2);
     },
@@ -157,6 +161,7 @@ var RoadCard = {
     },
 
     roadDnl: function() {
+      //return string with formatting to display individual road's DNL
       if (this.road.dnl) {
         return "<b>" + this.road.dnl.toString() + "</b> &nbsp; dB";
       }

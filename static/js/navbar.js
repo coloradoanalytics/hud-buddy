@@ -1,3 +1,5 @@
+//Vue component navbar with tab interface
+
 var NavBar = {
   template: `
       <nav class="nav has-shadow" id="top">
@@ -26,6 +28,7 @@ var NavBar = {
     },
 
     tabClass: function(tab) {
+      //dynamically determine tab's css class based on whether it is currently selected
       var tc = "nav-item is-tab";
       if (tab == this.currentTab) tc += " is-active";
       return tc;

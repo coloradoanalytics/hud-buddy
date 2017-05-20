@@ -1,3 +1,5 @@
+//Vue component for editing and controlling a railroad on the form
+
 var RailForm = {
 	template: `
 		<div class="card" v-if="editing">

@@ -1,3 +1,5 @@
+//Vue component to display site summary on form
+
 var SiteCard = {
 	template: `
 		<div class="card">
@@ -51,6 +53,7 @@ var SiteCard = {
     },
 
     railDnl: function() {
+      //logarithmically add DNL values of all rails
       var nrg = 0;
       for (var i = 0; i < this.formData.rails.length; i++) {
         if (this.formData.rails[i].dnl) nrg += Math.pow(10, this.formData.rails[i].dnl / 10);
@@ -60,6 +63,7 @@ var SiteCard = {
     },
 
     roadsDnl: function() {
+      //logarithmically add DNL values of all roads
       var nrg = 0;
       for (var i = 0; i < this.formData.roads.length; i++) {
         if (this.formData.roads[i].dnl) nrg += Math.pow(10, this.formData.roads[i].dnl / 10);

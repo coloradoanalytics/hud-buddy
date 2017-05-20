@@ -1,3 +1,5 @@
+//Vue component that handles an airport on the form page.
+
 var AirportForm = {
 	template: `
     <div class="card" v-if="editing">

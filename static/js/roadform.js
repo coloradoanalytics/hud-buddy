@@ -1,3 +1,5 @@
+//Vue component for editing and controlling a road on the form
+
 var RoadForm = {
   template: `
 
@@ -208,7 +210,6 @@ var RoadForm = {
       </div>
     </div>
 
-
     <road-card 
       v-else
       v-bind:index="index"
@@ -228,6 +229,7 @@ var RoadForm = {
     },
 
     autosAdt: function() {
+      //calculate number of autos based on ADT and truck percentages
       if (this.road.adt) {
         p = 1 - this.editValues.heavy_truck.adt_fraction - this.editValues.medium_truck.adt_fraction;
         p = Math.round(p * this.editValues.adt);

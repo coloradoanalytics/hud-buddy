@@ -1,3 +1,5 @@
+//Vue component and sub components that display info for selected marker on the map
+
 var MapSummary ={
 	template: `
 		<div class="card">
@@ -29,6 +31,7 @@ var MapSummary ={
   computed: {
 
     dnlCategory: function() {
+    	//returns string indicating the HUD category determined by the site DNL
       if (this.siteDnl.value > 75) return "Unacceptable";
       if (this.siteDnl.value > 65) return "Normally Unacceptable";
       if (this.siteDnl.value === "--") return "No noise sources in range";
@@ -44,11 +47,13 @@ var MapSummary ={
     },
 
     sendToForm: function() {
+      //initiates sending the data from the currently selected marker to the form tab
       this.$emit('send-to-form');
     }
   }
 }
 
+//Vue subcomponent to display road details on the map view
 var MapRoadDisplay = {
   template: `
 	  <article class="media">
@@ -109,6 +114,7 @@ var MapRoadDisplay = {
   props: [ 'road' ]
 }
 
+//Vue subcomponent to display rail details on the map tab
 var MapRailDisplay = {
   template: `
 	  <article class="media">
@@ -139,6 +145,7 @@ var MapRailDisplay = {
   props: [ 'rail' ]
 }
 
+//Vue sub component to display airport details on the map tab
 var MapAirportDisplay = {
   template: `
 	  <article class="media">
