@@ -11,3 +11,4 @@ six==1.10.0
 Werkzeug==0.12.1
 Fabric3==1.13.1.post1
 pylatex==1.2.0
+marshmallow==2.15.0

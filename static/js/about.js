@@ -12,18 +12,7 @@ var AboutTab = {
       </p>
       <br>
       <p>
-        This application is our team's entry in the 2017 <a href="http://gocode.colorado.gov/" target="_blank">GoCode Colorado</a> business and software development contest put on by the Colorado Secretary of State.
-      </p>
-      <br>
-      <p>
-        We are one of 10 <a href="http://gocode.colorado.gov/media-advisory-winners-go-code-colorados-challenge-weekend-2017/" target="_blank">finalist teams</a>. On May 24th we will present this application to an audience and a panel of judges. 
-        If we are chosen as a winning team, we will receive money and resources to help us develop HUD Buddy into an even better tool.
-      </p>
-      <br>
-      <p>
-        The best possible evidence we can use to sway the judges to our favor is real-life users. 
-        So if you find HUD Buddy handy and think you'll use it, please send a quick note to <a href="mailto:joshua@coloradoanalytics.com">joshua@coloradoanalytics.com</a>.
-        (That's also the address to use if you find a bug).
+        This application was one of three winning entries in the 2017 <a href="http://gocode.colorado.gov/2017-go-code-winners/" target="_blank">GoCode Colorado</a> business and software development contest put on by the Colorado Secretary of State.
       </p>
       <br>
       <br>
@@ -98,11 +87,10 @@ var AboutTab = {
       <p class="title is-2">Road Map</p>
       <p>
         HUD Buddy's automatic data retrieval currently works only in Colorado.
-        We plan to start adding more states soon after the conclusion of the GoCode Colorado contest (sooner if we win!).
       </p>
       <br>
       <p>
-        Additionally, we plan to add these features in the months ahead:
+        Additional features on our roadmap include:
       </p>
       <br>
         <p>
