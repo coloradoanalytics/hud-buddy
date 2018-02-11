@@ -1,3 +1,5 @@
+**_Winning entry at Go Code Colorado 2017_**
+
 ## HUD Buddy
 
 #### An application for performing noise analysis to HUD specifications.
